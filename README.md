@@ -1,7 +1,7 @@
 # Webmachine/ROAR Server Template
 
-This is a Simple Server Template for setting up a This is a sample application to show
-how [webmachine](https://github.com/seancribbs/webmachine-ruby) and [roar](https://github.com/apotonick/roar)
+This is a basic server template for setting up a simple application to show how 
+[webmachine](https://github.com/seancribbs/webmachine-ruby) and [roar](https://github.com/apotonick/roar)
 can work together to build real RESTful systems in Ruby.
 
 Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
@@ -35,5 +35,4 @@ Here is a list of various references that helped me very much:
 ## Author
 
 Kiffin Gish <kiffin.gish@planet.nl>
-
 
