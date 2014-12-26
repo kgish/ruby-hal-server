@@ -6,48 +6,56 @@ class ProductResource < Resource
 
   let(:allowed_methods) { %w{GET POST PUT DELETE} }
 #  let(:create_path) { "/products/#{create_resource.id}" }
-  def create_path
-    puts 'create_path'
-    @product = Product.from_attributes(:id => $products.length+1)
-    @product.to_json
-    @product.links[:self]
-  end
   let(:to_json) { resource_or_collection.to_json }
 #  let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: request.path_info[:id] ] }
 
   def resource_exists?
-    puts 'resource_exists'
-    @product = $products[request.path_info[:id].to_i - 1] if request.path_info[:id]
-    !@product.nil?
+    if (!request.path_info.has_key?(:id))
+      res = true
+    else
+      @resource = $products[request.path_info[:id].to_i - 1]
+      res = !@resource.nil?
+    end
+    puts "ProductResource: resource_exists => #{res}"
+    res
+  end
+
+  def create_path
+    puts 'ProductResource: create_path'
+    @resource = Product.from_attributes(:id => $products.length+1)
+    @resource.to_json
+    @resource.links[:self]
   end
 
   protected
 
-  def create_resource
-    puts 'create_resource'
-    @resource = Product.create(from_json)
-    #response.body = as_json
-  end
+  # def create_resource
+  #   puts 'ProductResource: create_resource'
+  #   @resource = Product.create(from_json)
+  #   #response.body = as_json
+  # end
 
   def resource
-    puts 'resource'
-    @resource ||= Product[id: request.path_info[:id]]
+    puts 'ProductResource: resource'
+    #@resource ||= Product[id: request.path_info[:id]]
+    @resource ||= $products[request.path_info[:id].to_i - 1]
   end
 
   def collection
-    puts 'collection'
-    @collection ||= Product.all
+    puts 'ProductResource: collection'
+    #@collection ||= Product.all
+    @collection ||= $products
   end
 
   def resource_or_collection
-    puts 'resource_or_collection'
-    @product.to_json
+    puts 'ProductResource: resource_or_collection'
+    @resource || {:products => collection.map(&:to_hash)}
 #    resource ? resource.to_hash : {:products => collection.map(&:to_hash)}
   end
 
   def from_json
-    puts 'from_json'
-    $products << @product.from_json(request.body.to_s, :except => [:id])
+    puts 'ProductResource: from_json'
+    $products << @resource.from_json(request.body.to_s, :except => [:id])
   end
 
 end

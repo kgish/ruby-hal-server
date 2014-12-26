@@ -1,13 +1,8 @@
-#require 'bundler/setup'
-require 'roar/representer/json'
-require 'roar/representer/feature/hypermedia'
+require './models/model'
 
-class Product
-  include Roar::Representer::JSON
-  include Roar::Representer::Feature::Hypermedia
+class Product < Model
 
   property :name
-  property :id
   property :price
 
   link :self do
