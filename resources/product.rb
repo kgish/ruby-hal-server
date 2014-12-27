@@ -20,6 +20,12 @@ class ProductResource < Resource
     res
   end
 
+  def delete_resource
+    puts 'ProductResource: delete_resource'
+    $products.delete_at(request.path_info[:id].to_i - 1)
+    true
+  end
+
   def create_path
     puts 'ProductResource: create_path'
     @resource = Product.from_attributes(:id => $products.length+1)
