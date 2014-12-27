@@ -13,10 +13,10 @@ end
 # We're in-memory ROFLSCALE
 $products = [
     Product.from_attributes(:id => 1,
-                            :name => "Nick's Awesomesauce",
-                            :price => 10_000_000),
+                            :name => "Pizza",
+                            :price => 20_000),
     Product.from_attributes(:id => 2,
-                            :name => "Kiffin's Fancysalade",
-                            :price => 20_000)
+                            :name => "Salade",
+                            :price => 5_000)
 ]
 

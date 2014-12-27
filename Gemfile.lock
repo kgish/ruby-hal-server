@@ -100,5 +100,6 @@ DEPENDENCIES
   json
   roar (~> 0.8.1)
   rspec
+  sqlite3
   webmachine
   webmachine-test!

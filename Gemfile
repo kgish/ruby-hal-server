@@ -4,6 +4,7 @@ gem 'webmachine'
 gem "roar", "~> 0.8.1"
 gem 'httparty'
 gem 'json'
+gem 'sqlite3'
 
 group :test do
   gem 'rspec'
