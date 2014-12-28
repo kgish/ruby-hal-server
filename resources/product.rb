@@ -4,7 +4,7 @@ require 'json'
 
 class ProductResource < Resource
 
-  let(:allowed_methods) { %w{GET POST PUT DELETE} }
+  let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
 #  let(:create_path) { "/products/#{create_resource.id}" }
   let(:to_json) { resource_or_collection.to_json }
 #  let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: request.path_info[:id] ] }
