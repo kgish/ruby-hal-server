@@ -1,17 +1,24 @@
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+
 require 'bundler/setup'
 require 'roar/representer/json'
 require 'roar/representer/feature/hypermedia'
 require 'webmachine'
 
-#require './resources/session'
-#require './resources/user'
-require './resources/product'
-#require './resources/category'
+#require 'resources/session'
+#require 'resources/user'
+require 'resources/product'
+#require 'resources/category'
 
-Webmachine.routes do
-  add ['products'], ProductResource
-  add ['products', :id], ProductResource
-end.run
+begin
+  Webmachine.routes do
+    add ['products'], ProductResource
+    add ['products', :id], ProductResource
+  end.run
+rescue Exception => e
+  puts e.message
+  exit
+end
 
 #App = Webmachine::Application.new do |app|
 #  app.configure do |config|

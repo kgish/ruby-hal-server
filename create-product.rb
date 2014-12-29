@@ -20,12 +20,16 @@ end
 
 puts "#{response.code}/#{response.message} #{response.headers['server']}"
 
-unless response.code.to_i >= 200 && response.code.to_i < 300
+code = response.code.to_i
+unless code >= 200 && code < 300
   puts 'Oops, looks like something went wrong (abort)'
+  if code >= 500
+    puts response.message, response.body
+  end
   exit
 end
 
-url = response.headers["location"]
+url = response.headers['location']
 puts ' '
 puts "GET #{url}"
 puts ' '
@@ -36,8 +40,12 @@ rescue Exception => e
   exit
 end
 
-unless response.code.to_i >= 200 && response.code.to_i < 300
+code = response.code.to_i
+unless code >= 200 && code < 300
   puts 'Oops, looks like something went wrong (abort)'
+  if code >= 500
+    puts response.message, response.body
+  end
   exit
 end
 

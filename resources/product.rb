@@ -1,5 +1,5 @@
-require './resources/resource'
-require './models/product'
+require 'resources/resource'
+require 'models/product'
 require 'json'
 
 class ProductResource < Resource
@@ -13,7 +13,7 @@ class ProductResource < Resource
     if (!request.path_info.has_key?(:id))
       res = true
     else
-      @resource = $products[request.path_info[:id].to_i - 1]
+      @resource = $products.find{|a| a.id == request.path_info[:id].to_i}
       res = !@resource.nil?
     end
     puts "ProductResource: resource_exists => #{res}"
@@ -27,8 +27,10 @@ class ProductResource < Resource
   end
 
   def create_path
-    puts 'ProductResource: create_path'
-    @resource = Product.from_attributes(:id => $products.length+1)
+#    @resource = Product.from_attributes(:id => $products.length+1)
+    idn = $products.length == 0 ? 1 : $products[$products.length - 1].to_hash['product']['id'].to_i + 1
+    puts "ProductResource: create_path id = #{idn}"
+    @resource = Product.from_attributes(:id => idn)
     @resource.to_json
     @resource.links[:self]
   end
