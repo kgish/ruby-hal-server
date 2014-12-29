@@ -1,6 +1,71 @@
-params = get_options(false)
+require 'httparty'
+require 'json'
 
+# Initialize all of the parameters passed on the command line.
+params = get_params(false)
 puts params
+puts ' '
+
+url = "http://#{params[:url]}/products"
+puts "POST #{url}"
+puts ' '
+
+# Attempt to create new product => POST /products Beer'
+begin
+  response = HTTParty.post(url, :body => {:product => {:name => params[:name], :category => params[:category], :price => params[:price]}}.to_json, :headers => {'Content-type' => 'application/json'})
+  rescue Exception => e
+    puts e.message
+    exit
+end
+
+puts "#{response.code}/#{response.message} #{response.headers['server']}"
+
+unless response.code.to_i >= 200 && response.code.to_i < 300
+  puts 'Oops, looks like something went wrong (abort)'
+  exit
+end
+
+url = response.headers["location"]
+puts ' '
+puts "GET #{url}"
+puts ' '
+begin
+  response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
+rescue Exception => e
+  puts e.message
+  exit
+end
+
+unless response.code.to_i >= 200 && response.code.to_i < 300
+  puts 'Oops, looks like something went wrong (abort)'
+  exit
+end
+
+puts "#{response.code}/#{response.message} #{response.headers['server']}"
+puts ' '
+puts response.body
+
+# Finally ensure that the properties are identical to what was sent.
+h = JSON.parse response.body
+p = h['product']
+
+cnt = 0
+unless p['name'] === params[:name]
+  cnt = cnt + 1
+  puts "Name mismatch -- #{p['name']} != #{params[:name]}"
+end
+
+unless p['price'] === params[:price]
+  cnt = cnt + 1
+  puts "Price mismatch -- #{p['price']} != #{params[:price]}"
+end
+
+unless p['category'] === params[:category]
+  cnt = cnt + 1
+  puts "Category mismatch -- #{p['category']} != #{params[:category]}"
+end
+
+puts cnt > 0 ? 'Failed' : 'Succeeded'
 
 BEGIN {
   require 'getoptlong'
@@ -11,7 +76,7 @@ BEGIN {
 
   USAGE:
 
-    create-product [OPTIONS] --name s --price n --cat s
+    create-product [OPTIONS] --name s --price n --category s
 
   DESCRIPTION:
 
@@ -28,7 +93,7 @@ BEGIN {
     --price, -p n
        price of product (number)
 
-    --cat, -c s
+    --category, -c s
        category of product (string)
 
   OPTIONAL PARAMETERS:
@@ -58,10 +123,10 @@ BEGIN {
     else
       authorization = '(no authorization)'
     end
-    puts "url:'#{params[:url]}' name:'#{params[:name]}' price:'#{params[:price]}' cat:'#{params[:cat]}' #{authorization}"
+    puts "url:'#{params[:url]}' name:'#{params[:name]}' price:'#{params[:price]}' category:'#{params[:category]}' #{authorization}"
   end
 
-  def get_options(show)
+  def get_params(show)
     defaults = {
         host: '0.0.0.0',
         port: 8080
@@ -73,19 +138,19 @@ BEGIN {
         port: defaults[:port],
         name: nil,
         price: nil,
-        cat: nil,
+        category: nil,
         username: nil,
         password: nil,
         auth: nil,
     }
 
     opts = GetoptLong.new(
-        [ '--help',  '-h', GetoptLong::NO_ARGUMENT       ],
-        [ '--name',  '-n', GetoptLong::REQUIRED_ARGUMENT ],
-        [ '--price', '-p', GetoptLong::REQUIRED_ARGUMENT ],
-        [ '--cat',   '-c', GetoptLong::REQUIRED_ARGUMENT ],
-        [ '--auth',  '-a', GetoptLong::REQUIRED_ARGUMENT ],
-        [ '--url',   '-u', GetoptLong::REQUIRED_ARGUMENT ]
+        [ '--help',     '-h', GetoptLong::NO_ARGUMENT       ],
+        [ '--name',     '-n', GetoptLong::REQUIRED_ARGUMENT ],
+        [ '--price',    '-p', GetoptLong::REQUIRED_ARGUMENT ],
+        [ '--category', '-c', GetoptLong::REQUIRED_ARGUMENT ],
+        [ '--auth',     '-a', GetoptLong::REQUIRED_ARGUMENT ],
+        [ '--url',      '-u', GetoptLong::REQUIRED_ARGUMENT ]
     )
 
     begin
@@ -95,8 +160,8 @@ BEGIN {
             show_usage(nil, defaults)
           when '--name'
             params[:name] = arg
-          when '--cat'
-            params[:cat] = arg
+          when '--category'
+            params[:category] = arg
           when '--price'
             unless /^\d+$/ === arg
               show_usage("invalid price -- '#{arg}' (only digits)", defaults)
@@ -132,7 +197,7 @@ BEGIN {
     # Check required parameters: name, price and category
     show_usage('name is required', defaults) unless params[:name]
     show_usage('price is required', defaults) unless params[:price]
-    show_usage('category is required', defaults) unless params[:cat]
+    show_usage('category is required', defaults) unless params[:category]
 
     # Check authorization = "username:password"
     params[:auth] = "#{params[:username]}:#{params[:password]}" if params[:username] && params[:password]
