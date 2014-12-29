@@ -10,7 +10,13 @@ Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
 
 Here is an explanation about the Web API
 
-## Instructions
+## Installation
+
+In order to install and run the webmachine, run the following commands.
+
+    $ git clone https://github.com/kgish/ruby-webmachine-roar-template.git webmachine-roar
+    $ cd webmachine-roar
+    $ bundle install
 
 Run the server using defaults WEBrick and port 8080:
 
