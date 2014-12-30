@@ -52,17 +52,17 @@ p = h['product']
 
 cnt = 0
 unless p['name'] === params[:name]
-  cnt = cnt + 1
+  cnt += 1
   puts "Name mismatch -- #{p['name']} != #{params[:name]}"
 end
 
 unless p['price'] === params[:price]
-  cnt = cnt + 1
+  cnt += 1
   puts "Price mismatch -- #{p['price']} != #{params[:price]}"
 end
 
 unless p['category'] === params[:category]
-  cnt = cnt + 1
+  cnt += 1
   puts "Category mismatch -- #{p['category']} != #{params[:category]}"
 end
 

@@ -6,6 +6,8 @@ can work together to build real RESTful systems in Ruby.
 
 Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
 
+![](images/screenshot-monitor.png?raw=true)
+
 ## HAL/JSON Web API
 
 Here is an explanation about the Web API

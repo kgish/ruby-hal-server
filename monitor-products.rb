@@ -27,7 +27,7 @@ catch :ctrl_c do
     end
     end
     if countdown == 0
-      total = total + 1
+      total += 1
       server = response.headers['server']
       server = server.sub(/ \(.*\)$/, '')
       puts "#{total} | #{host} | #{port} | #{resource} | #{server} | #{response.code} | #{response.message}"
@@ -42,7 +42,7 @@ catch :ctrl_c do
           puts "-\t--\t----\t-----\t--------"
         end
         p = key['product']
-        cnt = cnt + 1
+        cnt += 1
         puts "#{cnt}\t#{p['id']}\t#{p['name']}\t#{p['price']}\t#{p['category']}"
       end
     else

@@ -14,18 +14,20 @@ end
 # We're in-memory ROFLSCALE
 $products = [
     Product.from_attributes(:id => 1,
-                            :name => "pizza",
-                            :category => "food",
+                            :name => 'pizza',
+                            :category => 'food',
                             :price => 500),
     Product.from_attributes(:id => 2,
-                            :name => "shoes",
-                            :category => "clothing",
+                            :name => 'shoes',
+                            :category => 'clothing',
                             :price => 2_000),
     Product.from_attributes(:id => 3,
-                            :name => "laptop",
-                            :category => "computer",
+                            :name => 'laptop',
+                            :category => 'computer',
                             :price => 500_000)
 ]
+
+$next_product_id = 4
 
 #
 # begin

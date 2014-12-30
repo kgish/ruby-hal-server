@@ -28,9 +28,9 @@ class ProductResource < Resource
 
   def create_path
 #    @resource = Product.from_attributes(:id => $products.length+1)
-    idn = $products.length == 0 ? 1 : $products[$products.length - 1].to_hash['product']['id'].to_i + 1
-    puts "ProductResource: create_path id = #{idn}"
-    @resource = Product.from_attributes(:id => idn)
+#    idn = $products.length == 0 ? 1 : $products[$products.length - 1].to_hash['product']['id'].to_i + 1
+    puts "ProductResource: create_path id = #{$next_product_id}"
+    @resource = Product.from_attributes(:id => $next_product_id); $next_product_id += 1
     @resource.to_json
     @resource.links[:self]
   end
@@ -64,11 +64,15 @@ class ProductResource < Resource
   def from_json
     puts "ProductResource: from_json => #{request.method}"
     if request.method === 'PUT'
+
       # Replace the entire resource, not merge the attributes! That's what PATCH is for.
       # order.destroy if order
+      delete_resource if @resource
       # new_order = Order.new(params)
+      @resource = Product.from_attributes(:id => $next_product_id); $next_product_id += 1
       # new_order.save(id)
       # response.body = new_order.to_json
+      response.body = @resource.to_json
     else
       $products << @resource.from_json(request.body.to_s, :except => [:id])
     end
