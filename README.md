@@ -41,6 +41,23 @@ If everything is working according to plan you should see something like this:
 
     CTRL-C to exit
 
+Create your first product:
+
+    $ bundle exec ruby create-product.rb --name=kiffin --category=person --price=1234
+
+You should then see something like this:
+
+    75 | 0.0.0.0 | 8080 | products | Webmachine-Ruby/0.3.0 WEBrick/1.3.1 | 200 | OK
+
+    #	id	name	price	category
+    -	--	----	-----	--------
+    1	1	pizza	500	food
+    2	2	shoes	2000	clothing
+    3	3	laptop	500000	computer
+    4	4	kiffin	1234	person
+
+    CTRL-C to exit
+
 ## Thanks
 
 A special thanks goes to [Sean Cribs](https://github.com/seancribbs) and the other kind folks at [webmachine-ruby github](https://github.com/seancribbs/webmachine-ruby) who answered my bothersome
@@ -55,7 +72,7 @@ Here is a list of various references that helped me very much:
 * [Webmachine Loves Roar](https://github.com/apotonick/webmachinelovesroar)
 * [Pact Broker](https://github.com/bethesque/pact_broker)
 * [HyperResource](https://github.com/gamache/hyperresource)
-* [HTTP 1.1 State Transitions Diagram](http://upload.wikimedia.org/wikipedia/commons/8/88/Http-headers-status.png)
+* [HTTP 1.1 Headers Status](http://upload.wikimedia.org/wikipedia/commons/8/88/Http-headers-status.png)
 
 ## Author
 
