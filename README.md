@@ -35,7 +35,7 @@ If everything is working according to plan you should see something like this:
 
     #	id	name	price	category
     -	--	----	-----	--------
-    1	1	pizza	500	food
+    1	1	pizza	500	    food
     2	2	shoes	2000	clothing
     3	3	laptop	500000	computer
 
@@ -51,7 +51,7 @@ You should then see something like this:
 
     #	id	name	price	category
     -	--	----	-----	--------
-    1	1	pizza	500	food
+    1	1	pizza	500	    food
     2	2	shoes	2000	clothing
     3	3	laptop	500000	computer
     4	4	kiffin	1234	person
