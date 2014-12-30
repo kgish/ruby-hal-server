@@ -25,7 +25,9 @@ Run the server using defaults WEBrick and port 8080:
     INFO  ruby 2.1.5 (2014-11-13) [x86_64-linux]
     INFO  Webmachine::Adapters::WEBrick::Server#start: pid=13513 port=8080
 
-Run the monitor:
+### Monitor
+
+You can now fire up the monitor by running the following command:
 
     $ bundle exec ruby monitor-products.rb
 
@@ -39,9 +41,9 @@ If everything is working according to plan you should see something like this:
     2	2	shoes	2000	clothing
     3	3	laptop	500000	computer
 
-    CTRL-C to exit
+### Create a product
 
-Create your first product:
+Create your first product by running the following command:
 
     $ bundle exec ruby create-product.rb --name=kiffin --category=person --price=1234
 
@@ -56,7 +58,21 @@ You should then see something like this:
     3	3	laptop	500000	computer
     4	4	kiffin	1234	person
 
-    CTRL-C to exit
+### Delete a product
+
+Delete a given product (shoes) by running the following command:
+
+    $ bundle exec ruby delete-product.rb --id=2
+
+You should then see something like this:
+
+    98 | 0.0.0.0 | 8080 | products | Webmachine-Ruby/0.3.0 WEBrick/1.3.1 | 200 | OK
+
+    #	id	name	price	category
+    -	--	----	-----	--------
+    1	1	pizza	500	    food
+    2	3	laptop	500000	computer
+    3	4	kiffin	1234	person
 
 ## Thanks
 
