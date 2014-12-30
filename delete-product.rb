@@ -77,7 +77,7 @@ BEGIN {
 
   USAGE:
 
-    delete-product [OPTIONS] --id n
+    delete-product [OPTIONS] --id=n
 
   DESCRIPTION:
 

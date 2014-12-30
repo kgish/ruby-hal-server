@@ -84,7 +84,7 @@ BEGIN {
 
   USAGE:
 
-    create-product [OPTIONS] --name s --price n --category s
+    create-product [OPTIONS] --name=s --price=n --category=s
 
   DESCRIPTION:
 

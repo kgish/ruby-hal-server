@@ -62,8 +62,16 @@ class ProductResource < Resource
   end
 
   def from_json
-    puts 'ProductResource: from_json'
-    $products << @resource.from_json(request.body.to_s, :except => [:id])
+    puts "ProductResource: from_json => #{request.method}"
+    if request.method === 'PUT'
+      # Replace the entire resource, not merge the attributes! That's what PATCH is for.
+      # order.destroy if order
+      # new_order = Order.new(params)
+      # new_order.save(id)
+      # response.body = new_order.to_json
+    else
+      $products << @resource.from_json(request.body.to_s, :except => [:id])
+    end
   end
 
 end
