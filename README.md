@@ -25,9 +25,26 @@ Run the server using defaults WEBrick and port 8080:
     INFO  ruby 2.1.5 (2014-11-13) [x86_64-linux]
     INFO  Webmachine::Adapters::WEBrick::Server#start: pid=13513 port=8080
 
-Run the test client:
+Run the monitor:
 
-    $ bundle exec ruby client.rb
+    $ bundle exec ruby monitor-products.rb
+
+If everything is working according to plan you should see something like this:
+
+    57 | 0.0.0.0 | 8080 | products | Webmachine-Ruby/0.3.0 WEBrick/1.3.1 | 200 | OK
+
+    #	id	name	price	category
+    -	--	----	-----	--------
+    1	1	pizza	500	food
+    2	2	shoes	2000	clothing
+    3	3	laptop	500000	computer
+
+    CTRL-C to exit
+
+## Thanks
+
+A special thanks goes to [Sean Cribs](https://github.com/seancribbs) and the other kind folks at [webmachine-ruby github](https://github.com/seancribbs/webmachine-ruby) who answered my bothersome
+questions and helped me out alot.
 
 ## References
 
@@ -37,7 +54,8 @@ Here is a list of various references that helped me very much:
 * [ROAR](https://github.com/apotonick/roar)
 * [Webmachine Loves Roar](https://github.com/apotonick/webmachinelovesroar)
 * [Pact Broker](https://github.com/bethesque/pact_broker)
-* [HyperResource](https://github.com/gamache/hyperresource).
+* [HyperResource](https://github.com/gamache/hyperresource)
+* [HTTP 1.1 State Transitions Diagram](http://upload.wikimedia.org/wikipedia/commons/8/88/Http-headers-status.png)
 
 ## Author
 
