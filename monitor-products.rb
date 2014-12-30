@@ -2,22 +2,35 @@ require 'bundler/setup'
 require 'httparty'
 require 'json'
 
+host = '0.0.0.0'
+port = 8080
+resource = 'products'
+url = "http://#{host}:#{port}/#{resource}"
+
+RETRY_COUNT = 6
+
 trap('SIGINT') { throw :ctrl_c }
 
 catch :ctrl_c do
   total = 0
+  countdown = 0
+  error_message = ''
   loop do
     system('clear')
-    ok = true
+    countdown = countdown - 1 if countdown > 0
+    if countdown == 0
     begin
-      response = HTTParty.get('http://localhost:8080/products', :headers => {'Content-type' => 'application/json'})
+      response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
     rescue Exception =>e
-      puts e.message
-      ok = false
+      error_message = e.message
+      countdown = RETRY_COUNT
     end
-    if ok
+    end
+    if countdown == 0
       total = total + 1
-      puts "#{total} | #{response.headers['server']} | #{response.code} | #{response.message}"
+      server = response.headers['server']
+      server = server.sub(/ \(.*\)$/, '')
+      puts "#{total} | #{host} | #{port} | #{resource} | #{server} | #{response.code} | #{response.message}"
       puts ' '
 
       h = JSON.parse response.body
@@ -33,7 +46,8 @@ catch :ctrl_c do
         puts "#{cnt}\t#{p['id']}\t#{p['name']}\t#{p['price']}\t#{p['category']}"
       end
     else
-      puts 'Retry...'
+      puts error_message
+      puts countdown == RETRY_COUNT ? 'Oops!' : "Retry (#{countdown})"
     end
     puts ' '
     puts 'CTRL-C to exit'
