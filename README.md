@@ -18,7 +18,9 @@ In order to install and run the webmachine, run the following commands.
     $ cd webmachine-roar
     $ bundle install
 
-Run the server using defaults WEBrick and port 8080:
+### Server
+
+You can now start the webmachine-roar server using defaults WEBrick and port 8080:
 
     $ bundle exec ruby server.rb
     INFO  WEBrick 1.3.1
