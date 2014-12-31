@@ -23,13 +23,17 @@ class Product < Model
     found
   end
 
+  def self.all
+    $products
+  end
+
   link :self do
     "/products/#{id}"
   end
 
 end
 
-# We're in-memory ROFLSCALE
+# In-memory for the time being.
 $products = [
     Product.from_attributes(:id => 1,
                             :name => 'pizza',
@@ -45,6 +49,7 @@ $products = [
                             :price => 500_000)
 ]
 
+# Product counter, incremented with each new product created.
 $next_product_id = 4
 
 #

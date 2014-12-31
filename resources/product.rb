@@ -54,7 +54,7 @@ class ProductResource < Resource
   def collection
     puts 'ProductResource: collection'
     #@collection ||= Product.all
-    @collection ||= $products
+    @collection ||= Product.all
   end
 
   def resource_or_collection
