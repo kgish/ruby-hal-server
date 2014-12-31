@@ -6,9 +6,27 @@ class Product < Model
   property :category
   property :price
 
+  def self.find(id)
+    $products.find{|a| a.id.to_i === id.to_i}
+  end
+
+  def self.delete(id)
+    found = false
+    product = self.find(id)
+    if product
+      ind = $products.find_index(product)
+      unless ind.nil?
+        $products.delete_at(ind)
+        found = true
+      end
+    end
+    found
+  end
+
   link :self do
     "/products/#{id}"
   end
+
 end
 
 # We're in-memory ROFLSCALE

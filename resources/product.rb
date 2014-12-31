@@ -13,7 +13,8 @@ class ProductResource < Resource
     if (!request.path_info.has_key?(:id))
       res = true
     else
-      @resource = $products.find{|a| a.id == request.path_info[:id].to_i}
+      #@resource = $products.find{|a| a.id == request.path_info[:id].to_i - 1}
+      @resource = Product.find(request.path_info[:id])
       res = !@resource.nil?
     end
     puts "ProductResource: resource_exists => #{res}"
@@ -22,7 +23,8 @@ class ProductResource < Resource
 
   def delete_resource
     puts 'ProductResource: delete_resource'
-    $products.delete_at(request.path_info[:id].to_i - 1)
+    #$products.delete_at(request.path_info[:id].to_i - 1)
+    Product.delete(request.path_info[:id])
     true
   end
 
