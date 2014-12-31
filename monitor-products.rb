@@ -40,12 +40,12 @@ catch :ctrl_c do
       cnt = 0
       h['products'].each do |key|
         if cnt == 0
-          puts "#\tid\tname\tprice\tcategory"
-          puts "-\t--\t----\t-----\t--------"
+          puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price'
+          puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----------'
         end
         p = key['product']
         cnt += 1
-        puts "#{cnt}\t#{p['id']}\t#{p['name']}\t#{p['price']}\t#{p['category']}"
+        puts cnt.to_s.ljust(5)+p['id'].to_s.ljust(5)+p['name'].ljust(16)+p['category'].ljust(16)+p['price'].to_s
       end
     else
       puts error_message
