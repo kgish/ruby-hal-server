@@ -10,7 +10,7 @@ url = "http://#{params[:url]}/products"
 puts "POST #{url}"
 puts ' '
 
-# Attempt to create new product => POST /products Beer'
+# Attempt to create new product => POST /products
 begin
   response = HTTParty.post(url, :body => {:product => {:name => params[:name], :category => params[:category], :price => params[:price]}}.to_json, :headers => {'Content-type' => 'application/json'})
   rescue Exception => e
@@ -18,21 +18,17 @@ begin
     exit
 end
 
-puts "#{response.code}/#{response.message} #{response.headers['server']}"
+# Display the results
+display_results(response, false)
 
-code = response.code.to_i
-unless code >= 200 && code < 300
-  puts 'Oops, looks like something went wrong (abort)'
-  if code >= 500
-    puts response.message, response.body
-  end
-  exit
-end
+# Check the return code, if error abort and optionally dump stack trace
+check_code(response)
 
+# Verify that the new product was indeed created.
 url = response.headers['location']
-puts ' '
 puts "GET #{url}"
 puts ' '
+
 begin
   response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
 rescue Exception => e
@@ -40,39 +36,36 @@ rescue Exception => e
   exit
 end
 
-code = response.code.to_i
-unless code >= 200 && code < 300
-  puts 'Oops, looks like something went wrong (abort)'
-  if code >= 500
-    puts response.message, response.body
-  end
-  exit
-end
+# Check the return code, if error abort and optionally dump stack trace
+check_code(response)
 
-puts "#{response.code}/#{response.message} #{response.headers['server']}"
-puts ' '
-puts response.body
+# Display the results (including body)
+display_results(response, true)
 
-# Finally ensure that the properties are identical to what was sent.
+# Finally ensure that the created properties are identical to what was originally sent.
 h = JSON.parse response.body
 p = h['product']
 
+# Name ok?
 cnt = 0
 unless p['name'] === params[:name]
   cnt += 1
   puts "Name mismatch -- #{p['name']} != #{params[:name]}"
 end
 
+# Price ok?
 unless p['price'] === params[:price]
   cnt += 1
   puts "Price mismatch -- #{p['price']} != #{params[:price]}"
 end
 
+# Category ok?
 unless p['category'] === params[:category]
   cnt += 1
   puts "Category mismatch -- #{p['category']} != #{params[:category]}"
 end
 
+# Everything match?
 puts cnt > 0 ? 'Failed' : 'Succeeded'
 
 BEGIN {
@@ -216,5 +209,22 @@ BEGIN {
     show_params(params) if show
 
     return params
+  end
+
+  def check_code(response)
+    code = response.code.to_i
+    unless code >= 200 && code < 300
+      puts 'Oops, looks like something went wrong (abort)'
+      if code >= 500
+        puts response.message, response.body
+      end
+      exit
+    end
+  end
+
+  def display_results(response, b)
+    puts "#{response.code}/#{response.message} #{response.headers['server']}"
+    puts ' '
+    puts response.body if b
   end
 }
