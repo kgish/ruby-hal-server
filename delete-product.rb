@@ -10,7 +10,7 @@ url = "http://#{params[:url]}/products/#{params[:id]}"
 puts "DELETE #{url}"
 puts ' '
 
-# Attempt to create new product => POST /products Beer'
+# Attempt to delete the product => DELETE /product/id
 begin
   response = HTTParty.delete(url, :headers => {'Content-type' => 'application/json'})
   rescue Exception => e
@@ -18,18 +18,16 @@ begin
     exit
 end
 
-puts "#{response.code}/#{response.message} #{response.headers['server']}"
-exit
+# Display the results
+display_results(response, false)
 
-unless response.code.to_i >= 200 && response.code.to_i < 300
-  puts 'Oops, looks like something went wrong (abort)'
-  exit
-end
+# Check the return code, if error abort and optionally dump stack trace
+check_code(response)
 
-url = response.headers["location"]
-puts ' '
+# Verify that the product was indeed deleted.
 puts "GET #{url}"
 puts ' '
+
 begin
   response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
 rescue Exception => e
@@ -37,36 +35,10 @@ rescue Exception => e
   exit
 end
 
-unless response.code.to_i >= 200 && response.code.to_i < 300
-  puts 'Oops, looks like something went wrong (abort)'
-  exit
-end
+# Display the results
+display_results(response, false)
 
-puts "#{response.code}/#{response.message} #{response.headers['server']}"
-puts ' '
-puts response.body
-
-# Finally ensure that the properties are identical to what was sent.
-h = JSON.parse response.body
-p = h['product']
-
-cnt = 0
-unless p['name'] === params[:name]
-  cnt += 1
-  puts "Name mismatch -- #{p['name']} != #{params[:name]}"
-end
-
-unless p['price'] === params[:price]
-  cnt += 1
-  puts "Price mismatch -- #{p['price']} != #{params[:price]}"
-end
-
-unless p['category'] === params[:category]
-  cnt += 1
-  puts "Category mismatch -- #{p['category']} != #{params[:category]}"
-end
-
-puts cnt > 0 ? 'Failed' : 'Succeeded'
+puts response.code.to_i == 404 ? 'Succeeded' : 'Failed'
 
 BEGIN {
   require 'getoptlong'
@@ -193,5 +165,22 @@ BEGIN {
     show_params(params) if show
 
     return params
+  end
+
+  def check_code(response)
+    code = response.code.to_i
+    unless code >= 200 && code < 300
+      puts 'Oops, looks like something went wrong (abort)'
+      if code >= 500
+        puts response.message, response.body
+      end
+      exit
+    end
+  end
+
+  def display_results(response, b)
+    puts "#{response.code}/#{response.message} #{response.headers['server']}"
+    puts ' '
+    puts response.body if b
   end
 }
