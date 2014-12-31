@@ -66,7 +66,7 @@ unless p['category'] === params[:category]
 end
 
 # Everything match?
-puts cnt > 0 ? 'Failed' : 'Succeeded'
+puts cnt > 0 ? 'Failed' : 'Success!'
 
 BEGIN {
   require 'getoptlong'

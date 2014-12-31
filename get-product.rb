@@ -7,56 +7,43 @@ puts params
 puts ' '
 
 url = "http://#{params[:url]}/products/#{params[:id]}"
-puts "DELETE #{url}"
+puts "GET #{url}"
 puts ' '
 
-# Attempt to delete the product => DELETE /product/id
+# Attempt to get the product => GET /product/id
 begin
-  response = HTTParty.delete(url, :headers => {'Content-type' => 'application/json'})
+  response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
   rescue Exception => e
     puts e.message
     exit
 end
 
 # Display the results
-display_results(response, false)
-
-# Check the return code, if error abort and optionally dump stack trace
-check_code(response)
-
-# Verify that the product was indeed deleted.
-puts "GET #{url}"
-puts ' '
-
-begin
-  response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
-rescue Exception => e
-  puts e.message
-  exit
+if response.code.to_i == 200
+  display_results(response, true)
+  puts 'Success!'
+else
+  display_results(response, false)
+  puts 'Failed'
 end
-
-# Display the results
-display_results(response, false)
-
-puts response.code.to_i == 404 ? 'Success!' : 'Failed'
 
 BEGIN {
   require 'getoptlong'
 
   def show_usage(message, defaults)
-    puts "delete-product.rb: #{message}" if message
+    puts "get-product.rb: #{message}" if message
     puts <<-EOF
 
   USAGE:
 
-    delete-product [OPTIONS] --id=n
+    get-product [OPTIONS] --id=n
 
   DESCRIPTION:
 
-    Deletes a product with the given id by sending the
+    Find a product with the given id by sending the
     following HTTP request to the given server:
 
-      DELETE /products/id
+      GET /products/id
 
   REQUIRED PARAMETERS:
 
@@ -76,9 +63,9 @@ BEGIN {
 
   EXAMPLES:
 
-    delete-product --id=11
-    delete-product --id=64 --auth=kiffin:pindakaas
-    delete-product --id=3 --url=www.example.com:8080
+    get-product --id=11
+    get-product --id=64 --auth=kiffin:pindakaas
+    get-product --id=3 --url=www.example.com:8080
 
     EOF
     exit 0

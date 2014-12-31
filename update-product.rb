@@ -73,7 +73,7 @@ unless p['category'] === params[:category]
   puts "Category mismatch -- #{p['category']} != #{params[:category]}"
 end
 
-puts cnt > 0 ? 'Failed' : 'Succeeded'
+puts cnt > 0 ? 'Failed' : 'Success!'
 
 BEGIN {
   require 'getoptlong'

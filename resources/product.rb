@@ -7,13 +7,11 @@ class ProductResource < Resource
   let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
 #  let(:create_path) { "/products/#{create_resource.id}" }
   let(:to_json) { resource_or_collection.to_json }
-#  let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: request.path_info[:id] ] }
 
   def resource_exists?
     if (!request.path_info.has_key?(:id))
       res = true
     else
-      #@resource = $products.find{|a| a.id == request.path_info[:id].to_i - 1}
       @resource = Product.find(request.path_info[:id])
       res = !@resource.nil?
     end
@@ -23,7 +21,6 @@ class ProductResource < Resource
 
   def delete_resource
     puts 'ProductResource: delete_resource'
-    #$products.delete_at(request.path_info[:id].to_i - 1)
     Product.delete(request.path_info[:id])
     true
   end
@@ -48,7 +45,8 @@ class ProductResource < Resource
   def resource
     puts 'ProductResource: resource'
     #@resource ||= Product[id: request.path_info[:id]]
-    @resource ||= $products[request.path_info[:id].to_i - 1]
+    #@resource ||= $products[request.path_info[:id].to_i - 1]
+    @resource ||= Product.find(request.path_info[:id])
   end
 
   def collection
