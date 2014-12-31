@@ -35,6 +35,9 @@ catch :ctrl_c do
       puts "#{total} | #{host} | #{port} | #{resource} | #{server} | #{response.code} | #{response.message}"
       puts ' '
 
+      # If forbidden then makes no sense to continue any longer.
+      exit if response.code.to_i == 401
+
       h = JSON.parse response.body
 
       cnt = 0
