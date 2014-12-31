@@ -53,7 +53,6 @@ class ProductResource < Resource
 
   def collection
     puts 'ProductResource: collection'
-    #@collection ||= Product.all
     @collection ||= Product.all
   end
 
