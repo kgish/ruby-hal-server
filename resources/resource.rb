@@ -14,7 +14,7 @@ class Resource < Webmachine::Resource
   let(:from_json) { JSON.parse(request.body.to_s)['data'] }
 
   def is_authorized?(auth)
-    puts "Resource: is_authorized? => cookies:#{request.cookies.inspect}"
+    puts "Resource[#{request.method}]:: is_authorized? => cookies:#{request.cookies.inspect}"
     true
   end
 

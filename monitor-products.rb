@@ -42,7 +42,7 @@ catch :ctrl_c do
 
       cnt = 0
       # Sort products by id
-      products = h['products'].sort_by { |item| item['id']}
+      products = h['products'].sort_by { |item| item['product']['id'].to_i}
       products.each do |key|
         if cnt == 0
           puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price'
@@ -53,7 +53,7 @@ catch :ctrl_c do
         puts cnt.to_s.ljust(5)+p['id'].to_s.ljust(5)+p['name'].ljust(16)+p['category'].ljust(16)+p['price'].to_s
       end
     else
-      puts error_message
+      puts error_message #  Connection refused - connect(2)
       puts countdown == RETRY_COUNT ? 'Oops!' : "Retry (#{countdown})"
     end
     puts ' '
