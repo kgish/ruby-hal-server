@@ -6,6 +6,15 @@ class Product < Model
   property :category
   property :price
 
+  def self.create
+    product = Product.from_attributes(:id => $next_product_id)
+    loop do
+      $next_product_id += 1
+      break unless find($next_product_id)
+    end
+    product
+  end
+
   def self.find(id)
     $products.find{|a| a.id.to_i === id.to_i}
   end

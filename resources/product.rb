@@ -14,11 +14,11 @@ class ProductResource < Resource
   end
 
   def resource_exists?
-    if !request.path_info.has_key?(:id)
-      result = true
-    else
+    if request.path_info.has_key?(:id)
       @resource = Product.find(id)
       result = !@resource.nil?
+    else
+      result = true
     end
     puts "ProductResource[#{request.method}]: resource_exists => #{result}"
     result
@@ -30,10 +30,11 @@ class ProductResource < Resource
   end
 
   def create_path
-    puts "ProductResource[#{request.method}]: create_path id = #{$next_product_id}"
-    @resource = Product.from_attributes(:id => $next_product_id); $next_product_id += 1
+    @resource = Product.create
     @resource.to_json
-    @resource.links[:self]
+    path = @resource.links[:self]
+    puts "ProductResource[#{request.method}]: create_path => ${path}"
+    path
   end
 
   def resource
@@ -59,6 +60,7 @@ class ProductResource < Resource
   def from_json
     puts "ProductResource[#{request.method}]: from_json"
     if request.method === 'PUT'
+      # TODO 201 Created if new product with new id
       delete_resource if @resource
       attributes = params
       attributes['id'] = id
