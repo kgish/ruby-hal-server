@@ -52,6 +52,8 @@ catch :ctrl_c do
         cnt += 1
         puts cnt.to_s.ljust(5)+p['id'].to_s.ljust(5)+p['name'].ljust(16)+p['category'].ljust(16)+p['price'].to_s
       end
+
+      puts 'No products' if cnt == 0
     else
       puts error_message #  Connection refused - connect(2)
       puts countdown == RETRY_COUNT ? 'Oops!' : "Retry (#{countdown})"
