@@ -18,5 +18,14 @@ class Resource < Webmachine::Resource
     true
   end
 
+  def finish_request
+    # This method is called just before the final response is
+    # constructed and sent. The return value is ignored, so any effect
+    # of this method must be by modifying the response.
+
+    # Enable simple cross-origin resource sharing (CORS)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept'
+  end
 end
 

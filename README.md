@@ -80,7 +80,8 @@ You should then see something like this:
 
 ## Thanks
 
-A special thanks goes to [Sean Cribs](https://github.com/seancribbs) and the other kind folks at [webmachine-ruby github](https://github.com/seancribbs/webmachine-ruby) who answered my bothersome
+A special thanks goes to [Sean Cribs](https://github.com/seancribbs), [Asmod4n](https://github.com/Asmod4n) and the
+other kind folks at [webmachine-ruby github](https://github.com/seancribbs/webmachine-ruby) who answered my many
 questions and helped me out alot.
 
 ## References
@@ -93,6 +94,7 @@ Here is a list of various references that helped me very much:
 * [Pact Broker](https://github.com/bethesque/pact_broker)
 * [HyperResource](https://github.com/gamache/hyperresource)
 * [HTTP 1.1 Headers Status](http://upload.wikimedia.org/wikipedia/commons/8/88/Http-headers-status.png)
+* [Webmachine: A Practical Executable Model for HTTP](http://www.infoq.com/presentations/Webmachine-A-Practical-Executable-Model-for-HTTP)
 
 ## Author
 

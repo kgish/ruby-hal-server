@@ -4,7 +4,10 @@ require 'json'
 
 class SessionResource < Resource
 
-  
+  def allowed_methods
+    %w{GET POST PUT DELETE}
+  end
+
   def resource_exists?
     if request.path_info.has_key?(:id)
       self.user = User.find(:id => request.path_info[:id]) 
