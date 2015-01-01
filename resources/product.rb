@@ -60,8 +60,10 @@ class ProductResource < Resource
   def from_json
     puts "ProductResource[#{request.method}]: from_json"
     if request.method === 'PUT'
-      # TODO 201 Created if new product with new id
-      delete_resource if @resource
+      if @resource
+        delete_resource
+        # TODO response.code = 201
+      end
       attributes = params
       attributes['id'] = id
       new_product = Product.from_attributes(attributes)
