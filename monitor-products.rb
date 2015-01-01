@@ -41,7 +41,9 @@ catch :ctrl_c do
       h = JSON.parse response.body
 
       cnt = 0
-      h['products'].each do |key|
+      # Sort products by id
+      products = h['products'].sort_by { |item| item['id']}
+      products.each do |key|
         if cnt == 0
           puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price'
           puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----------'
