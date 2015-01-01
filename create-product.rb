@@ -26,6 +26,10 @@ check_code(response)
 
 # Verify that the new product was indeed created.
 url = response.headers['location']
+if url.nil?
+  puts 'Oops, no location!'
+  exit
+end
 puts "GET #{url}"
 puts ' '
 

@@ -4,18 +4,24 @@ require 'json'
 
 class ProductResource < Resource
 
-  let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
-  let(:to_json) { resource_or_collection.to_json }
+  def allowed_methods
+    puts "ProductResource[#{request.method}]: allowed_methods"
+    if request.path_info.has_key?(:id)
+      %w{GET PUT DELETE OPTIONS}
+    else
+      %w{GET POST OPTIONS}
+    end
+  end
 
   def resource_exists?
-    if (!request.path_info.has_key?(:id))
-      res = true
+    if !request.path_info.has_key?(:id)
+      result = true
     else
       @resource = Product.find(id)
-      res = !@resource.nil?
+      result = !@resource.nil?
     end
-    puts "ProductResource[#{request.method}]: resource_exists => #{res}"
-    res
+    puts "ProductResource[#{request.method}]: resource_exists => #{result}"
+    result
   end
 
   def delete_resource
@@ -45,19 +51,18 @@ class ProductResource < Resource
     @resource || {:products => collection.map(&:to_hash)}
   end
 
+  def to_json
+    puts "ProductResource[#{request.method}]: to_json"
+    resource_or_collection.to_json
+  end
+
   def from_json
     puts "ProductResource[#{request.method}]: from_json"
     if request.method === 'PUT'
-      # Replace the entire resource, not merge the attributes! That's what PATCH is for.
-      # order.destroy if order
-      # new_order = Order.new(params)
-      # new_order.save(id)
-      # response.body = new_order.to_jsoo
-      #response.body = @resource.to_json
       delete_resource if @resource
       attributes = params
       attributes['id'] = id
-      new_product = Product.from_attributes(attributes);
+      new_product = Product.from_attributes(attributes)
       $products << new_product
       response.body = new_product.to_json
     else

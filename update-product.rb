@@ -18,18 +18,12 @@ begin
     exit
 end
 
-puts "#{response.code}/#{response.message} #{response.headers['server']}"
+# Display the results
+display_results(response, true)
 
-code = response.code.to_i
-unless code >= 200 && code < 300
-  puts 'Oops, looks like something went wrong (abort)'
-  if code >= 500
-    puts response.message, response.body
-  end
-  exit
-end
+# Check the return code, if error abort and optionally dump stack trace
+check_code(response)
 
-url = response.headers['location']
 puts ' '
 puts "GET #{url}"
 puts ' '
@@ -40,18 +34,11 @@ rescue Exception => e
   exit
 end
 
-code = response.code.to_i
-unless code >= 200 && code < 300
-  puts 'Oops, looks like something went wrong (abort)'
-  if code >= 500
-    puts response.message, response.body
-  end
-  exit
-end
+# Display the results
+display_results(response, true)
 
-puts "#{response.code}/#{response.message} #{response.headers['server']}"
-puts ' '
-puts response.body
+# Check the return code, if error abort and optionally dump stack trace
+check_code(response)
 
 # Finally ensure that the properties are identical to what was sent.
 h = JSON.parse response.body
@@ -231,5 +218,22 @@ BEGIN {
     show_params(params) if show
 
     return params
+  end
+
+  def check_code(response)
+    code = response.code.to_i
+    unless code >= 200 && code < 300
+      puts 'Oops, looks like something went wrong (abort)'
+      if code >= 500
+        puts response.message, response.body
+      end
+      exit
+    end
+  end
+
+  def display_results(response, b)
+    puts "#{response.code}/#{response.message} #{response.headers['server']}"
+    puts ' '
+    puts response.body if b
   end
 }
