@@ -11,19 +11,17 @@ class Resource < Webmachine::Resource
   let(:content_types_accepted) { [['application/json', :from_json]] }
   let(:post_is_create?) { true }
   let(:allow_missing_post?) { true }
+  # TODO the following is incorrect
   let(:from_json) { JSON.parse(request.body.to_s)['data'] }
 
   def is_authorized?(auth)
-    puts "Resources::Resource[#{request.method}] is_authorized? => cookies:#{request.cookies.inspect}"
-    # parsed_body = 'EMPTY!'
-    # parsed_body = JSON.parse(request.body.to_s) unless request.body.to_s.empty?
-    # puts "Resource::[#{request.method}] body => #{parsed_body}"
+    puts "Resources::Resource[#{request.method}] is_authorized? => true"
     true
   end
 
   def valid_content_headers?(content_headers = nil)
-    puts "Resources::Resource[#{request.method}] content_headers?"
-    puts content_headers.inspect unless content_headers.nil?
+    ch = content_headers || {}
+    puts "Resources::Resource[#{request.method}] content_headers? #{ch.inspect}"
     true
   end
 
@@ -35,7 +33,8 @@ class Resource < Webmachine::Resource
 
     # Enable simple cross-origin resource sharing (CORS)
     response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   end
 end
 

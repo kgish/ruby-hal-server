@@ -22,6 +22,7 @@ DB.create_table :users do
   String      :username
   String      :email
   String      :password
+  String      :token
   Boolean     :is_admin
   Date        :login_date
 end

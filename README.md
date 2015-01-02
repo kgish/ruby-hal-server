@@ -80,9 +80,9 @@ You should then see something like this:
 
 ## Thanks
 
-A special thanks goes to [Sean Cribs](https://github.com/seancribbs), [Asmod4n](https://github.com/Asmod4n) and the
-other kind folks at [webmachine-ruby github](https://github.com/seancribbs/webmachine-ruby) who answered my many
-questions and helped me out alot.
+A special thanks goes to [Sean Cribs](https://github.com/seancribbs), [Asmod4n](https://github.com/Asmod4n),
+[Beth](https://github.com/bethesque) and the other kind folks at [webmachine-ruby](https://github.com/seancribbs/webmachine-ruby)
+who answered my many questions and helped me out alot.
 
 ## References
 
@@ -93,6 +93,7 @@ Here is a list of various references that helped me very much:
 * [Webmachine Loves Roar](https://github.com/apotonick/webmachinelovesroar)
 * [Pact Broker](https://github.com/bethesque/pact_broker)
 * [HyperResource](https://github.com/gamache/hyperresource)
+* [Aptible::Auth](https://github.com/aptible/aptible-auth-ruby)
 * [HTTP 1.1 Headers Status](http://upload.wikimedia.org/wikipedia/commons/8/88/Http-headers-status.png)
 * [Webmachine: A Practical Executable Model for HTTP](http://www.infoq.com/presentations/Webmachine-A-Practical-Executable-Model-for-HTTP)
 

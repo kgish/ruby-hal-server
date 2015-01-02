@@ -8,6 +8,7 @@ gem 'sequel'
 gem 'sqlite3'
 gem 'rake'
 gem 'hyperresource'
+gem 'aptible-auth'
 
 group :development do
   gem 'guard'
