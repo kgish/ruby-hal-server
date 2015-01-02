@@ -14,11 +14,21 @@ class Resource < Webmachine::Resource
   let(:from_json) { JSON.parse(request.body.to_s)['data'] }
 
   def is_authorized?(auth)
-    puts "Resource[#{request.method}]:: is_authorized? => cookies:#{request.cookies.inspect}"
+    puts "Resources::Resource[#{request.method}] is_authorized? => cookies:#{request.cookies.inspect}"
+    # parsed_body = 'EMPTY!'
+    # parsed_body = JSON.parse(request.body.to_s) unless request.body.to_s.empty?
+    # puts "Resource::[#{request.method}] body => #{parsed_body}"
+    true
+  end
+
+  def valid_content_headers?(content_headers = nil)
+    puts "Resources::Resource[#{request.method}] content_headers?"
+    puts content_headers.inspect unless content_headers.nil?
     true
   end
 
   def finish_request
+    puts "Resources::Resource[#{request.method}] finish_request"
     # This method is called just before the final response is
     # constructed and sent. The return value is ignored, so any effect
     # of this method must be by modifying the response.

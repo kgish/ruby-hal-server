@@ -6,8 +6,13 @@ gem 'httparty'
 gem 'json'
 gem 'sequel'
 gem 'sqlite3'
-
 gem 'rake'
+gem 'hyperresource'
+
+group :development do
+  gem 'guard'
+  gem 'guard-livereload', require: false
+end
 
 group :test do
   gem 'rspec'

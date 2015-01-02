@@ -5,7 +5,7 @@ require 'json'
 class ProductResource < Resource
 
   def allowed_methods
-    puts "ProductResource[#{request.method}]: allowed_methods"
+    puts "Resource::Product[#{request.method}] allowed_methods"
     if request.path_info.has_key?(:id)
       %w{GET PUT DELETE OPTIONS}
     else
@@ -20,12 +20,12 @@ class ProductResource < Resource
     else
       result = true
     end
-    puts "ProductResource[#{request.method}]: resource_exists => #{result}"
+    puts "Resource::Product[#{request.method}] resource_exists => #{result}"
     result
   end
 
   def delete_resource
-    puts "ProductResource[#{request.method}]: delete_resource"
+    puts "Resource::Product[#{request.method}] delete_resource"
     Product.delete(id)
   end
 
@@ -33,32 +33,32 @@ class ProductResource < Resource
     @resource = Product.create
     @resource.to_json
     path = @resource.links[:self]
-    puts "ProductResource[#{request.method}]: create_path => ${path}"
+    puts "Resource::Product[#{request.method}] create_path => ${path}"
     path
   end
 
   def resource
-    puts "ProductResource[#{request.method}]: resource"
+    puts "Resource::Product[#{request.method}] resource"
     @resource ||= Product.find(id)
   end
 
   def collection
-    puts "ProductResource[#{request.method}]: collection"
+    puts "Resource::Product[#{request.method}] collection"
     @collection ||= Product.all
   end
 
   def resource_or_collection
-    puts "ProductResource[#{request.method}]: resource_or_collection"
+    puts "Resource::Product[#{request.method}] resource_or_collection"
     @resource || {:products => collection.map(&:to_hash)}
   end
 
   def to_json
-    puts "ProductResource[#{request.method}]: to_json"
+    puts "Resource::Product[#{request.method}] to_json"
     resource_or_collection.to_json
   end
 
   def from_json
-    puts "ProductResource[#{request.method}]: from_json"
+    puts "Resource::Product[#{request.method}] from_json"
     if request.method === 'PUT'
       if @resource
         delete_resource
@@ -76,12 +76,12 @@ class ProductResource < Resource
 
   def params
     params = JSON.parse(request.body.to_s).to_hash['product']
-    puts "ProductResource[#{request.method}]: params => #{params}"
+    puts "Resource::Product[#{request.method}] params => #{params}"
     params
   end
 
   def id
-    puts "ProductResource[#{request.method}]: id"
+    puts "Resource::Product[#{request.method}] id"
     request.path_info[:id]
   end
 

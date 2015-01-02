@@ -12,36 +12,54 @@ class Sequel::Model
   end
 end
 
-# connect to an in-memory database
+# Connect to an in-memory database
 DB = Sequel.sqlite
 
-# create a products table
-DB.create_table :products do
+# Create a Users table
+DB.create_table :users do
   primary_key :id
-  String :name
-  String :category
-  Integer :price
+  String      :name
+  String      :username
+  String      :email
+  String      :password
+  Boolean     :is_admin
+  Date        :login_date
 end
 
-# create a dataset from the items table
-products = DB[:products]
+# Create a dataset from the Users table
+users = DB[:users]
 
-# populate the table
+# Populate the Users table.
 
-names = %w{kiffin rabbit shoes george apple suitcase audi horse maserati pizza beer soap bathtub jupiter dragon dime}
-categories = %w{person animal clothing fruit object car food drink unknown book gem thingie}
+# kiffin => admin
+users.insert(
+  :name       => 'Kiffin Gish',
+  :username   => 'kiffin',
+  :email      => 'kiffin.gish@planet.nl',
+  :password   => 'pindakaas',
+  :is_admin   => true,
+  :login_date => nil
+)
 
-10.times { products.insert(:name => names.sample, :category => categories.sample, :price => rand * 10000) }
+# henri => NOT admin
+users.insert(
+  :name       => 'Henri Bergson',
+  :username   => 'henri',
+  :email      => 'henri.bergson@planet.nl',
+  :password   => 'escargot',
+  :is_admin   => false,
+  :login_date => nil)
 
-puts "Created #{products.count} products"
-
-if products.count
+if users.count
   cnt = 0
-  puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price '
-  puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----- '
-  products.each do |p|
+  puts ' '
+  puts 'USERS'
+  puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'username  '.ljust(11)+'email                   '.ljust(26)+'password '.ljust(16)+'admin'
+  puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'----------'.ljust(11)+'------------------------'.ljust(26)+'---------'.ljust(16)+'-----'
+  users.each do |u|
     cnt += 1
-    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p[:category].ljust(16)+p[:price].to_s
+    admin = u[:is_admin] ? 'yes' : 'no'
+    puts cnt.to_s.ljust(5)+u[:id].to_s.ljust(5)+u[:name].ljust(16)+u[:username].ljust(11)+u[:email].ljust(26)+u[:password].ljust(16)+admin
   end
 end
 
@@ -50,16 +68,39 @@ require 'roar/representer/json'
 require 'roar/representer/feature/hypermedia'
 require 'webmachine'
 
-#require 'resources/session'
-#require 'resources/user'
 require 'resources/product'
+require 'resources/session'
+require 'resources/user'
+
+# require 'time'
+# require 'logger'
+#
+# class LogListener
+#   def call(*args)
+#     handle_event(Webmachine::Events::InstrumentedEvent.new(*args))
+#   end
+#
+#   def handle_event(event)
+#     request = event.payload[:request]
+#     resource = event.payload[:resource]
+#     code = event.payload[:code]
+#
+#     puts '[%s] method=%s uri=%s code=%d resource=%s time=%.4f' % [
+#       Time.now.iso8601, request.method, request.uri.to_s, code, resource,
+#       event.duration
+#     ]
+#   end
+# end
+
+# Webmachine::Events.subscribe('wm.dispatch', LogListener.new)
 
 begin
   Webmachine.routes do
     add ['products'], ProductResource
     add ['products', :id], ProductResource
-#    add ['sessions', '*'], SessionResource
-#    add ['users'], UserResource
+    add ['session', '*'], SessionResource
+    add ['users'], UserResource
+#    add ['trace', '*'], Webmachine::Trace::TraceResource
   end.run
 rescue Exception => e
   puts e.message
