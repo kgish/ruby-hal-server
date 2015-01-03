@@ -19,22 +19,25 @@ $users = DB[:users]
 
 # kiffin => admin
 $users.insert(
-    :name       => 'Kiffin Gish',
-    :username   => 'kiffin',
-    :email      => 'kiffin.gish@planet.nl',
-    :password   => 'pindakaas',
-    :is_admin   => true,
-    :login_date => nil
+    :name         => 'Kiffin Gish',
+    :username     => 'kiffin',
+    :email        => 'kiffin.gish@planet.nl',
+    :password     => 'pindakaas',
+    :access_token => '',
+    :is_admin     => true,
+    :login_date   => Time.at(rand * Time.now.to_i)
 )
 
 # henri => NOT admin
 $users.insert(
-    :name       => 'Henri Bergson',
-    :username   => 'henri',
-    :email      => 'henri.bergson@planet.nl',
-    :password   => 'escargot',
-    :is_admin   => false,
-    :login_date => nil)
+    :name         => 'Henri Bergson',
+    :username     => 'henri',
+    :email        => 'henri.bergson@planet.nl',
+    :password     => 'escargot',
+    :access_token => '',
+    :is_admin     => false,
+    :login_date   => Time.at(rand * Time.now.to_i)
+)
 
 if $users.count
   cnt = 0
