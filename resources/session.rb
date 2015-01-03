@@ -2,7 +2,8 @@ require 'resources/resource'
 require 'models/user'
 require 'json'
 
-require 'digest/md5'
+# For the secure authentication token
+require 'securerandom'
 
 class SessionResource < Resource
 
@@ -72,25 +73,27 @@ class SessionResource < Resource
     if pb.nil?
       puts "Resource::Session[#{request.method}]: parsed_body = nil"
       res = 401
-    elsif pb['username_or_email'].empty?
-      puts "Resource::Session[#{request.method}]: username_or_email = empty"
+    elsif pb['username_or_email'].nil?
+      puts "Resource::Session[#{request.method}]: username_or_email = nil"
       res = 401
-    elsif pb['password'].empty?
-      puts "Resource::Session[#{request.method}]: password = empty"
+    elsif pb['password'].nil?
+      puts "Resource::Session[#{request.method}]: password = nil"
       res = 401
     else
       username = pb['username_or_email']
       password = pb['password']
       puts "Resource::Session[#{request.method}]: username=#{username}, password=#{password}"
-      user = User.find(:username => username) || User.find(:email => username)
+      #user = User.find(:username => username) || User.find(:email => username)
+      user = $users.where(:username => username).first || $users.where(:email => username).first
       if user
-        if password == user.password
+        puts "Resource::Session[#{request.method}]: user=#{user.inspect}"
+        if password == user[:password]
           # TODO: set login_date, later ensure now - login_date < 30 mins
-          user.login_date = Time.now
-          user.token =  Digest::MD5.hexdigest("#{username}:#{password}")
+          user.update(:login_date => Time.now)
+          user.update(:access_token => SecureRandom.hex(64))
+          puts "Resource::Session[#{request.method}]: => password OK"
+          response.body =  JSON.generate({:api_key => {:user_id => user[:id], :access_token => user[:access_token]}})
           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password OK"
-          # token: response.api_key.access_token
-          response.body =  JSON.generate({:api_key => {:user_id => user.id, :token => user.token}})
           res = 201
         else
           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password NOK"
