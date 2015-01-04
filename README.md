@@ -78,6 +78,22 @@ You should then see something like this:
     2	3	laptop	500000	computer
     3	4	kiffin	1234	person
 
+### Update a product
+
+Delete a given product (shoes) by running the following command:
+
+    $ bundle exec ruby update-product.rb --id=1 --name=pizza --price=495 --category=discount
+
+You should then see something like this:
+
+    123 | 0.0.0.0 | 8080 | products | Webmachine-Ruby/0.3.0 WEBrick/1.3.1 | 200 | OK
+
+    #	id	name	price	category
+    -	--	----	-----	--------
+    1	1	pizza	495	    discount
+    2	3	laptop	500000	computer
+    3	4	kiffin	1234	person
+
 ## Thanks
 
 A special thanks goes to [Sean Cribs](https://github.com/seancribbs), [Asmod4n](https://github.com/Asmod4n),
