@@ -1,5 +1,9 @@
+require 'webmachine'
 require 'roar/json/hal'
 require 'sequel'
+
+
+# --- Model --- #
 
 # class Sequel::Model
 #   def attributes_equal_to(attrs)
@@ -41,11 +45,17 @@ products = DB[:products]
 class Product < Sequel::Model
   include Roar::JSON::HAL
 
+  HASH_ATTRS = [:id, :name]
+
   property :id
   property :name
 
   link :self do
     "/products/#{id}"
+  end
+
+  def to_hash
+    HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}
   end
 
 end
@@ -89,5 +99,139 @@ if products.count
   puts ' '
 end
 
+# --- Resources --- #
 
+class BaseResource < Webmachine::Resource
+  class << self
+    alias_method :let, :define_method
+  end
 
+  let(:trace?) { true }
+  let(:content_types_provided) { [['application/json', :to_json], ['text/html', :to_html]] }
+  let(:content_types_accepted) { [['application/json', :from_json]] }
+  let(:post_is_create?) { true }
+  let(:allow_missing_post?) { true }
+  let(:from_json) { JSON.parse(request.body.to_s)['data'] }
+
+  def finish_request
+    puts "Resources::Base[#{request.method}] finish_request"
+    # This method is called just before the final response is
+    # constructed and sent. The return value is ignored, so any effect
+    # of this method must be by modifying the response.
+
+    # Enable simple cross-origin resource sharing (CORS)
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  end
+end
+
+class RootResource < BaseResource
+  def to_json
+    root_response.to_json
+  end
+
+  def to_html
+    "<pre>#{root_response}</pre>"
+  end
+
+  private
+
+  def root_response
+    <<-ROOT_RESPONSE
+{
+  '_links': {
+    'self': {
+      'href': '/'
+    },
+    'curies': [
+      {
+        'name': 'ht',
+        'href': 'http://127.0.0.1:8080/rels/{rel}',
+        'templated': true
+      }
+    ],
+    'ht:products': {
+      'href': '/products'
+    }
+  },
+  'welcome': 'Welcome to the Demo HAL Server.',
+  'hint_1': 'This is the first hint.',
+  'hint_2': 'This is the second hint.',
+  'hint_3': 'This is the third hint.',
+  'hint_4': 'This is the fourth hint.',
+  'hint_5': 'This is the last hint.'
+}
+    ROOT_RESPONSE
+  end
+end
+
+class ProductResource < BaseResource
+  def allowed_methods
+    %w{ GET }
+  end
+
+  def resource_exists?
+    product
+  end
+
+  def to_json
+    product.to_hash
+  end
+
+  private
+
+  def product
+    @product ||= Product.new(params)
+  end
+
+  def id
+    request.path_info[:id]
+  end
+
+end
+
+# --- Logger --- #
+
+require 'time'
+require 'logger'
+
+class LogListener
+  def call(*args)
+    handle_event(Webmachine::Events::InstrumentedEvent.new(*args))
+  end
+
+  def handle_event(event)
+    request = event.payload[:request]
+    resource = event.payload[:resource]
+    code = event.payload[:code]
+
+    puts '[%s] method=%s uri=%s code=%d resource=%s time=%.4f' % [
+      Time.now.iso8601, request.method, request.uri.to_s, code, resource,
+      event.duration
+    ]
+  end
+end
+
+# --- Application --- #
+
+Webmachine::Events.subscribe('wm.dispatch', LogListener.new)
+
+App = Webmachine::Application.new do |app|
+  app.configure do |config|
+    config.adapter = :WEBrick
+    config.ip = '127.0.0.1'
+    config.port = 8080
+    config.adapter = :WEBrick
+  end
+
+  app.routes do
+    add [], RootResource
+    add ['products'], ProductResource
+    add ['products', :id], ProductResource
+    add ['trace', :*], Webmachine::Trace::TraceResource
+  end
+
+end
+
+App.run

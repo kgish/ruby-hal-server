@@ -49,6 +49,7 @@ require 'resources/user'
 
 begin
   Webmachine.routes do
+    add [''], RootResource
     add ['products'], ProductResource
     add ['products', :id], ProductResource
     add ['session', '*'], SessionResource
