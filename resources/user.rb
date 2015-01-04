@@ -4,25 +4,32 @@ require 'json'
 
 class UserResource < Resource
 
-  let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
   let(:create_path) { "/users/#{create_resource.id}" }
-  let(:as_json) { resource_or_collection.to_json }
+  let(:to_json) { resource_or_collection.to_json }
   # let(:resource_exists?) { !request.path_info.has_key?(:id) || !!User[id: request.path_info[:id] ] }
+
+
+  def allowed_methods
+    puts "Resource::User[#{request.method}] allowed_methods"
+    if request.path_info.has_key?(:id)
+      %w{GET PUT DELETE OPTIONS}
+    else
+      %w{GET POST OPTIONS}
+    end
+  end
 
   def is_authorized?(header=nil)
     puts "Resource::User[#{request.method}] is_authorized?(header=#{header.inspect})"
-    cookies = request.cookies
-    puts "Resource::User[#{request.method}] is_authorized? cookies=#{cookies.inspect}"
-    res = true
+    result = true
     # TODO: not secure!
-    # res = false
+    # result = false
     # username = cookies['username']
     # access_token = cookies['access_token']
     # puts "Resource::User[#{request.method}] is_authorized? username=#{username}, access_token=#{access_token}"
     # if username && access_token
     # end
-    puts "Resource::User[#{request.method}] is_authorized? => #{res}"
-    res
+    puts "Resource::User[#{request.method}] is_authorized? => #{result}"
+    result
   end
 
   def resource_exists?
@@ -56,6 +63,7 @@ class UserResource < Resource
 
   def collection
     puts "Resource::User[#{request.method}] collection"
+    # TODO: exclude token and password
     @collection ||= $users.select_all
   end
 

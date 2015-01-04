@@ -23,7 +23,7 @@ $users.insert(
     :username     => 'kiffin',
     :email        => 'kiffin.gish@planet.nl',
     :password     => 'pindakaas',
-    :access_token => '',
+    :access_token => 'none',
     :is_admin     => true,
     :login_date   => Time.at(rand * Time.now.to_i)
 )
@@ -34,7 +34,7 @@ $users.insert(
     :username     => 'henri',
     :email        => 'henri.bergson@planet.nl',
     :password     => 'escargot',
-    :access_token => '',
+    :access_token => 'none',
     :is_admin     => false,
     :login_date   => Time.at(rand * Time.now.to_i)
 )
@@ -53,7 +53,7 @@ if $users.count
 end
 
 class User < Sequel::Model
-  HASH_ATTRS = [:id, :email, :first_name, :last_name]
+  HASH_ATTRS = [:id, :name, :username, :email, :password, :access_token, :is_admin, :login_date]
 
   def to_hash
     HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}

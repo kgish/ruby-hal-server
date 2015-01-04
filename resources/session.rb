@@ -22,9 +22,9 @@ class SessionResource < Resource
       puts "Resource::Session[#{request.method}]: resource_exists? username='#{username}'"
       user = User.find(:username => username) || User.find(:email => username)
     end
-    res = !!user
-    puts "Resource::Session[#{request.method}]: resource_exists? => #{res}"
-    res
+    result = !!user
+    puts "Resource::Session[#{request.method}]: resource_exists? => #{result}"
+    result
   end
 
   def create_path
@@ -72,13 +72,13 @@ class SessionResource < Resource
     pb = parsed_body
     if pb.nil?
       puts "Resource::Session[#{request.method}]: parsed_body = nil"
-      res = 401
+      result = 401
     elsif pb['username_or_email'].nil?
       puts "Resource::Session[#{request.method}]: username_or_email = nil"
-      res = 401
+      result = 401
     elsif pb['password'].nil?
       puts "Resource::Session[#{request.method}]: password = nil"
-      res = 401
+      result = 401
     else
       username = pb['username_or_email']
       password = pb['password']
@@ -94,18 +94,18 @@ class SessionResource < Resource
           puts "Resource::Session[#{request.method}]: => password OK"
           response.body =  JSON.generate({:api_key => {:user_id => user[:id], :access_token => user[:access_token]}})
           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password OK"
-          res = 201
+          result = 201
         else
           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password NOK"
-          res = 401
+          result = 401
         end
       else
         puts "Resource::Session[#{request.method}]: user not found"
-        res = 401
+        result = 401
       end
     end
-    puts "Resource::Session[#{request.method}]: create_session => #{res}"
-    res
+    puts "Resource::Session[#{request.method}]: create_session => #{result}"
+    result
   end
 
   def id

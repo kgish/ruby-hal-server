@@ -13,6 +13,14 @@ class ProductResource < Resource
     end
   end
 
+  def is_authorized?(header=nil)
+    puts "Resource::Product[#{request.method}] is_authorized?(header=#{header.inspect})"
+    result = true
+    puts "Resource::User[#{request.method}] is_authorized? => #{result}"
+    result
+  end
+
+
   def resource_exists?
     if request.path_info.has_key?(:id)
       @resource = Product.find(id)
