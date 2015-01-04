@@ -15,9 +15,10 @@ end
 # Connect to an in-memory database
 DB = Sequel.sqlite
 
+require 'rubygems'
 require 'bundler/setup'
-require 'roar/representer/json'
-require 'roar/representer/feature/hypermedia'
+#Bundler.require(:default)
+require 'roar/json/hal'
 require 'webmachine'
 
 require 'resources/product'

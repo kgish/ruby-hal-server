@@ -1,8 +1,8 @@
-require 'resources/resource'
+require 'resources/base'
 require 'models/product'
 require 'json'
 
-class ProductResource < Resource
+class ProductResource < BaseResource
 
   def allowed_methods
     puts "Resource::Product[#{request.method}] allowed_methods"

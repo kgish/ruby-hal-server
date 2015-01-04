@@ -1,8 +1,8 @@
-require 'resources/resource'
+require 'resources/base'
 require 'models/user'
 require 'json'
 
-class UserResource < Resource
+class UserResource < BaseResource
 
   let(:create_path) { "/users/#{create_resource.id}" }
   let(:to_json) { resource_or_collection.to_json }

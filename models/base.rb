@@ -1,16 +1,11 @@
-#require 'roar/representer/json'
-#require 'roar/representer/feature/hypermedia'
-#require 'sqlite3'
-
-class Model
-  include Roar::Representer::JSON
-  include Roar::Representer::Feature::Hypermedia
+class BaseModel
+  include Roar::JSON::HAL
 
   property :id
 
-#  link :self do
-#    "/#{id}"
-#  end
+  # link :self do
+  #   "/#{id}"
+  # end
 end
 
 # begin

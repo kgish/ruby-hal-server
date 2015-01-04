@@ -1,4 +1,4 @@
-require 'models/model'
+require 'models/base'
 
 # Create a Products table
 DB.create_table :products do
@@ -44,7 +44,7 @@ if products.count
   puts ' '
 end
 
-class Product < Model
+class Product < BaseModel
 
   property :name
   property :category

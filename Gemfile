@@ -1,7 +1,8 @@
 source 'http://rubygems.org'
 
 gem 'webmachine'
-gem 'roar', '~> 0.8.1'
+gem 'roar'
+gem 'representable', '~> 2.1.0'
 gem 'httparty'
 gem 'json'
 gem 'sequel'
