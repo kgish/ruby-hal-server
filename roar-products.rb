@@ -21,39 +21,22 @@ end
 # Create a dataset from the Products table
 products = DB[:products]
 
-# Populate the products table with random items
-names = %w{kiffin henry george thomas robert michael }
-
-5.times do
-  cnt = 0
-  name = nil
-  loop do
-    cnt += 1
-    # name needs to be unique
-    name = names.sample
-    break unless products.first(:name => name) || cnt > 10
-  end
-  products.insert(
-      :name => name
-  )
-end
-
-module ProductRepresenter
-  include Roar::JSON::HAL
-
-  HASH_ATTRS = [:id, :name]
-
-  def to_hash
-    HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}
-  end
-
-  property :id
-  property :name
-
-  link :self do
-    "/products/#{id}"
-  end
-end
+# module ProductRepresenter
+#   include Roar::JSON::HAL
+#
+#   HASH_ATTRS = [:id, :name]
+#
+#   def to_hash
+#     HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}
+#   end
+#
+#   property :id
+#   property :name
+#
+#   link :self do
+#     "/products/#{id}"
+#   end
+# end
 
 class Product < Sequel::Model
   include Roar::JSON::HAL
@@ -67,8 +50,25 @@ class Product < Sequel::Model
 
 end
 
+# Populate the products table with random items
+names = %w{henry george happy thomas robert michael chappy}
+
+5.times do
+  cnt = 0
+  name = nil
+  loop do
+    cnt += 1
+    # name needs to be unique
+    name = names.sample
+    break unless products.first(:name => name) || cnt > 10
+  end
+  # products.insert( :name => name )
+  Product.create( :name => name )
+end
+
 product = Product.create(:name => 'Kiffin')
 
+puts ' '
 puts product.to_json
 
 if products.count
@@ -84,8 +84,10 @@ if products.count
   while cnt < products.count do
     cnt += 1
     p = products[:id => cnt]
-    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)
+    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p.to_json
   end
   puts ' '
 end
+
+
 
