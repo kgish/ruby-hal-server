@@ -25,23 +25,7 @@ end
 # Create a dataset from the Products table
 products = DB[:products]
 
-# module ProductRepresenter
-#   include Roar::JSON::HAL
-#
-#   HASH_ATTRS = [:id, :name]
-#
-#   def to_hash
-#     HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}
-#   end
-#
-#   property :id
-#   property :name
-#
-#   link :self do
-#     "/products/#{id}"
-#   end
-# end
-
+# module ProductRepresenter ????
 class Product < Sequel::Model
   include Roar::JSON::HAL
 
@@ -52,6 +36,10 @@ class Product < Sequel::Model
 
   link :self do
     "/products/#{id}"
+  end
+
+  def self.find(id)
+    self[:id => id]
   end
 
   def to_hash
@@ -126,6 +114,8 @@ class BaseResource < Webmachine::Resource
   end
 end
 
+# --- Root Resource --- #
+
 class RootResource < BaseResource
   def to_json
     root_response.to_json
@@ -166,23 +156,31 @@ class RootResource < BaseResource
   end
 end
 
+# --- Product Resource --- #
+
 class ProductResource < BaseResource
   def allowed_methods
     %w{ GET }
   end
 
   def resource_exists?
-    product
+    @product = Product.find(id)
+    !!@product
   end
 
   def to_json
-    product.to_hash
+    @product.to_json
+  end
+
+  def to_html
+    @product.to_json
   end
 
   private
 
   def product
-    @product ||= Product.new(params)
+    #@product ||= Product.new(params)
+    @product
   end
 
   def id
@@ -213,9 +211,9 @@ class LogListener
   end
 end
 
-# --- Application --- #
-
 Webmachine::Events.subscribe('wm.dispatch', LogListener.new)
+
+# --- Application --- #
 
 App = Webmachine::Application.new do |app|
   app.configure do |config|
