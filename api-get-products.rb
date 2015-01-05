@@ -5,12 +5,16 @@ api = HyperResource.new(
     headers: {'Accept' => 'application/json'}
 )
 
-puts 'api.get'
 begin
-    response = api.get
-rescue Exception => e
-    puts e.message
-    exit
-end
+  puts 'root = api.get'
+  root = api.get
+  puts root.body
 
-puts response
+  puts 'products = api.products'
+  products = api.products
+  puts products
+rescue HyperResource::ResponseError => e
+  puts "HyperResource::ResponseError => #{e.message}"
+rescue Exception => e
+  puts "Exception => #{e.message}"
+end

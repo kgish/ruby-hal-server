@@ -136,7 +136,7 @@ class RootResource < BaseResource
           'href' => '/products'
         }
       },
-      'welcome' => 'Welcome to the Demo HAL Server.',
+      'welcome' => 'Welcome to Kiffin\'s Demo HAL Server.',
       'hint_1' => 'This is the first hint.',
       'hint_2' => 'This is the second hint.',
       'hint_3' => 'This is the third hint.',
@@ -252,11 +252,6 @@ class ProductResource < BaseResource
     @collection ||= Product.all
   end
 
-  # def resource_or_collection
-  #   puts "Resource::Product[#{request.method}] resource_or_collection"
-  #   resource ? resource.to_hash : {:products => collection.map(&:to_hash)}
-  # end
-
   def id
     puts "Resource::Product[#{request.method}] id"
     res = @id ||= request.path_info[:id]
@@ -305,6 +300,7 @@ class ProductResource < BaseResource
     puts "Resource::Product[#{request.method}] response_body_collection"
     # GET /products/[:id]
     product = Product[id: id]
+    # product.to_hash
     resp = {
       '_links' => {
         'self' => {
