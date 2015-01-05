@@ -110,16 +110,16 @@ end
 
 class RootResource < BaseResource
   def as_html
-    JSON.generate(root_resource)
+    JSON.generate(response_body)
   end
 
   def as_json
-    JSON.generate(root_resource)
+    JSON.generate(response_body)
   end
 
   private
 
-  def root_resource
+  def response_body
     @rr ||= {
       '_links' => {
         'self' => {
@@ -148,35 +148,181 @@ class RootResource < BaseResource
 end
 
 # --- Product Resource --- #
+=begin
+
+GET /products
+{
+   '_links' => {
+    'self' => {
+      'href' => '/products'
+    },
+    'curies' => [
+      {
+        'name' => 'ht',
+        'href' => "http://[:host]:[:port]/rels/{rel}",
+        'templated' => true
+      }
+    ],
+    'ht:products' => [
+      {
+        'href' => "/products/[:id]",
+        'name' => [:name],
+        'category => [:category],
+        'price => [:price]
+      },
+      {
+        ...
+      }
+    ]
+  }
+}
+
+GET /products/[:id]
+{
+  '_links' => {
+    'self' => {
+      'href' => "/products/[:id]"
+    },
+    'curies' => [
+      {
+        'name' => 'ht',
+        'href' => "http://[:host]:[:port]/rels/{rel}",
+        'templated' => true
+      }
+    ]
+  },
+  'name' => [:name],
+  'category => [:category],
+  'price => [:price]
+}
+=end
+
 
 class ProductResource < BaseResource
 
-  let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
+  # let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
+  #
+  # let(:create_path) { "/products/#{create_resource.id}" }
+  # let(:as_json) { resource_or_collection.to_json }
+  # let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: id] }
 
-  let(:create_path) { "/products/#{create_resource.id}" }
-  let(:as_json) { resource_or_collection.to_json }
-  let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: id] }
+  def allowed_methods
+    puts "Resource::Product[#{request.method}] allowed_methods"
+    %w{GET POST PUT DELETE OPTIONS}
+  end
+
+  def create_path
+    puts "Resource::Product[#{request.method}] create_path"
+    res = "/products/#{create_resource.id}"
+    puts "Resource::Product[#{request.method}] create_path => #{res}"
+    res
+  end
+
+  def resource_exists?
+    puts "Resource::Product[#{request.method}] resource_exists?"
+    res = !request.path_info.has_key?(:id) || !!Product[id: id]
+    puts "Resource::Product[#{request.method}] resource_exists? => #{res}"
+    res
+  end
+
+  def as_html
+    puts "Resource::Product[#{request.method}] as_html"
+    JSON.generate(response_body)
+  end
+
+  def as_json
+    puts "Resource::Product[#{request.method}] as_json"
+    JSON.generate(response_body)
+  end
 
   protected
 
   def create_resource
+    puts "Resource::Product[#{request.method}] create_resource"
     @resource = Product.create(from_json)
   end
 
   def resource
+    puts "Resource::Product[#{request.method}] resource"
     @resource ||= Product[id: id]
   end
 
   def collection
+    puts "Resource::Product[#{request.method}] collection"
     @collection ||= Product.all
   end
 
-  def resource_or_collection
-    resource ? resource.to_hash : {:products => collection.map(&:to_hash)}
-  end
+  # def resource_or_collection
+  #   puts "Resource::Product[#{request.method}] resource_or_collection"
+  #   resource ? resource.to_hash : {:products => collection.map(&:to_hash)}
+  # end
 
   def id
-    request.path_info[:id]
+    puts "Resource::Product[#{request.method}] id"
+    res = @id ||= request.path_info[:id]
+    puts "Resource::Product[#{request.method}] id => #{res}"
+    res
+  end
+
+  def response_body
+    puts "Resource::Product[#{request.method}] response_body"
+    @id ? response_body_resource : response_body_collection
+  end
+
+  def response_body_collection
+    puts "Resource::Product[#{request.method}] response_body_collection"
+    # GET /products
+    products = Product.all
+    resp = {
+      '_links' => {
+        'self' => {
+          'href' => '/products'
+        },
+        'curies' => [
+          {
+            'name' => 'ht',
+            'href' => 'http://127.0.0.1:8080/rels/{rel}',
+            'templated' => true
+          }
+        ],
+#        'ht:products' => []
+      }
+    }
+    prod_list = []
+    products.each do |item|
+      prod_list.push({
+          'href' => "/products/#{item[:id]}",
+          'name' => item[:name],
+          'category' => item[:category],
+          'price' => item[:price]
+      })
+      resp['ht:products'] = prod_list
+    end
+    resp
+  end
+
+  def response_body_resource
+    puts "Resource::Product[#{request.method}] response_body_collection"
+    # GET /products/[:id]
+    product = Product[id: id]
+    resp = {
+      '_links' => {
+        'self' => {
+          'href' => "/products/#{id}"
+        },
+        'curies' => [
+          {
+            'name' => 'ht',
+            'href' => 'http://127.0.0.1:8080/rels/{rel}',
+            'templated' => true
+          }
+        ]
+      },
+      'name' => product[:name],
+      'category' => product[:category],
+      'price' => product[:price]
+    }
+    resp
   end
 
 end
