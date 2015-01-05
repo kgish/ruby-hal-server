@@ -128,7 +128,7 @@ class RootResource < BaseResource
         'curies' => [
           {
             'name' => 'ht',
-            'href' => 'http://127.0.0.1:8080/rels/{rel}',
+            'href' => "http://#{request.host}:#{request.port}/rels/{rel}",
             'templated' => true
           }
         ],
@@ -167,8 +167,8 @@ GET /products
       {
         'href' => "/products/[:id]",
         'name' => [:name],
-        'category => [:category],
-        'price => [:price]
+        'category' => [:category],
+        'price' => [:price]
       },
       {
         ...
@@ -281,7 +281,7 @@ class ProductResource < BaseResource
         'curies' => [
           {
             'name' => 'ht',
-            'href' => 'http://127.0.0.1:8080/rels/{rel}',
+            'href' => "http://#{request.host}:#{request.port}/rels/{rel}",
             'templated' => true
           }
         ],
@@ -313,7 +313,7 @@ class ProductResource < BaseResource
         'curies' => [
           {
             'name' => 'ht',
-            'href' => 'http://127.0.0.1:8080/rels/{rel}',
+            'href' => "http://#{request.host}:#{request.port}/rels/{rel}",
             'templated' => true
           }
         ]
