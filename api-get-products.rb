@@ -6,9 +6,11 @@ api = HyperResource.new(
 )
 
 puts 'api.get'
-response = api.get
-puts "#{response.inspect}"
-puts ' '
-puts 'api.products'
-response = api.products
-puts "#{response.inspect}"
+begin
+    response = api.get
+rescue Exception => e
+    puts e.message
+    exit
+end
+
+puts response

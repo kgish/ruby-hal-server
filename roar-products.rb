@@ -20,6 +20,8 @@ DB = Sequel.sqlite
 DB.create_table :products do
   primary_key :id
   String      :name
+  String      :category
+  Integer     :price
 end
 
 # Create a dataset from the Products table
@@ -29,17 +31,15 @@ products = DB[:products]
 class Product < Sequel::Model
   include Roar::JSON::HAL
 
-  HASH_ATTRS = [:id, :name]
+  HASH_ATTRS = [:id, :name, :category, :price]
 
   property :id
   property :name
+  property :category
+  property :price
 
   link :self do
     "/products/#{id}"
-  end
-
-  def self.find(id)
-    self[:id => id]
   end
 
   def to_hash
@@ -47,11 +47,11 @@ class Product < Sequel::Model
   end
 
 end
-
 # Populate the products table with random items
-names = %w{henry george happy thomas robert michael chappy}
+names = %w{kiffin rabbit shoes george apple suitcase audi horse maserati pizza beer soap bathtub jupiter dragon dime}
+categories = %w{person animal clothing fruit object car food drink unknown book gem thingie}
 
-5.times do
+9.times do
   cnt = 0
   name = nil
   loop do
@@ -60,42 +60,34 @@ names = %w{henry george happy thomas robert michael chappy}
     name = names.sample
     break unless products.first(:name => name) || cnt > 10
   end
-  # products.insert( :name => name )
-  Product.create( :name => name )
+  products.insert(
+    :name     => name,
+    :category => categories.sample,
+    :price    => rand * 10000
+  )
 end
-
-product = Product.create(:name => 'Kiffin')
-
-puts ' '
-puts product.to_json
 
 if products.count
   cnt = 0
-  puts ' '
   puts 'PRODUCTS'
-  puts '#   '.ljust(5)+'id  '.ljust(5)+'name       '
-  puts '----'.ljust(5)+'----'.ljust(5)+'-----------'
-  # products.each do |p|
-  #   cnt += 1
-  #   puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)
-  # end
-  while cnt < products.count do
+  puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price '
+  puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----- '
+  products.each do |p|
     cnt += 1
-    p = products[:id => cnt]
-    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p.to_json
+    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p[:category].ljust(16)+p[:price].to_s
   end
-  puts ' '
 end
 
 # --- Resources --- #
-
+require 'json'
 class BaseResource < Webmachine::Resource
   class << self
     alias_method :let, :define_method
   end
 
   let(:trace?) { true }
-  let(:content_types_provided) { [['application/json', :to_json], ['text/html', :to_html]] }
+  let(:content_types_provided) { [['application/json', :as_json], ['text/html', :as_html]] }
+  let(:content_types_accepted) { [['application/json', :from_json]] }
   let(:content_types_accepted) { [['application/json', :from_json]] }
   let(:post_is_create?) { true }
   let(:allow_missing_post?) { true }
@@ -117,70 +109,70 @@ end
 # --- Root Resource --- #
 
 class RootResource < BaseResource
-  def to_json
-    root_response.to_json
+  def as_html
+    JSON.generate(root_resource)
   end
 
-  def to_html
-    "<pre>#{root_response}</pre>"
+  def as_json
+    JSON.generate(root_resource)
   end
 
   private
 
-  def root_response
-    <<-ROOT_RESPONSE
-{
-  '_links': {
-    'self': {
-      'href': '/'
-    },
-    'curies': [
-      {
-        'name': 'ht',
-        'href': 'http://127.0.0.1:8080/rels/{rel}',
-        'templated': true
-      }
-    ],
-    'ht:products': {
-      'href': '/products'
+  def root_resource
+    @rr ||= {
+      '_links' => {
+        'self' => {
+          'href' => '/'
+        },
+        'curies' => [
+          {
+            'name' => 'ht',
+            'href' => 'http://127.0.0.1:8080/rels/{rel}',
+            'templated' => true
+          }
+        ],
+        'ht:products' => {
+          'href' => '/products'
+        }
+      },
+      'welcome' => 'Welcome to the Demo HAL Server.',
+      'hint_1' => 'This is the first hint.',
+      'hint_2' => 'This is the second hint.',
+      'hint_3' => 'This is the third hint.',
+      'hint_4' => 'This is the fourth hint.',
+      'hint_5' => 'This is the last hint.'
     }
-  },
-  'welcome': 'Welcome to the Demo HAL Server.',
-  'hint_1': 'This is the first hint.',
-  'hint_2': 'This is the second hint.',
-  'hint_3': 'This is the third hint.',
-  'hint_4': 'This is the fourth hint.',
-  'hint_5': 'This is the last hint.'
-}
-    ROOT_RESPONSE
+   @rr
   end
 end
 
 # --- Product Resource --- #
 
 class ProductResource < BaseResource
-  def allowed_methods
-    %w{ GET }
+
+  let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
+
+  let(:create_path) { "/products/#{create_resource.id}" }
+  let(:as_json) { resource_or_collection.to_json }
+  let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: id] }
+
+  protected
+
+  def create_resource
+    @resource = Product.create(from_json)
   end
 
-  def resource_exists?
-    @product = Product.find(id)
-    !!@product
+  def resource
+    @resource ||= Product[id: id]
   end
 
-  def to_json
-    @product.to_json
+  def collection
+    @collection ||= Product.all
   end
 
-  def to_html
-    @product.to_json
-  end
-
-  private
-
-  def product
-    #@product ||= Product.new(params)
-    @product
+  def resource_or_collection
+    resource ? resource.to_hash : {:products => collection.map(&:to_hash)}
   end
 
   def id
