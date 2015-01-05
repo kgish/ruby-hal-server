@@ -10,7 +10,65 @@ Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
 
 ## HAL/JSON Web API
 
-Here is an explanation about the Web API
+Here is an explanation about the Web API.
+
+[:host] = hostname of api server, default `127.0.0.1`
+[:port] = port used by api server, default `8080`
+[:resource] = one of `%w{products users sessions}`
+[:id] = resource id
+
+### GET /[:resource], e.g. /products
+```javascript
+{
+   '_links' => {
+    'self' => {
+      'href' => '/[:resource]'
+    },
+    'curies' => [
+      {
+        'name' => 'ht',
+        'href' => "http://[:host]:[:port]/rels/{rel}",
+        'templated' => true
+      }
+    ],
+    'ht:[:resource]' => [
+      {
+        'href' => "/products/[:id]",
+        // [:resource].params, e.g. products
+        'name' => [:name],
+        'category' => [:category],
+        'price' => [:price]
+      },
+      {
+        ...
+      }
+    ]
+  }
+}
+```
+
+### GET /[:resource]/[:id], e.g. /products/12
+
+```javascript
+{
+  '_links' => {
+    'self' => {
+      'href' => "/[:resource]/[:id]"
+    },
+    'curies' => [
+      {
+        'name' => 'ht',
+        'href' => "http://[:host]:[:port]/rels/{rel}",
+        'templated' => true
+      }
+    ]
+  },
+   // [:resource].params, e.g. products
+  'name' => [:name],
+  'category => [:category],
+  'price => [:price]
+}
+```
 
 ## Installation
 
