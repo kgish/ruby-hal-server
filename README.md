@@ -173,7 +173,8 @@ You should then see something like this:
 
 Update a given product (shoes) by running the following command:
 
-    $ bundle exec ruby update-product.rb --id=1 --name=pizza --price=495 --category=discount
+    $ bundle exec ruby update-product.rb --id=1 --name=pizza --price=495 \
+        --category=discount
 
 You should then see something like this:
 
