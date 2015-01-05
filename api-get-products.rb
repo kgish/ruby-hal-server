@@ -8,11 +8,12 @@ api = HyperResource.new(
 begin
   puts 'root = api.get'
   root = api.get
+  puts 'root.body'
   puts root.body
 
   puts 'products = api.products'
   products = api.products
-  puts products
+  puts products.params.inspect
 rescue HyperResource::ResponseError => e
   puts "HyperResource::ResponseError => #{e.message}"
 rescue Exception => e
