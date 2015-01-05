@@ -12,12 +12,14 @@ Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
 
 Here is an explanation about the Web API.
 
-[:host] = hostname of api server, default `127.0.0.1`
-[:port] = port used by api server, default `8080`
-[:resource] = one of `%w{products users sessions}`
-[:id] = resource id
+    [:host] = hostname of api server, default `127.0.0.1`
+    [:port] = port used by api server, default `8080`
+    [:resource] = one of `%w{products users sessions}`
+    [:id] = resource id
+    [:templated] = true or false, default true
 
-### GET /[:resource], e.g. /products
+### GET /[:resource]
+e.g. /products
 ```javascript
 {
    '_links' => {
@@ -28,7 +30,7 @@ Here is an explanation about the Web API.
       {
         'name' => 'ht',
         'href' => "http://[:host]:[:port]/rels/{rel}",
-        'templated' => true
+        'templated' => [:templated]
       }
     ],
     'ht:[:resource]' => [
@@ -47,7 +49,8 @@ Here is an explanation about the Web API.
 }
 ```
 
-### GET /[:resource]/[:id], e.g. /products/12
+### GET /[:resource]/[:id]
+e.g. /products/12
 
 ```javascript
 {
@@ -59,7 +62,7 @@ Here is an explanation about the Web API.
       {
         'name' => 'ht',
         'href' => "http://[:host]:[:port]/rels/{rel}",
-        'templated' => true
+        'templated' => [:templated]
       }
     ]
   },
@@ -74,7 +77,8 @@ Here is an explanation about the Web API.
 
 In order to install and run the webmachine, run the following commands.
 
-    $ git clone https://github.com/kgish/ruby-webmachine-roar-template.git webmachine-roar
+    $ git clone https://github.com/kgish/ruby-webmachine-roar-template.git \
+        webmachine-roar
     $ cd webmachine-roar
     $ bundle install
 
