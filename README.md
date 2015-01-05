@@ -72,6 +72,12 @@ e.g. /products/12
   'price => [:price]
 }
 ```
+### GET / (Root)
+
+The zero-configuration starts with the root resource where all relevant information
+about the api service can be obtained.
+
+![](images/screenshot-postman-root.png?raw=true)
 
 ## Installation
 
