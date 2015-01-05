@@ -107,7 +107,7 @@ If everything is working according to plan you should see something like this:
     2	2	shoes	2000	clothing
     3	3	laptop	500000	computer
 
-### Create a product
+### Create a product (POST)
 
 Create your first product by running the following command:
 
@@ -124,7 +124,30 @@ You should then see something like this:
     3	3	laptop	500000	computer
     4	4	kiffin	1234	person
 
-### Delete a product
+Note: when a product is created, this will be verified by making a GET request to check
+that indeed the product has been created and the parameters match.
+
+### Retrieve a product (GET)
+
+You can retrieve a given product (apple) by running the following command:
+
+    $ bundle exec ruby get-product.rb --id=9
+
+You should get results similar to the following:
+
+    {:url=>"0.0.0.0:8080", :host=>"0.0.0.0", :port=>8080, :id=>"9", \
+        :username=>nil, :password=>nil, :auth=>nil}
+
+    GET http://0.0.0.0:8080/products/9
+
+    200/OK  Webmachine-Ruby/1.3.0 WEBrick/1.3.1 (Ruby/2.1.5/2014-11-13)
+
+    {"_links":{"self":{"href":"/products/9"},"curies":[{"name":"ht", \
+        "href":"http://0.0.0.0:8080:/rels/{rel}","templated":true}]}, \
+        "name":"apple","category":"object","price":2628}
+    Success!
+
+### Delete a product (DELETE)
 
 Delete a given product (shoes) by running the following command:
 
@@ -140,9 +163,9 @@ You should then see something like this:
     2	3	laptop	500000	computer
     3	4	kiffin	1234	person
 
-### Update a product
+### Update a product (PUT)
 
-Delete a given product (shoes) by running the following command:
+Update a given product (shoes) by running the following command:
 
     $ bundle exec ruby update-product.rb --id=1 --name=pizza --price=495 --category=discount
 
@@ -155,6 +178,12 @@ You should then see something like this:
     1	1	pizza	495	    discount
     2	3	laptop	500000	computer
     3	4	kiffin	1234	person
+
+Ff you pass an `id` of which no product exists, one will be created and you will be returned
+a response code `201 Created` according to the specifications for PUT.
+
+Note: when a product is updated, this will be verified by making a GET request to check
+that indeed the product has been updated/created and the parameters match.
 
 ## Thanks
 
