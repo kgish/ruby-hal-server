@@ -58,21 +58,21 @@ categories = %w{person animal clothing fruit object car food drink unknown book 
     cnt += 1
     # name needs to be unique
     name = names.sample
-    break unless products.first(:name => name) || cnt > 10
+    break unless Product.first(:name => name) || cnt > 10
   end
-  products.insert(
+  Product.insert(
     :name     => name,
     :category => categories.sample,
     :price    => rand * 10000
   )
 end
 
-if products.count
+if Product.count
   cnt = 0
   puts 'PRODUCTS'
   puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price '
   puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----- '
-  products.each do |p|
+  Product.each do |p|
     cnt += 1
     puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p[:category].ljust(16)+p[:price].to_s
   end
@@ -88,13 +88,18 @@ class BaseResource < Webmachine::Resource
   let(:trace?) { true }
   let(:content_types_provided) { [['application/json', :as_json], ['text/html', :as_html]] }
   let(:content_types_accepted) { [['application/json', :from_json]] }
-  let(:content_types_accepted) { [['application/json', :from_json]] }
   let(:post_is_create?) { true }
   let(:allow_missing_post?) { true }
-  let(:from_json) { JSON.parse(request.body.to_s)['data'] }
+
+  def from_json
+    puts "Resource::Base[#{request.method}] from_json"
+    result = JSON.parse(request.body.to_s)
+    puts "Resource::Base[#{request.method}] from_json => #{result.inspect}"
+    result
+  end
 
   def finish_request
-    puts "Resources::Base[#{request.method}] finish_request"
+    puts "Resource::Base[#{request.method}] finish_request"
     # This method is called just before the final response is
     # constructed and sent. The return value is ignored, so any effect
     # of this method must be by modifying the response.
@@ -109,15 +114,22 @@ end
 # --- Root Resource --- #
 
 class RootResource < BaseResource
-  def as_html
-    JSON.generate(response_body)
+  class << self
+    alias_method :let, :define_method
   end
 
-  def as_json
-    JSON.generate(response_body)
-  end
+  let(:as_html) { as_json_or_html 'html' }
+  let(:as_json) { as_json_or_html 'json' }
 
   private
+
+  def as_json_or_html(json_or_html)
+    puts "Resource::Base[#{request.method}] as_#{json_or_html}"
+    result = JSON.generate(response_body)
+    puts "Resource::Base[#{request.method}] as_#{json_or_html} => #{result}"
+    result
+  end
+
 
   def response_body
     @rr ||= {
@@ -197,7 +209,6 @@ GET /products/[:id]
 }
 =end
 
-
 class ProductResource < BaseResource
 
   # let(:create_path) { "/products/#{create_resource.id}" }
@@ -214,16 +225,18 @@ class ProductResource < BaseResource
 
   def create_path
     puts "Resource::Product[#{request.method}] create_path"
-    res = "/products/#{create_resource.id}"
-    puts "Resource::Product[#{request.method}] create_path => #{res}"
-    res
+    next_id = create_resource[:id]
+    puts "Resource::Product[#{request.method}] next_id=#{next_id}"
+    result = "/products/#{next_id}"
+    puts "Resource::Product[#{request.method}] create_path => #{result}"
+    result
   end
 
   def resource_exists?
     puts "Resource::Product[#{request.method}] resource_exists?"
-    res = !request.path_info.has_key?(:id) || !!Product[id: id]
-    puts "Resource::Product[#{request.method}] resource_exists? => #{res}"
-    res
+    result = !request.path_info.has_key?(:id) || !!Product[id: id]
+    puts "Resource::Product[#{request.method}] resource_exists? => #{result}"
+    result
   end
 
   def delete_resource
@@ -246,7 +259,10 @@ class ProductResource < BaseResource
 
   def create_resource
     puts "Resource::Product[#{request.method}] create_resource"
-    @resource = Product.create(from_json)
+    next_id = Product.insert(params)
+    @resource = Product[id: next_id]
+    puts "Resource::Product[#{request.method}] create_resource, @resource=#{@resource.inspect}"
+    @resource
   end
 
   def resource
@@ -259,23 +275,30 @@ class ProductResource < BaseResource
     @collection ||= Product.all
   end
 
+  def params
+    puts "Resource::Product[#{request.method}] params"
+    result = JSON.parse(request.body.to_s)['product']
+    puts "Resource::Product[#{request.method}] params => #{result.inspect}"
+    result
+  end
+
   def id
     puts "Resource::Product[#{request.method}] id"
-    res = @id ||= request.path_info[:id]
-    puts "Resource::Product[#{request.method}] id => #{res}"
-    res
+    result = request.path_info[:id]
+    puts "Resource::Product[#{request.method}] id => #{result}"
+    result
   end
 
   def response_body
     puts "Resource::Product[#{request.method}] response_body"
-    @id ? response_body_resource : response_body_collection
+    id ? response_body_resource : response_body_collection
   end
 
   def response_body_collection
     puts "Resource::Product[#{request.method}] response_body_collection"
     # GET /products
     products = Product.all
-    resp = {
+    result = {
       '_links' => {
         'self' => {
           'href' => '/products'
@@ -298,17 +321,18 @@ class ProductResource < BaseResource
           'category' => item[:category],
           'price' => item[:price]
       })
-      resp['ht:products'] = prod_list
     end
-    resp
+    result['ht:products'] = prod_list
+    puts "Resource::Product[#{request.method}] response_body_collection => #{result.inspect}"
+    result
   end
 
   def response_body_resource
-    puts "Resource::Product[#{request.method}] response_body_collection"
+    puts "Resource::Product[#{request.method}] response_body_resource"
     # GET /products/[:id]
     product = Product[id: id]
     # product.to_hash
-    resp = {
+    result = {
       '_links' => {
         'self' => {
           'href' => "/products/#{id}"
@@ -325,7 +349,8 @@ class ProductResource < BaseResource
       'category' => product[:category],
       'price' => product[:price]
     }
-    resp
+    puts "Resource::Product[#{request.method}] response_body_resource => #{result.inspect}"
+    result
   end
 
 end
