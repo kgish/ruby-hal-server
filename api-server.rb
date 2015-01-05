@@ -200,15 +200,16 @@ GET /products/[:id]
 
 class ProductResource < BaseResource
 
-  # let(:allowed_methods) { %w{GET POST PUT DELETE OPTIONS} }
-  #
   # let(:create_path) { "/products/#{create_resource.id}" }
   # let(:as_json) { resource_or_collection.to_json }
   # let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: id] }
 
   def allowed_methods
-    puts "Resource::Product[#{request.method}] allowed_methods"
-    %w{GET POST PUT DELETE OPTIONS}
+    if request.path_info.has_key?(:id)
+      %w{GET PUT DELETE OPTIONS}
+    else
+      %w{GET POST OPTIONS}
+    end
   end
 
   def create_path
@@ -224,6 +225,12 @@ class ProductResource < BaseResource
     puts "Resource::Product[#{request.method}] resource_exists? => #{res}"
     res
   end
+
+  def delete_resource
+    puts "Resource::Product[#{request.method}] delete_resource"
+    Product[id: id].delete
+  end
+
 
   def as_html
     puts "Resource::Product[#{request.method}] as_html"
