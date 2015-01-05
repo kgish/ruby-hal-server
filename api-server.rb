@@ -60,7 +60,7 @@ categories = %w{person animal clothing fruit object car food drink unknown book 
     name = names.sample
     break unless Product.first(:name => name) || cnt > 10
   end
-  Product.insert(
+  products.insert(
     :name     => name,
     :category => categories.sample,
     :price    => rand * 10000
@@ -72,7 +72,7 @@ if Product.count
   puts 'PRODUCTS'
   puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price '
   puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----- '
-  Product.each do |p|
+  products.each do |p|
     cnt += 1
     puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p[:category].ljust(16)+p[:price].to_s
   end
@@ -90,13 +90,7 @@ class BaseResource < Webmachine::Resource
   let(:content_types_accepted) { [['application/json', :from_json]] }
   let(:post_is_create?) { true }
   let(:allow_missing_post?) { true }
-
-  def from_json
-    puts "Resource::Base[#{request.method}] from_json"
-    result = JSON.parse(request.body.to_s)
-    puts "Resource::Base[#{request.method}] from_json => #{result.inspect}"
-    result
-  end
+  #let(:from_json) { JSON.parse(request.body.to_s)['data'] }
 
   def finish_request
     puts "Resource::Base[#{request.method}] finish_request"
@@ -121,8 +115,6 @@ class RootResource < BaseResource
   let(:as_html) { as_json_or_html 'html' }
   let(:as_json) { as_json_or_html 'json' }
 
-  private
-
   def as_json_or_html(json_or_html)
     puts "Resource::Base[#{request.method}] as_#{json_or_html}"
     result = JSON.generate(response_body)
@@ -130,6 +122,7 @@ class RootResource < BaseResource
     result
   end
 
+  private
 
   def response_body
     @rr ||= {
@@ -162,11 +155,12 @@ end
 # --- Product Resource --- #
 =begin
 
-GET /products
+[:resource] = one of %w{products users sessions}
+GET /[:resource]
 {
    '_links' => {
     'self' => {
-      'href' => '/products'
+      'href' => '/[:resource]'
     },
     'curies' => [
       {
@@ -175,9 +169,10 @@ GET /products
         'templated' => true
       }
     ],
-    'ht:products' => [
+    'ht:[:resource]' => [
       {
         'href' => "/products/[:id]",
+        // [:resource].params, e.g. products
         'name' => [:name],
         'category' => [:category],
         'price' => [:price]
@@ -189,11 +184,11 @@ GET /products
   }
 }
 
-GET /products/[:id]
+GET /[:resource]/[:id]
 {
   '_links' => {
     'self' => {
-      'href' => "/products/[:id]"
+      'href' => "/[:resource]/[:id]"
     },
     'curies' => [
       {
@@ -203,6 +198,7 @@ GET /products/[:id]
       }
     ]
   },
+   // [:resource].params, e.g. products
   'name' => [:name],
   'category => [:category],
   'price => [:price]
@@ -253,6 +249,34 @@ class ProductResource < BaseResource
   def as_json
     puts "Resource::Product[#{request.method}] as_json"
     JSON.generate(response_body)
+  end
+
+  def from_json
+    puts "Resource::Product[#{request.method}] from_json"
+    if request.method == 'PUT'
+      # Remember PUT should replace the entire resource, not merge the attributes,
+      # that's what PATCH is for. It's also why you should not expose your database
+      # IDs as your API IDs.
+      product = Product[id: id]
+      response_code = 200
+      if product
+        puts "Resource::Product[#{request.method}] from_json, product exists"
+        product.update(params)
+      else
+        puts "Resource::Product[#{request.method}] from_json, product does not exist"
+        new_params = params
+        new_params[:id] = id
+        next_id = Product.insert(new_params)
+        product = Product[id: next_id]
+        response_code = 201 # Created
+      end
+      response.body = product.to_json
+      response_code
+    else
+      result = JSON.parse(request.body.to_s)
+      puts "Resource::Product[#{request.method}] from_json => #{result.inspect}"
+      result
+    end
   end
 
   protected
@@ -352,7 +376,6 @@ class ProductResource < BaseResource
     puts "Resource::Product[#{request.method}] response_body_resource => #{result.inspect}"
     result
   end
-
 end
 
 # --- Logger --- #

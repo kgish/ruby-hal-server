@@ -41,8 +41,8 @@ display_results(response, true)
 check_code(response)
 
 # Finally ensure that the properties are identical to what was sent.
-h = JSON.parse response.body
-p = h['product']
+body = JSON.parse response.body
+p = body
 
 cnt = 0
 unless p['name'] === params[:name]
@@ -50,7 +50,7 @@ unless p['name'] === params[:name]
   puts "Name mismatch -- #{p['name']} != #{params[:name]}"
 end
 
-unless p['price'] === params[:price]
+unless p['price'].to_i === params[:price].to_i
   cnt += 1
   puts "Price mismatch -- #{p['price']} != #{params[:price]}"
 end
