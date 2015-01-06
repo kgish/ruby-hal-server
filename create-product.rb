@@ -93,24 +93,24 @@ BEGIN {
   REQUIRED PARAMETERS:
 
     --name, -n s
-       name of product (string)
+      name of product (string)
 
     --price, -p n
-       price of product (number)
+      price of product (number)
 
     --category, -c s
-       category of product (string)
+      category of product (string)
 
   OPTIONAL PARAMETERS:
 
     --help, -h
-       show this help screen
+      show this help screen
 
     --auth, -a username:password
-       basic authorization string (both username and password required)
+      basic authorization string (both username and password required)
 
     --url, -u hostname[:port]
-       destination of request (default #{defaults[:host]}:#{defaults[:port]})
+      destination of request (default #{defaults[:host]}:#{defaults[:port]})
 
   EXAMPLES:
 

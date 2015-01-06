@@ -61,18 +61,18 @@ BEGIN {
   REQUIRED PARAMETERS:
 
     --id n
-       id of product (number)
+      product id (number)
 
   OPTIONAL PARAMETERS:
 
     --help, -h
-       show this help screen
+      show this help screen
 
     --auth, -a username:password
-       basic authorization string (both username and password required)
+      basic authorization string (both username and password required)
 
     --url, -u hostname[:port]
-       destination of request (default #{defaults[:host]}:#{defaults[:port]})
+      destination of request (default #{defaults[:host]}:#{defaults[:port]})
 
   EXAMPLES:
 

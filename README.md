@@ -101,7 +101,7 @@ You can now start the webmachine-roar server using defaults WEBrick and port 808
 
 You can now fire up the monitor by running the following command:
 
-    $ bundle exec ruby monitor-products.rb
+    $ bundle exec ruby api-monitor-products.rb
 
 If everything is working according to plan you should see something like this:
 
@@ -112,6 +112,38 @@ If everything is working according to plan you should see something like this:
     1	1	pizza	500	    food
     2	2	shoes	2000	clothing
     3	3	laptop	500000	computer
+
+#### Usage
+
+    USAGE:
+
+        api-monitor [OPTIONS]
+
+    DESCRIPTION:
+
+        Monitors the list or products for the given server by looping through
+        the following HTTP request:
+
+        GET /products
+
+        Once started hit CTRL-C to exit from the loop.
+
+    OPTIONAL PARAMETERS:
+
+        --help, -h
+          show this help screen
+
+        --auth, -a username:password
+          basic authorization string (both username and password required)
+
+        --url, -u hostname[:port]
+          destination of request (default 0.0.0.0:8080)
+
+    EXAMPLES:
+
+        api-monitor
+        api-monitor --url=localhost:8080
+        api-monitor --auth=kiffin:pindakaas
 
 ### Create a product (POST)
 
@@ -133,6 +165,47 @@ You should then see something like this:
 Note: when a product is created, this will be verified by making a GET request to check
 that indeed the product has been created and the parameters match.
 
+#### Usage
+
+      USAGE:
+
+        create-product [OPTIONS] --name=s --price=n --category=s
+
+      DESCRIPTION:
+
+        Creates a product with given attributes by sending the
+        following HTTP request to the given server:
+
+          POST /products
+
+      REQUIRED PARAMETERS:
+
+        --name, -n s
+          name of product (string)
+
+        --price, -p n
+          price of product (number)
+
+        --category, -c s
+          category of product (string)
+
+      OPTIONAL PARAMETERS:
+
+        --help, -h
+          show this help screen
+
+        --auth, -a username:password
+          basic authorization string (both username and password required)
+
+        --url, -u hostname[:port]
+          destination of request (default 0.0.0.0:8080)
+
+      EXAMPLES:
+
+        create-product -n audi -c car -p 25000
+        create-product -n cheese -c food -p 10 -a kiffin:pindakaas
+        create-product -n horse -c animal -p 3450 -u www.example.com:8080
+
 ### Retrieve a product (GET)
 
 You can retrieve a given product (apple) by running the following command:
@@ -153,6 +226,41 @@ You should get results similar to the following:
         "name":"apple","category":"object","price":2628}
     Success!
 
+#### Usage
+
+      USAGE:
+
+        get-product [OPTIONS] --id=n
+
+      DESCRIPTION:
+
+        Find a product with the given id by sending the
+        following HTTP request to the given server:
+
+          GET /products/id
+
+      REQUIRED PARAMETERS:
+
+        --id n
+          product id (number)
+
+      OPTIONAL PARAMETERS:
+
+        --help, -h
+          show this help screen
+
+        --auth, -a username:password
+          basic authorization string (both username and password required)
+
+        --url, -u hostname[:port]
+          destination of request (default 0.0.0.0:8080)
+
+      EXAMPLES:
+
+        get-product --id=11
+        get-product --id=64 --auth=kiffin:pindakaas
+        get-product --id=3 --url=www.example.com:8080
+
 ### Delete a product (DELETE)
 
 Delete a given product (shoes) by running the following command:
@@ -168,6 +276,41 @@ You should then see something like this:
     1	1	pizza	500	    food
     2	3	laptop	500000	computer
     3	4	kiffin	1234	person
+
+#### Usage
+
+      USAGE:
+
+        delete-product [OPTIONS] --id=n
+
+      DESCRIPTION:
+
+        Deletes a product with the given id by sending the
+        following HTTP request to the given server:
+
+          DELETE /products/id
+
+      REQUIRED PARAMETERS:
+
+        --id n
+          product id (number)
+
+      OPTIONAL PARAMETERS:
+
+        --help, -h
+          show this help screen
+
+        --auth, -a username:password
+          basic authorization string (both username and password required)
+
+        --url, -u hostname[:port]
+          destination of request (default 0.0.0.0:8080)
+
+      EXAMPLES:
+
+        delete-product --id=11
+        delete-product --id=64 --auth=kiffin:pindakaas
+        delete-product --id=3 --url=www.example.com:8080
 
 ### Update a product (PUT)
 
@@ -191,6 +334,50 @@ a response code `201 Created` according to the specifications for PUT.
 
 Note: when a product is updated, this will be verified by making a GET request to check
 that indeed the product has been updated/created and the parameters match.
+
+#### Usage
+
+  USAGE:
+
+    update-product [OPTIONS] --id=n
+
+  DESCRIPTION:
+
+    Updates a product with given attribute(s) by sending the
+    following HTTP request to the given server:
+
+      PUT /products
+
+  REQUIRED PARAMETERS:
+
+    --id, -i n
+      product id (number)
+
+  OPTIONAL PARAMETERS:
+
+    --help, -h
+      show this help screen
+
+    --name, -n s
+      name of product (string)
+
+    --price, -p n
+      price of product (number)
+
+    --category, -c s
+      category of product (string)
+
+    --auth, -a username:password
+      basic authorization string (both username and password required)
+
+    --url, -u hostname[:port]
+      destination of request (default 0.0.0.0:8080)
+
+  EXAMPLES:
+
+    update-product --id=3 --name=audi --price=25000
+    update-product --id=5 --category=food --auth=kiffin:pindakaas
+    update-product --id=21 -name=horse --url=www.example.com:8080
 
 ## Thanks
 

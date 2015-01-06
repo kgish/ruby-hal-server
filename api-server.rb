@@ -241,6 +241,23 @@ class ProductResource < BaseResource
   end
 
   def response_body_collection
+    # {
+    #   "_links": {
+    #     "self": {
+    #       "href": "/products"
+    #     },
+    #     "curies": [
+    #       {
+    #         "name": "ht",
+    #         "href": "http://127.0.0.1:8080/rels/{rel}",
+    #         "templated": true
+    #       }
+    #     ],
+    #     "ht:product": [
+    #       { ... }, ...
+    #     ]
+    #   }
+    # }
     puts "Resource::Product[#{request.method}] response_body_collection"
     # GET /products
     products = Product.all
@@ -256,7 +273,7 @@ class ProductResource < BaseResource
             'templated' => true
           }
         ],
-#        'ht:products' => []
+#       'ht:product' => []
       }
     }
     prod_list = []
@@ -268,7 +285,7 @@ class ProductResource < BaseResource
           'price' => item[:price]
       })
     end
-    result['ht:products'] = prod_list
+    result['_links']['ht:product'] = prod_list
     puts "Resource::Product[#{request.method}] response_body_collection => #{result.inspect}"
     result
   end

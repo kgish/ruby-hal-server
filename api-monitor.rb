@@ -39,7 +39,7 @@ catch :ctrl_c do
       exit if response.code.to_i == 401
 
       body = JSON.parse response.body
-      products = body['ht:products']
+      products = body['_links']['ht:product']
 
       cnt = 0
       # Sort products by id
@@ -51,7 +51,10 @@ catch :ctrl_c do
         cnt += 1
         # Replace { href => '/products/id', ...} with { id => 'id', ... }
         id = p['href'].sub(/^\/[^\/]*\//,'')
-        puts cnt.to_s.ljust(5)+id.to_s.ljust(5)+p['name'].ljust(16)+p['category'].ljust(16)+p['price'].to_s
+        name = p['name'] || ''
+        category = p['category'] || ''
+        price = p['price'] || ''
+        puts cnt.to_s.ljust(5)+id.to_s.ljust(5)+name.ljust(16)+category.ljust(16)+price.to_s
       end
 
       puts 'No products' if cnt == 0
