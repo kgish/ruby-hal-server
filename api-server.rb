@@ -3,12 +3,14 @@ require 'roar/json/hal'
 require 'sequel'
 
 
-# --- Models (begin) --- #
+#### Models (begin) ####
 
 # --- Model::Base --- #
 
 # Connect to an in-memory database
 DB = Sequel.sqlite
+
+# --- Model::Product --- #
 
 DB.create_table :products do
   primary_key :id
@@ -17,12 +19,9 @@ DB.create_table :products do
   Integer     :price
 end
 
-# --- Model::Product --- #
-
 # Create a dataset from the Products table
 products = DB[:products]
 
-# module ProductRepresenter ????
 class Product < Sequel::Model
   include Roar::JSON::HAL
 
@@ -40,7 +39,6 @@ class Product < Sequel::Model
   def to_hash
     HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}
   end
-
 end
 
 # Populate the products table with random items
@@ -65,6 +63,7 @@ end
 
 if Product.count
   cnt = 0
+  puts
   puts 'PRODUCTS'
   puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price '
   puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----- '
@@ -74,9 +73,86 @@ if Product.count
   end
 end
 
-# --- Models (end) --- #
+# --- Model::User --- #
 
-# --- Resources (begin)--- #
+# Create a Users table
+DB.create_table :users do
+  primary_key :id
+  String      :name
+  String      :username
+  String      :email
+  String      :password
+  String      :access_token
+  Boolean     :is_admin
+  Date        :login_date
+end
+
+# Create a dataset from the Users table
+users = DB[:users]
+
+class User < Sequel::Model
+  include Roar::JSON::HAL
+
+  HASH_ATTRS = [:id, :name, :username, :email, :password, :access_token, :is_admin, :login_date]
+
+  property :id
+  property :name
+  property :username
+  property :email
+  property :password
+  property :access_token
+  property :is_admin
+  property :login_date
+
+  link :self do
+    "/users/#{id}"
+  end
+
+  def to_hash
+    HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}
+  end
+end
+
+# Populate the Users table.
+# kiffin => admin
+users.insert(
+    :name         => 'Kiffin Gish',
+    :username     => 'kiffin',
+    :email        => 'kiffin.gish@planet.nl',
+    :password     => 'pindakaas',
+    :access_token => 'none',
+    :is_admin     => true,
+    :login_date   => Time.at(rand * Time.now.to_i)
+)
+
+# henri => NOT admin
+users.insert(
+    :name         => 'Henri Bergson',
+    :username     => 'henri',
+    :email        => 'henri.bergson@planet.nl',
+    :password     => 'escargot',
+    :access_token => 'none',
+    :is_admin     => false,
+    :login_date   => Time.at(rand * Time.now.to_i)
+)
+
+if users.count
+  cnt = 0
+  puts
+  puts 'USERS'
+  puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'username  '.ljust(11)+'email                   '.ljust(26)+'password '.ljust(16)+'admin'
+  puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'----------'.ljust(11)+'------------------------'.ljust(26)+'---------'.ljust(16)+'-----'
+  users.each do |u|
+    cnt += 1
+    admin = u[:is_admin] ? 'yes' : 'no'
+    puts cnt.to_s.ljust(5)+u[:id].to_s.ljust(5)+u[:name].ljust(16)+u[:username].ljust(11)+u[:email].ljust(26)+u[:password].ljust(16)+admin
+  end
+  puts
+end
+
+#### Models (end) ####
+
+#### Resources (begin) ####
 
 # --- Resource::Base --- #
 
@@ -321,9 +397,9 @@ class ProductResource < BaseResource
   end
 end
 
-# --- Resources (end) --- #
+#### Resources (end) ####
 
-# --- Logger (begin) --- #
+#### Logger (begin) ####
 
 require 'time'
 require 'logger'
@@ -347,9 +423,9 @@ end
 
 Webmachine::Events.subscribe('wm.dispatch', LogListener.new)
 
-# --- Logger (begin) --- #
+#### Logger (end) ####
 
-# --- Application (start)--- #
+#### Application (begin) ####
 
 App = Webmachine::Application.new do |app|
   app.configure do |config|
@@ -370,4 +446,4 @@ end
 
 App.run
 
-# --- Application (end)--- #
+#### Application (end) ####
