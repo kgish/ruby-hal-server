@@ -3,16 +3,9 @@ require 'roar/json/hal'
 require 'sequel'
 
 
-# --- Model --- #
+# --- Models (begin) --- #
 
-# class Sequel::Model
-#   def attributes_equal_to(attrs)
-#     attrs.inject(true) do |res, kv|
-#       k,v = kv
-#       self.class.columns.include?(k) ? res && (send(k) == v) : res
-#     end
-#   end
-# end
+# --- Model::Base --- #
 
 # Connect to an in-memory database
 DB = Sequel.sqlite
@@ -23,6 +16,8 @@ DB.create_table :products do
   String      :category
   Integer     :price
 end
+
+# --- Model::Product --- #
 
 # Create a dataset from the Products table
 products = DB[:products]
@@ -47,6 +42,7 @@ class Product < Sequel::Model
   end
 
 end
+
 # Populate the products table with random items
 names = %w{kiffin rabbit shoes george apple suitcase audi horse maserati pizza beer soap bathtub jupiter dragon dime}
 categories = %w{person animal clothing fruit object car food drink unknown book gem thingie}
@@ -78,7 +74,12 @@ if Product.count
   end
 end
 
-# --- Resources --- #
+# --- Models (end) --- #
+
+# --- Resources (begin)--- #
+
+# --- Resource::Base --- #
+
 require 'json'
 class BaseResource < Webmachine::Resource
   class << self
@@ -123,7 +124,7 @@ class BaseResource < Webmachine::Resource
   end
 end
 
-# --- Root Resource --- #
+# --- Resource::Root --- #
 
 class RootResource < BaseResource
   class << self
@@ -157,6 +158,8 @@ class RootResource < BaseResource
    @rr
   end
 end
+
+# --- Resource::Product --- #
 
 class ProductResource < BaseResource
 
@@ -317,7 +320,9 @@ class ProductResource < BaseResource
   end
 end
 
-# --- Logger --- #
+# --- Resources (end) --- #
+
+# --- Logger (begin) --- #
 
 require 'time'
 require 'logger'
@@ -341,7 +346,9 @@ end
 
 Webmachine::Events.subscribe('wm.dispatch', LogListener.new)
 
-# --- Application --- #
+# --- Logger (begin) --- #
+
+# --- Application (start)--- #
 
 App = Webmachine::Application.new do |app|
   app.configure do |config|
@@ -361,3 +368,5 @@ App = Webmachine::Application.new do |app|
 end
 
 App.run
+
+# --- Application (end)--- #
