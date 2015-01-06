@@ -63,7 +63,7 @@ begin
     end
   end
 
-  products = api.get.products
+  products = api.products
   puts
   puts 'Links::products'
   puts products.inspect

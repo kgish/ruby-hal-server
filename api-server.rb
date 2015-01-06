@@ -2,7 +2,6 @@ require 'webmachine'
 require 'roar/json/hal'
 require 'sequel'
 
-
 #### Models (begin) ####
 
 # --- Model::Base --- #
@@ -223,6 +222,9 @@ class RootResource < BaseResource
         ],
         'ht:products' => {
           'href' => '/products'
+        },
+        'ht:users' => {
+          'href' => '/users'
         }
       },
       'welcome' => 'Welcome to Kiffin\'s Demo HAL Server.',
@@ -360,6 +362,7 @@ class ProductResource < BaseResource
     products.each do |item|
       prod_list.push({
           'href' => "/products/#{item[:id]}",
+          'id' => item[:id],
           'name' => item[:name],
           'category' => item[:category],
           'price' => item[:price]

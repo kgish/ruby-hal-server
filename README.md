@@ -7,6 +7,8 @@ can work together to build real RESTful systems in Ruby.
 Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support. This can be demoed as-is with 
 the [Ember HAL Template](https://github.com/kgish/ember-hal-template) client.
 
+This has been tested and verified with the [HAL-browser](https://github.com/mikekelly/hal-browser).
+
 ![](images/screenshot-monitor.png?raw=true)
 
 ## HAL/JSON Web API
@@ -89,11 +91,11 @@ In order to install and run the webmachine, run the following commands.
     $ cd webmachine-roar
     $ bundle install
 
-### Server
+### API Server
 
-You can now start the webmachine-roar server using defaults WEBrick and port 8080:
+You can now start the webmachine-roar api server using defaults WEBrick and port 8080:
 
-    $ bundle exec ruby server.rb
+    $ bundle exec ruby api-server.rb
     INFO  WEBrick 1.3.1
     INFO  ruby 2.1.5 (2014-11-13) [x86_64-linux]
     INFO  Webmachine::Adapters::WEBrick::Server#start: pid=13513 port=8080
@@ -122,7 +124,7 @@ If everything is working according to plan you should see something like this:
 
     DESCRIPTION:
 
-        Monitors the list or products for the given server by looping through
+        Monitors the list or products for the given api server by looping through
         the following HTTP request:
 
         GET /products
@@ -145,6 +147,11 @@ If everything is working according to plan you should see something like this:
         api-monitor
         api-monitor --url=localhost:8080
         api-monitor --auth=kiffin:pindakaas
+
+## Tooling
+
+A number of useful tools have also been provided to play around with and gain some
+insight into this mysterious world of the future.
 
 ### Create a product (POST)
 
@@ -175,7 +182,7 @@ that indeed the product has been created and the parameters match.
       DESCRIPTION:
 
         Creates a product with given attributes by sending the
-        following HTTP request to the given server:
+        following HTTP request to the given api server:
 
           POST /products
 
@@ -236,7 +243,7 @@ You should get results similar to the following:
       DESCRIPTION:
 
         Find a product with the given id by sending the
-        following HTTP request to the given server:
+        following HTTP request to the given api server:
 
           GET /products/id
 
@@ -287,7 +294,7 @@ You should then see something like this:
       DESCRIPTION:
 
         Deletes a product with the given id by sending the
-        following HTTP request to the given server:
+        following HTTP request to the given api server:
 
           DELETE /products/id
 
@@ -345,7 +352,7 @@ that indeed the product has been updated/created and the parameters match.
   DESCRIPTION:
 
     Updates a product with given attribute(s) by sending the
-    following HTTP request to the given server:
+    following HTTP request to the given api server:
 
       PUT /products
 
@@ -380,24 +387,42 @@ that indeed the product has been updated/created and the parameters match.
     update-product --id=5 --category=food --auth=kiffin:pindakaas
     update-product --id=21 -name=horse --url=www.example.com:8080
 
+### Autodiscover (zero configuration)
+
+A powerful concept behind the Hypertext Application Language (HAL) is that your server can easily expose a
+discoverable API for use across various programming domains.
+
+This is where [HyperResource](https://github.com/gamache/hyperresource) can be used to make a `GET /` call to
+gather the necessary information to use the service.
+
+To see how this works you can run the following command:
+
+    bundle exec ruby api-autodiscover.rb
+
+## HAL Compatibility
+
+This has been tested and verified with the [HAL-browser](https://github.com/mikekelly/hal-browser). It should also
+work seamlessly with the [HyperResource gem](https://github.com/gamache/hyperresource).
+
 ## Thanks
 
 A special thanks goes to [Sean Cribs](https://github.com/seancribbs), [Asmod4n](https://github.com/Asmod4n),
 [Beth](https://github.com/bethesque) and the other kind folks at [webmachine-ruby](https://github.com/seancribbs/webmachine-ruby)
-who answered my many questions and helped me out alot.
+who answered my many questions and helped me out alot. All in all this has been great fun.
 
 ## References
 
 Here is a list of various references that helped me very much:
 
-* [Webmachine](https://github.com/seancribbs/webmachine-ruby)
+* [Aptible::Auth](https://github.com/aptible/aptible-auth-ruby)
+* [HAL-browser](https://github.com/mikekelly/hal-browser)
+* [HTTP 1.1 Headers Status](http://upload.wikimedia.org/wikipedia/commons/8/88/Http-headers-status.png)
+* [HyperResource](https://github.com/gamache/hyperresource)
+* [Pact Broker](https://github.com/bethesque/pact_broker)
 * [ROAR](https://github.com/apotonick/roar)
 * [Webmachine Loves Roar](https://github.com/apotonick/webmachinelovesroar)
-* [Pact Broker](https://github.com/bethesque/pact_broker)
-* [HyperResource](https://github.com/gamache/hyperresource)
-* [Aptible::Auth](https://github.com/aptible/aptible-auth-ruby)
-* [HTTP 1.1 Headers Status](http://upload.wikimedia.org/wikipedia/commons/8/88/Http-headers-status.png)
 * [Webmachine: A Practical Executable Model for HTTP](http://www.infoq.com/presentations/Webmachine-A-Practical-Executable-Model-for-HTTP)
+* [Webmachine](https://github.com/seancribbs/webmachine-ruby)
 
 ## Author
 
