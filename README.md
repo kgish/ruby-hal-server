@@ -399,6 +399,44 @@ To see how this works you can run the following command:
 
     $ bundle exec ruby api-autodiscover.rb
 
+You should see something like the following:
+
+    Host: 127.0.0.1
+    Port: 8080
+    Root: http://127.0.0.1:8080
+    Headers: {:accept=>"application/json"}
+
+    root = api.get
+
+    root.body
+    {"_links"=>{"self"=>{"href"=>"/"}, "curies"=>[{"name"=>"ht", \
+        "href"=>"http://127.0.0.1:8080:/rels/{rel}", "templated"=>true}], \
+        "ht:products"=>{"href"=>"/products"}, "ht:users"=>{"href"=>"/u...
+
+    Attributes:
+    1 'welcome' = 'Welcome to Kiffin's Demo HAL Server.'
+    2 'hint_1' = 'This is the first hint.'
+    3 'hint_2' = 'This is the second hint.'
+    4 'hint_3' = 'This is the third hint.'
+    5 'hint_4' = 'This is the fourth hint.'
+    6 'hint_5' = 'This is the last hint.'
+
+    Links
+    1 'self' #<HyperResource::Link:0x00000001760e48 @resource=#<HyperR...
+    2 'curies' [#<HyperResource::Link:0x000000017605d8 @resource=#<Hyp...
+    3 'ht:products' #<HyperResource::Link:0x00000001763828 @resource=#...
+    4 'products' #<HyperResource::Link:0x00000001763828 @resource=#<Hy...
+    5 'ht_products' #<HyperResource::Link:0x00000001763828 @resource=#...
+    6 'ht:users' #<HyperResource::Link:0x00000001753810 @resource=#<Hy...
+    7 'users' #<HyperResource::Link:0x00000001753810 @resource=#<Hyper...
+    8 'ht_users' #<HyperResource::Link:0x00000001753810 @resource=#<Hy...
+
+    Links::curies
+    1 href='http://127.0.0.1:8080:/rels/' base_href='http://127.0.0.1:...
+
+    Links::products
+    #<HyperResource::Link:0x000000018e4990 @resource=#<HyperResource:0...
+
 ## HAL Compatibility
 
 This has been tested and verified with the [HAL-browser](https://github.com/mikekelly/hal-browser). It should also
