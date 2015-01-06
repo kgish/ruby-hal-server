@@ -92,6 +92,24 @@ class BaseResource < Webmachine::Resource
   let(:allow_missing_post?) { true }
   #let(:from_json) { JSON.parse(request.body.to_s)['data'] }
 
+  let(:as_html) { as_json_or_html 'html' }
+  let(:as_json) { as_json_or_html 'json' }
+
+  # A method called response_body MUST be defined in all subclasses
+  def as_json_or_html(json_or_html)
+    puts "Resource::Base[#{request.method}] as_#{json_or_html}"
+    result = JSON.generate(response_body)
+    puts "Resource::Base[#{request.method}] as_#{json_or_html} => #{result}"
+    result
+  end
+
+  def id
+    puts "Resource::Product[#{request.method}] id"
+    result = request.path_info[:id]
+    puts "Resource::Product[#{request.method}] id => #{result}"
+    result
+  end
+
   def finish_request
     puts "Resource::Base[#{request.method}] finish_request"
     # This method is called just before the final response is
@@ -111,18 +129,6 @@ class RootResource < BaseResource
   class << self
     alias_method :let, :define_method
   end
-
-  let(:as_html) { as_json_or_html 'html' }
-  let(:as_json) { as_json_or_html 'json' }
-
-  def as_json_or_html(json_or_html)
-    puts "Resource::Base[#{request.method}] as_#{json_or_html}"
-    result = JSON.generate(response_body)
-    puts "Resource::Base[#{request.method}] as_#{json_or_html} => #{result}"
-    result
-  end
-
-  private
 
   def response_body
     @rr ||= {
@@ -152,66 +158,10 @@ class RootResource < BaseResource
   end
 end
 
-# --- Product Resource --- #
-=begin
-
-[:resource] = one of %w{products users sessions}
-GET /[:resource]
-{
-   '_links' => {
-    'self' => {
-      'href' => '/[:resource]'
-    },
-    'curies' => [
-      {
-        'name' => 'ht',
-        'href' => "http://[:host]:[:port]/rels/{rel}",
-        'templated' => true
-      }
-    ],
-    'ht:[:resource]' => [
-      {
-        'href' => "/products/[:id]",
-        // [:resource].params, e.g. products
-        'name' => [:name],
-        'category' => [:category],
-        'price' => [:price]
-      },
-      {
-        ...
-      }
-    ]
-  }
-}
-
-GET /[:resource]/[:id]
-{
-  '_links' => {
-    'self' => {
-      'href' => "/[:resource]/[:id]"
-    },
-    'curies' => [
-      {
-        'name' => 'ht',
-        'href' => "http://[:host]:[:port]/rels/{rel}",
-        'templated' => true
-      }
-    ]
-  },
-   // [:resource].params, e.g. products
-  'name' => [:name],
-  'category => [:category],
-  'price => [:price]
-}
-=end
-
 class ProductResource < BaseResource
 
-  # let(:create_path) { "/products/#{create_resource.id}" }
-  # let(:as_json) { resource_or_collection.to_json }
-  # let(:resource_exists?) { !request.path_info.has_key?(:id) || !!Product[id: id] }
-
   def allowed_methods
+    puts "Resource::Product[#{request.method}] allowed_methods"
     if request.path_info.has_key?(:id)
       %w{GET PUT DELETE OPTIONS}
     else
@@ -238,17 +188,6 @@ class ProductResource < BaseResource
   def delete_resource
     puts "Resource::Product[#{request.method}] delete_resource"
     Product[id: id].delete
-  end
-
-
-  def as_html
-    puts "Resource::Product[#{request.method}] as_html"
-    JSON.generate(response_body)
-  end
-
-  def as_json
-    puts "Resource::Product[#{request.method}] as_json"
-    JSON.generate(response_body)
   end
 
   def from_json
@@ -289,27 +228,10 @@ class ProductResource < BaseResource
     @resource
   end
 
-  def resource
-    puts "Resource::Product[#{request.method}] resource"
-    @resource ||= Product[id: id]
-  end
-
-  def collection
-    puts "Resource::Product[#{request.method}] collection"
-    @collection ||= Product.all
-  end
-
   def params
     puts "Resource::Product[#{request.method}] params"
     result = JSON.parse(request.body.to_s)['product']
     puts "Resource::Product[#{request.method}] params => #{result.inspect}"
-    result
-  end
-
-  def id
-    puts "Resource::Product[#{request.method}] id"
-    result = request.path_info[:id]
-    puts "Resource::Product[#{request.method}] id => #{result}"
     result
   end
 
