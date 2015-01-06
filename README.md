@@ -1,7 +1,7 @@
 # Webmachine/ROAR Server Template
 
-Note: A newer version can be found [here](https://github.com/kgish/ruby-webmachine-roar-template/tree/webmachine-and-roar-update-attempt),
-however for the time being the [demo client](https://github.com/kgish/ember-hal-template) will only work with this version.
+[***Note***: A newer version (which works with the [HAL Browser](http://haltalk.herokuapp.com/explorer/browser.html#/) can be found [here](https://github.com/kgish/ruby-webmachine-roar-template/tree/webmachine-and-roar-update-attempt),
+however for the time being the [demo client](https://github.com/kgish/ember-hal-template) will only work with this version]
 
 This is a basic server template for setting up a simple application to show how 
 [webmachine](https://github.com/seancribbs/webmachine-ruby) and [roar](https://github.com/apotonick/roar)
