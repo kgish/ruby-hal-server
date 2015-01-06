@@ -46,7 +46,7 @@ catch :ctrl_c do
       products.each do |p|
         if cnt == 0
           puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price'
-          puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----------'
+          puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'-----'
         end
         cnt += 1
         # Replace { href => '/products/id', ...} with { id => 'id', ... }

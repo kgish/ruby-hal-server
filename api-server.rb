@@ -44,8 +44,8 @@ class Product < Sequel::Model
 end
 
 # Populate the products table with random items
-names = %w{kiffin rabbit shoes george apple suitcase audi horse maserati pizza beer soap bathtub jupiter dragon dime}
-categories = %w{person animal clothing fruit object car food drink unknown book gem thingie}
+names = %w{kiffin shovel hammer rabbit shoes george apple suitcase soup audi horse maserati pizza beer soap bathtub jupiter dragon dime}
+categories = %w{person mineral sport beauty health home garden animal clothing fruit object car food drink unknown book gem thingie}
 
 9.times do
   cnt = 0
@@ -118,9 +118,10 @@ class BaseResource < Webmachine::Resource
     # of this method must be by modifying the response.
 
     # Enable simple cross-origin resource sharing (CORS)
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    response.headers['Access-Control-Allow-Origin']   = '*'
+    response.headers['Access-Control-Allow-Methods']  = 'GET, POST, PUT, DELETE, HEAD, OPTIONS'
+    response.headers['Access-Control-Allow-Headers']  = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+    response.headers['Access-Control-Expose-Headers'] = 'connect-src self'
   end
 end
 
