@@ -4,7 +4,8 @@ This is a basic server template for setting up a simple application to show how
 [webmachine](https://github.com/seancribbs/webmachine-ruby) and [roar](https://github.com/apotonick/roar)
 can work together to build real RESTful systems in Ruby.
 
-Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
+Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support. This can be demoed as-is with 
+the [Ember HAL Template](https://github.com/kgish/ember-hal-template) client.
 
 ![](images/screenshot-monitor.png?raw=true)
 
