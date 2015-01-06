@@ -1,10 +1,15 @@
 # Webmachine/ROAR Server Template
 
+Note: A newer version can be found [here](https://github.com/kgish/ruby-webmachine-roar-template/tree/webmachine-and-roar-update-attemptr)],
+however for the time being the [demo client](https://github.com/kgish/ember-hal-template) will only work with this version.
+
 This is a basic server template for setting up a simple application to show how 
 [webmachine](https://github.com/seancribbs/webmachine-ruby) and [roar](https://github.com/apotonick/roar)
 can work together to build real RESTful systems in Ruby.
 
 Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
+
+This can be demoed as-is with the [Ember HAL Template](https://github.com/kgish/ember-hal-template) client.
 
 ![](images/screenshot-monitor.png?raw=true)
 
