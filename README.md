@@ -345,47 +345,47 @@ that indeed the product has been updated/created and the parameters match.
 
 #### Usage
 
-  USAGE:
+      USAGE:
 
-    update-product [OPTIONS] --id=n
+        update-product [OPTIONS] --id=n
 
-  DESCRIPTION:
+      DESCRIPTION:
 
-    Updates a product with given attribute(s) by sending the
-    following HTTP request to the given api server:
+        Updates a product with given attribute(s) by sending the
+        following HTTP request to the given api server:
 
-      PUT /products
+          PUT /products
 
-  REQUIRED PARAMETERS:
+      REQUIRED PARAMETERS:
 
-    --id, -i n
-      product id (number)
+        --id, -i n
+          product id (number)
 
-  OPTIONAL PARAMETERS:
+      OPTIONAL PARAMETERS:
 
-    --help, -h
-      show this help screen
+        --help, -h
+          show this help screen
 
-    --name, -n s
-      name of product (string)
+        --name, -n s
+          name of product (string)
 
-    --price, -p n
-      price of product (number)
+        --price, -p n
+          price of product (number)
 
-    --category, -c s
-      category of product (string)
+        --category, -c s
+          category of product (string)
 
-    --auth, -a username:password
-      basic authorization string (both username and password required)
+        --auth, -a username:password
+          basic authorization string (both username and password required)
 
-    --url, -u hostname[:port]
-      destination of request (default 0.0.0.0:8080)
+        --url, -u hostname[:port]
+          destination of request (default 0.0.0.0:8080)
 
-  EXAMPLES:
+      EXAMPLES:
 
-    update-product --id=3 --name=audi --price=25000
-    update-product --id=5 --category=food --auth=kiffin:pindakaas
-    update-product --id=21 -name=horse --url=www.example.com:8080
+        update-product --id=3 --name=audi --price=25000
+        update-product --id=5 --category=food --auth=kiffin:pindakaas
+        update-product --id=21 -name=horse --url=www.example.com:8080
 
 ### Autodiscover (zero configuration)
 
@@ -397,7 +397,7 @@ gather the necessary information to use the service.
 
 To see how this works you can run the following command:
 
-    bundle exec ruby api-autodiscover.rb
+    $ bundle exec ruby api-autodiscover.rb
 
 ## HAL Compatibility
 
