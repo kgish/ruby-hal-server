@@ -63,12 +63,12 @@ if Product.count
   cnt = 0
   puts
   puts 'PRODUCTS'
-  puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price '
-  puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----- '
+  puts '#   '.ljust(5)+'id  '.ljust(5)+'name      '.ljust(11)+'category  '.ljust(11)+'price  to_hash'
+  puts '----'.ljust(5)+'----'.ljust(5)+'----------'.ljust(11)+'----------'.ljust(11)+'-----  -------'
   products.each do |p|
     cnt += 1
-    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p[:category].ljust(16)+p[:price].to_s
+    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(11)+p[:category].ljust(11)+p[:price].to_s.ljust(7)+p.to_hash.to_s
   end
 end
 
-# --- Model::User --- #
+# --- Model::Product --- #
