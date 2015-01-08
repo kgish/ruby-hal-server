@@ -1,6 +1,6 @@
-require 'sequel'
+require 'models/base'
 
-# Create a Users table
+# Create a users table
 DB.create_table :users do
   primary_key :id
   String      :name
@@ -12,10 +12,10 @@ DB.create_table :users do
   Date        :login_date
 end
 
-# Create a dataset from the Users table
+# Create a dataset from the users table
 $users = DB[:users]
 
-# Populate the Users table.
+# Populate the users table.
 
 # kiffin => admin
 $users.insert(
