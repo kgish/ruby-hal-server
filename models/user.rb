@@ -41,7 +41,7 @@ $users.insert(
 
 if $users.count
   cnt = 0
-  puts ' '
+  puts
   puts 'USERS'
   puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'username  '.ljust(11)+'email                   '.ljust(26)+'password '.ljust(16)+'admin'
   puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'----------'.ljust(11)+'------------------------'.ljust(26)+'---------'.ljust(16)+'-----'
@@ -50,10 +50,42 @@ if $users.count
     admin = u[:is_admin] ? 'yes' : 'no'
     puts cnt.to_s.ljust(5)+u[:id].to_s.ljust(5)+u[:name].ljust(16)+u[:username].ljust(11)+u[:email].ljust(26)+u[:password].ljust(16)+admin
   end
+  puts
 end
 
 class User < Sequel::Model
   HASH_ATTRS = [:id, :name, :username, :email, :password, :access_token, :is_admin, :login_date]
+
+  def self.create(attributes)
+    id = User.insert(attributes)
+    User[id: id]
+  end
+
+  def self.exists(id)
+    User[id: id]
+  end
+
+  def self.remove(id)
+    User[id: id].delete
+  end
+
+  def self.collection
+    list = []
+    User.all.each do |u|
+      list.push({
+                    href: "/users/#{u[:id]}",
+                    id:  u[:id],
+                    name: u[:name],
+                    category: u[:category],
+                    price: u[:price]
+                })
+    end
+    list
+  end
+
+  def replace(attributes)
+    update(attributes)
+  end
 
   def to_hash
     HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}

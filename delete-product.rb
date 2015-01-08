@@ -5,11 +5,11 @@ require 'json'
 # Initialize all of the parameters passed on the command line.
 params = get_params(false)
 puts params
-puts ' '
+puts
 
 url = "http://#{params[:url]}/products/#{params[:id]}"
 puts "DELETE #{url}"
-puts ' '
+puts
 
 # Attempt to delete the product => DELETE /product/id
 begin
@@ -27,7 +27,7 @@ check_code(response)
 
 # Verify that the product was indeed deleted.
 puts "GET #{url}"
-puts ' '
+puts
 
 begin
   response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
@@ -181,7 +181,7 @@ BEGIN {
 
   def display_results(response, b)
     puts "#{response.code}/#{response.message} #{response.headers['server']}"
-    puts ' '
+    puts
     puts response.body if b
   end
 }

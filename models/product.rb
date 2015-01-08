@@ -28,13 +28,13 @@ class Product < Sequel::Model
 
   def self.collection
     list = []
-    Product.all.each do |item|
+    Product.all.each do |p|
       list.push({
-        href: "/products/#{item[:id]}",
-        id:  item[:id],
-        name: item[:name],
-        category: item[:category],
-        price: item[:price]
+        href: "/products/#{p[:id]}",
+        id:  p[:id],
+        name: p[:name],
+        category: p[:category],
+        price: p[:price]
       })
     end
     list

@@ -5,11 +5,11 @@ require 'json'
 # Initialize all of the parameters passed on the command line.
 params = get_params(false)
 puts params
-puts ' '
+puts
 
 url = "http://#{params[:url]}/products"
 puts "POST #{url}"
-puts ' '
+puts
 
 # Attempt to create new product => POST /products
 begin
@@ -32,7 +32,7 @@ if url.nil?
   exit
 end
 puts "GET #{url}"
-puts ' '
+puts
 
 begin
   response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
@@ -229,7 +229,7 @@ BEGIN {
 
   def display_results(response, b)
     puts "#{response.code}/#{response.message} #{response.headers['server']}"
-    puts ' '
+    puts
     puts response.body if b
   end
 }

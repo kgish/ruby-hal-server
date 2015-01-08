@@ -51,7 +51,7 @@ class ProductResource < BaseResource
     end
   end
 
-  protected
+  private
 
   def create_resource
     puts "Resource::Product[#{request.method}] create_resource"

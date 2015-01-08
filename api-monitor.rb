@@ -33,7 +33,7 @@ catch :ctrl_c do
       server = response.headers['server']
       server = server.sub(/ \(.*\)$/, '')
       puts "#{total} | #{host} | #{port} | #{resource} | #{server} | #{response.code} | #{response.message}"
-      puts ' '
+      puts
 
       # If forbidden then makes no sense to continue any longer.
       exit if response.code.to_i == 401
@@ -62,7 +62,7 @@ catch :ctrl_c do
       puts error_message #  Connection refused - connect(2)
       puts countdown == RETRY_COUNT ? 'Oops!' : "Retry (#{countdown})"
     end
-    puts ' '
+    puts
     puts 'CTRL-C to exit'
     sleep(1)
   end

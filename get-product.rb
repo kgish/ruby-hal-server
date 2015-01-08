@@ -5,11 +5,11 @@ require 'json'
 # Initialize all of the parameters passed on the command line.
 params = get_params(false)
 puts params
-puts ' '
+puts
 
 url = "http://#{params[:url]}/products/#{params[:id]}"
 puts "GET #{url}"
-puts ' '
+puts
 
 # Attempt to get the product => GET /product/id
 begin
@@ -168,7 +168,7 @@ BEGIN {
 
   def display_results(response, b)
     puts "#{response.code}/#{response.message} #{response.headers['server']}"
-    puts ' '
+    puts
     puts response.body if b
   end
 }
