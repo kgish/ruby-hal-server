@@ -60,8 +60,6 @@ class UserResource < BaseResource
     result
   end
 
-  # TODO: do not return the id, password or token
-
   def response_body_resource
     # GET /users/[:id]
     puts "Resource::User[#{request.method}] response_body_resource"
@@ -77,7 +75,6 @@ class UserResource < BaseResource
     puts "Resource::User[#{request.method}] response_body_collection => #{result.inspect}"
     result
   end
-
 
 end
 

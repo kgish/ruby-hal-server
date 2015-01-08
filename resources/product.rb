@@ -60,8 +60,6 @@ class ProductResource < BaseResource
     result
   end
 
-  # TODO: do not return the id
-
   def response_body_resource
     # GET /products/[:id]
     puts "Resource::Product[#{request.method}] response_body_resource"

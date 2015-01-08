@@ -1,20 +1,11 @@
 require 'resources/base'
 require 'models/user'
 
+# For the secure authentication token
+require 'securerandom'
+
 class SessionResource < BaseResource
 
-end
-
-# # For the secure authentication token
-# require 'securerandom'
-#
-# class SessionResource < Resource
-#
-#   def allowed_methods
-#     puts "Resource::Session[#{request.method}]: allowed_methods"
-#     %w{GET POST DELETE OPTIONS}
-#   end
-#
 #   def resource_exists?
 #     puts "Resource::Session[#{request.method}]: resource_exists?"
 #     if request.path_info.has_key?(:id)
@@ -44,21 +35,11 @@ end
 #   #   success ? 201 : 400
 #   # end
 #
-#   def service_available?
-#     puts "Resource::Session[#{request.method}]: service_available?"
-#     true
-#   end
-#
-#   def content_types_provided
-#     puts "Resource::Session[#{request.method}]: content_types_provided"
-#     [['application/json', :json]]
-#   end
-#
-#   def content_types_accepted
-#     puts "Resource::Session[#{request.method}]: content_types_accepted"
-#     [['application/json', :create_session]]
-#   end
-#
+   def service_available?
+     puts "Resource::Session[#{request.method}]: service_available?"
+     true
+   end
+
 #   def parsed_body
 #     if request.body.nil? || request.body.to_s.nil? || request.body.to_s.empty?
 #       body = {}
@@ -111,9 +92,5 @@ end
 #     result
 #   end
 #
-#   def id
-#     puts "Resource::Session[#{request.method}]: id"
-#     request.path_info[:id]
-#   end
-#
-# end
+end
+

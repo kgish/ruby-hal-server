@@ -1,0 +1,97 @@
+CRUD logs
+=========
+
+CREATE product => 201
+Resource::Base[POST] allowed_methods
+Resource::Product[POST] resource_exists? => true
+Resource::Product[POST] create_path
+Resource::Product[POST] create_resource
+Resource::Base[POST] params(product) => {"name"=>"jjjjj", "category"=>"oooo", "price"=>"90"}
+Resource::Product[POST] create_resource, @resource=#<Product @values={:id=>10, :name=>"jjjjj", :category=>"oooo", :price=>90}>
+Resource::Product[POST] next_id=10
+Resource::Product[POST] create_path => /products/10
+Resource::Product[POST] from_json => {"product"=>{"name"=>"jjjjj", "category"=>"oooo", "price"=>"90"}}
+Resource::Base[POST] finish_request
+[2015-01-08T15:14:43+01:00] method=POST uri=http://0.0.0.0:8080/products code=201 resource=ProductResource time=7.2899
+
+
+GET products => 200
+Resource::Base[GET] allowed_methods
+Resource::Product[GET] resource_exists? => true
+Resource::Base[GET] as_json
+Resource::Base[GET] response_body
+Resource::Base[GET] id => 
+Resource::Product[GET] response_body_collection
+Resource::Base[GET] build_result_collection
+Resource::Base[GET] as_json => {...}
+Resource::Base[GET] finish_request
+[2015-01-08T15:19:39+01:00] method=GET uri=http://localhost:8080/products code=200 resource=ProductResource time=2.4197
+
+
+GET product existing => 200
+Resource::Base[GET] allowed_methods
+Resource::Product[GET] resource_exists?
+Resource::Base[GET] id => 3
+Resource::Product[GET] resource_exists? => true
+Resource::Base[GET] as_json
+Resource::Base[GET] response_body
+Resource::Base[GET] id => 3
+Resource::Product[GET] response_body_resource
+Resource::Base[GET] id => 3
+Resource::Base[GET] id => 3
+Resource::Product[GET] response_body_resource => {:_links=>{:self=>{:href=>"/products/3"}, :curies=>[{:name=>"ht", :href=>"http://0.0.0.0:8080:/rels/{rel}", :templated=>true}]}, :name=>"horse", :category=>"object", :price=>2358}
+Resource::Base[GET] as_json => {"_links":{"self":{"href":"/products/3"},"curies":[{"name":"ht","href":"http://0.0.0.0:8080:/rels/{rel}","templated":true}]},"name":"horse","category":"object","price":2358}
+Resource::Base[GET] finish_request
+[2015-01-08T15:07:19+01:00] method=GET uri=http://0.0.0.0:8080/products/3 code=200 resource=ProductResource time=2.8578
+
+GET product non-existing => 404
+Resource::Base[GET] allowed_methods
+Resource::Product[GET] resource_exists?
+Resource::Base[GET] id => 55
+Resource::Product[GET] resource_exists? => false
+Resource::Base[GET] finish_request
+[2015-01-08T15:07:24+01:00] method=GET uri=http://0.0.0.0:8080/products/55 code=404 resource=ProductResource time=42.0762
+
+UPDATE product existing => 200
+Resource::Base[PUT] allowed_methods
+Resource::Product[PUT] resource_exists?
+Resource::Base[PUT] id => 3
+Resource::Product[PUT] resource_exists? => true
+Resource::Product[PUT] from_json
+Resource::Base[PUT] id => 3
+Resource::Product[PUT] from_json, product exists
+Resource::Base[PUT] params(product) => {"name"=>"jjjjj", "category"=>"oooo", "price"=>"90"}
+Resource::Base[PUT] finish_request
+[2015-01-08T15:06:18+01:00] method=PUT uri=http://0.0.0.0:8080/products/3 code=200 resource=ProductResource time=7.8215
+
+UPDATE product non-existing => 201
+Resource::Base[PUT] allowed_methods
+Resource::Product[PUT] resource_exists?
+Resource::Base[PUT] id => 333
+Resource::Product[PUT] resource_exists? => false
+Resource::Product[PUT] from_json
+Resource::Base[PUT] id => 333
+Resource::Product[PUT] from_json, product does not exist
+Resource::Base[PUT] params(product) => {"name"=>"jjjjj", "category"=>"oooo", "price"=>"90"}
+Resource::Base[PUT] id => 333
+Resource::Base[PUT] finish_request
+[2015-01-08T15:06:24+01:00] method=PUT uri=http://0.0.0.0:8080/products/333 code=201 resource=ProductResource time=4.6354
+
+DELETE product existing => OK
+Resource::Base[DELETE] allowed_methods
+Resource::Product[DELETE] resource_exists?
+Resource::Base[DELETE] id => 3
+Resource::Product[DELETE] resource_exists? => true
+Resource::Product[DELETE] delete_resource
+Resource::Base[DELETE] id => 3
+Resource::Base[DELETE] finish_request
+[2015-01-08T15:05:37+01:00] method=GET uri=http://0.0.0.0:8080/products/3 code=404 resource=ProductResource time=40.6490
+
+DELETE product non-existing => 404
+Resource::Base[DELETE] allowed_methods
+Resource::Product[DELETE] resource_exists?
+Resource::Base[DELETE] id => 333
+Resource::Product[DELETE] resource_exists? => false
+Resource::Base[DELETE] finish_request
+[2015-01-08T15:05:40+01:00] method=DELETE uri=http://0.0.0.0:8080/products/333 code=404 resource=ProductResource time=2.6992
+

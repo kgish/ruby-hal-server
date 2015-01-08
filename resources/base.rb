@@ -12,6 +12,7 @@ class BaseResource < Webmachine::Resource
   let(:post_is_create?) { true }
   let(:allow_missing_post?) { true }
 
+  let(:ifrom_json) { JSON.parse(request.body.to_s) }
   let(:as_html) { as_json_or_html 'html' }
   let(:as_json) { as_json_or_html 'json' }
 
@@ -41,9 +42,9 @@ class BaseResource < Webmachine::Resource
   def allowed_methods
     puts "Resource::Base[#{request.method}] allowed_methods"
     if request.path_info.has_key?(:id)
-      %w{GET PUT DELETE OPTIONS}
+      %w{GET PUT DELETE HEAD OPTIONS}
     else
-      %w{GET POST OPTIONS}
+      %w{GET POST HEAD OPTIONS}
     end
   end
 
@@ -54,18 +55,18 @@ class BaseResource < Webmachine::Resource
 
   def result_resource(resource_name, resource)
     result = {
-        _links: {
-            self: {
-                href: "/#{resource_name}s/#{id}"
-            },
-            curies: [
-                {
-                    name: "#{curie_name}",
-                    href: "http://#{request.host}:#{request.port}/rels/{rel}",
-                    templated: true
-                }
-            ]
-        }
+      _links: {
+        self: {
+          href: "/#{resource_name}s/#{id}"
+        },
+        curies: [
+          {
+            name: "#{curie_name}",
+            href: "http://#{request.host}:#{request.port}/rels/{rel}",
+            templated: true
+          }
+        ]
+      }
     }
     result.merge!(resource)
   end
@@ -73,19 +74,19 @@ class BaseResource < Webmachine::Resource
   def result_collection(resource_name, collection)
     puts "Resource::Base[#{request.method}] build_result_collection"
     result = {
-        _links: {
-            self:  {
-                href: "/#{resource_name}s"
-            },
-            curies: [
-                {
-                    name: curie_name,
-                    href: "http://#{request.host}:#{request.port}/rels/{rel}",
-                    templated: true
-                }
-            ],
-        }
-        #     'curie_name:resource_name' => []
+      _links: {
+        self:  {
+          href: "/#{resource_name}s"
+        },
+        curies: [
+          {
+            name: curie_name,
+            href: "http://#{request.host}:#{request.port}/rels/{rel}",
+            templated: true
+          }
+        ],
+      }
+      # 'curie_name:resource_name' => []
     }
     result[:_links]["#{curie_name}:#{resource_name}"] = collection
     result
@@ -99,10 +100,9 @@ class BaseResource < Webmachine::Resource
   end
 
   def id
-    puts "Resource::Base[#{request.method}] id"
-    result = request.path_info[:id]
-    puts "Resource::Base[#{request.method}] id => #{result}"
-    result
+    @id ||= request.path_info[:id]
+    puts "Resource::Base[#{request.method}] id => #{@id || 'none'}"
+    @id
   end
 
   def curie_name
