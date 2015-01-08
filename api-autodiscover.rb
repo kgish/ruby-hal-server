@@ -1,3 +1,4 @@
+require 'bundler/setup'
 require 'hyperresource'
 
 host = '127.0.0.1'

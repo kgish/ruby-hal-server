@@ -1,5 +1,5 @@
+require 'bundler/setup'
 require 'webmachine'
-require 'roar/json/hal'
 require 'sequel'
 
 #### Models (begin) ####
@@ -22,17 +22,36 @@ end
 products = DB[:products]
 
 class Product < Sequel::Model
-  include Roar::JSON::HAL
-
   HASH_ATTRS = [:id, :name, :category, :price]
 
-  property :id
-  property :name
-  property :category
-  property :price
+  def self.create(attributes)
+    Product.insert(attributes)
+  end
 
-  link :self do
-    "/products/#{id}"
+  def self.exists(id)
+    Product[id: id]
+  end
+
+  def self.remove(id)
+    Product[id: id].delete
+  end
+
+  def self.collection
+    list = []
+    Product.all.each do |item|
+      list.push({
+        href: "/products/#{item[:id]}",
+        id:  item[:id],
+        name: item[:name],
+        category: item[:category],
+        price: item[:price]
+      })
+    end
+    list
+  end
+
+  def replace(attributes)
+    update(attributes)
   end
 
   def to_hash
@@ -40,7 +59,7 @@ class Product < Sequel::Model
   end
 end
 
-# Populate the products table with random items
+# Populate the products table with random names and categories
 names = %w{kiffin shovel hammer rabbit shoes george apple suitcase soup audi horse maserati pizza beer soap bathtub jupiter dragon dime}
 categories = %w{person mineral sport beauty health home garden animal clothing fruit object car food drink unknown book gem thingie}
 
@@ -90,22 +109,7 @@ end
 users = DB[:users]
 
 class User < Sequel::Model
-  include Roar::JSON::HAL
-
   HASH_ATTRS = [:id, :name, :username, :email, :password, :access_token, :is_admin, :login_date]
-
-  property :id
-  property :name
-  property :username
-  property :email
-  property :password
-  property :access_token
-  property :is_admin
-  property :login_date
-
-  link :self do
-    "/users/#{id}"
-  end
 
   def to_hash
     HASH_ATTRS.inject({}){|res, k| res.merge k => send(k)}
@@ -166,7 +170,6 @@ class BaseResource < Webmachine::Resource
   let(:content_types_accepted) { [['application/json', :from_json]] }
   let(:post_is_create?) { true }
   let(:allow_missing_post?) { true }
-  #let(:from_json) { JSON.parse(request.body.to_s)['data'] }
 
   let(:as_html) { as_json_or_html 'html' }
   let(:as_json) { as_json_or_html 'json' }
@@ -176,13 +179,6 @@ class BaseResource < Webmachine::Resource
     puts "Resource::Base[#{request.method}] as_#{json_or_html}"
     result = JSON.generate(response_body)
     puts "Resource::Base[#{request.method}] as_#{json_or_html} => #{result}"
-    result
-  end
-
-  def id
-    puts "Resource::Product[#{request.method}] id"
-    result = request.path_info[:id]
-    puts "Resource::Product[#{request.method}] id => #{result}"
     result
   end
 
@@ -198,58 +194,128 @@ class BaseResource < Webmachine::Resource
     response.headers['Access-Control-Allow-Headers']  = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
     response.headers['Access-Control-Expose-Headers'] = 'connect-src self'
   end
-end
 
-# --- Resource::Root --- #
-
-class RootResource < BaseResource
-  class << self
-    alias_method :let, :define_method
-  end
-
-  def response_body
-    @rr ||= {
-      '_links' => {
-        'self' => {
-          'href' => '/'
-        },
-        'curies' => [
-          {
-            'name' => 'ht',
-            'href' => "http://#{request.host}:#{request.port}/rels/{rel}",
-            'templated' => true
-          }
-        ],
-        'ht:products' => {
-          'href' => '/products'
-        },
-        'ht:users' => {
-          'href' => '/users'
-        }
-      },
-      'welcome' => 'Welcome to Kiffin\'s Demo HAL Server.',
-      'hint_1' => 'This is the first hint.',
-      'hint_2' => 'This is the second hint.',
-      'hint_3' => 'This is the third hint.',
-      'hint_4' => 'This is the fourth hint.',
-      'hint_5' => 'This is the last hint.'
-    }
-   @rr
-  end
-end
-
-# --- Resource::Product --- #
-
-class ProductResource < BaseResource
+  protected
 
   def allowed_methods
-    puts "Resource::Product[#{request.method}] allowed_methods"
+    puts "Resource::Base[#{request.method}] allowed_methods"
     if request.path_info.has_key?(:id)
       %w{GET PUT DELETE OPTIONS}
     else
       %w{GET POST OPTIONS}
     end
   end
+
+  def response_body
+    puts "Resource::Base[#{request.method}] response_body"
+    id ? response_body_resource : response_body_collection
+  end
+
+  def result_resource(resource_name, resource)
+    result = {
+      _links: {
+        self: {
+          href: "/#{resource_name}s/#{id}"
+        },
+        curies: [
+          {
+            name: "#{curie_name}",
+            href: "http://#{request.host}:#{request.port}/rels/{rel}",
+            templated: true
+          }
+        ]
+      }
+    }
+    result.merge!(resource)
+  end
+
+  def result_collection(resource_name, collection)
+    puts "Resource::Base[#{request.method}] build_result_collection"
+    result = {
+        _links: {
+            self:  {
+                href: "/#{resource_name}s"
+            },
+            curies: [
+                {
+                    name: curie_name,
+                    href: "http://#{request.host}:#{request.port}/rels/{rel}",
+                    templated: true
+                }
+            ],
+        }
+        #     'curie_name:resource_name' => []
+    }
+    result[:_links]["#{curie_name}:#{resource_name}"] = collection
+    result
+  end
+
+  def params(resource_name)
+    puts "Resource::Base[#{request.method}] params(#{resource_name})"
+    result = JSON.parse(request.body.to_s)[resource_name]
+    puts "Resource::Base[#{request.method}] params(#{resource_name}) => #{result.inspect}"
+    result
+  end
+
+  def id
+    puts "Resource::Base[#{request.method}] id"
+    result = request.path_info[:id]
+    puts "Resource::Base[#{request.method}] id => #{result}"
+    result
+  end
+
+  def curie_name
+    'ht'
+  end
+
+end
+
+# --- Resource::Root --- #
+
+class RootResource < BaseResource
+
+  let(:allowed_methods) { %w{GET} }
+
+  resources = %w{ product user session }
+
+  def response_body
+    result = {
+      _links: {
+        self: {
+          href: '/'
+        },
+        curies: [
+          {
+            name: curie_name,
+            href: "http://#{request.host}:#{request.port}/rels/{rel}",
+            templated: true
+          }
+        ],
+        "#{curie_name}:products" =>  {
+          href: '/products'
+        },
+        "#{curie_name}:users" =>  {
+          href: '/users'
+        },
+        "#{curie_name}:sessions" =>  {
+        href: '/sessions'
+    }
+      },
+      welcome: 'Welcome to Kiffin\'s Demo HAL Server.',
+      hint_1:  'This is the first hint.',
+      hint_2:  'This is the second hint.',
+      hint_3:  'This is the third hint.',
+      hint_4:  'This is the fourth hint.',
+      hint_5:  'This is the last hint.'
+    }
+    puts "Resource::Root[#{request.method}] response_body_resource => #{result.inspect}"
+    result
+  end
+end
+
+# --- Resource::Product --- #
+
+class ProductResource < BaseResource
 
   def create_path
     puts "Resource::Product[#{request.method}] create_path"
@@ -262,14 +328,14 @@ class ProductResource < BaseResource
 
   def resource_exists?
     puts "Resource::Product[#{request.method}] resource_exists?"
-    result = !request.path_info.has_key?(:id) || !!Product[id: id]
+    result = !request.path_info.has_key?(:id) || !!Product.exists(id)
     puts "Resource::Product[#{request.method}] resource_exists? => #{result}"
     result
   end
 
   def delete_resource
     puts "Resource::Product[#{request.method}] delete_resource"
-    Product[id: id].delete
+    Product.remove(id)
   end
 
   def from_json
@@ -278,17 +344,16 @@ class ProductResource < BaseResource
       # Remember PUT should replace the entire resource, not merge the attributes,
       # that's what PATCH is for. It's also why you should not expose your database
       # IDs as your API IDs.
-      product = Product[id: id]
+      product = Product.exists(id)
       response_code = 200
       if product
         puts "Resource::Product[#{request.method}] from_json, product exists"
-        product.update(params)
+        product.replace(params('product'))
       else
         puts "Resource::Product[#{request.method}] from_json, product does not exist"
-        new_params = params
+        new_params = params('product')
         new_params[:id] = id
-        next_id = Product.insert(new_params)
-        product = Product[id: next_id]
+        product = Product.create(new_params)
         response_code = 201 # Created
       end
       response.body = product.to_json
@@ -304,100 +369,39 @@ class ProductResource < BaseResource
 
   def create_resource
     puts "Resource::Product[#{request.method}] create_resource"
-    next_id = Product.insert(params)
-    @resource = Product[id: next_id]
-    puts "Resource::Product[#{request.method}] create_resource, @resource=#{@resource.inspect}"
-    @resource
-  end
-
-  def params
-    puts "Resource::Product[#{request.method}] params"
-    result = JSON.parse(request.body.to_s)['product']
-    puts "Resource::Product[#{request.method}] params => #{result.inspect}"
-    result
-  end
-
-  def response_body
-    puts "Resource::Product[#{request.method}] response_body"
-    id ? response_body_resource : response_body_collection
-  end
-
-  def response_body_collection
-    # {
-    #   "_links": {
-    #     "self": {
-    #       "href": "/products"
-    #     },
-    #     "curies": [
-    #       {
-    #         "name": "ht",
-    #         "href": "http://127.0.0.1:8080/rels/{rel}",
-    #         "templated": true
-    #       }
-    #     ],
-    #     "ht:product": [
-    #       { ... }, ...
-    #     ]
-    #   }
-    # }
-    puts "Resource::Product[#{request.method}] response_body_collection"
-    # GET /products
-    products = Product.all
-    result = {
-      '_links' => {
-        'self' => {
-          'href' => '/products'
-        },
-        'curies' => [
-          {
-            'name' => 'ht',
-            'href' => "http://#{request.host}:#{request.port}/rels/{rel}",
-            'templated' => true
-          }
-        ],
-#       'ht:product' => []
-      }
-    }
-    prod_list = []
-    products.each do |item|
-      prod_list.push({
-          'href' => "/products/#{item[:id]}",
-          'id' => item[:id],
-          'name' => item[:name],
-          'category' => item[:category],
-          'price' => item[:price]
-      })
-    end
-    result['_links']['ht:product'] = prod_list
-    puts "Resource::Product[#{request.method}] response_body_collection => #{result.inspect}"
+    result = Product.create(params('product'))
+    puts "Resource::Product[#{request.method}] create_resource, @resource=#{result.inspect}"
     result
   end
 
   def response_body_resource
-    puts "Resource::Product[#{request.method}] response_body_resource"
     # GET /products/[:id]
-    product = Product[id: id]
-    # product.to_hash
-    result = {
-      '_links' => {
-        'self' => {
-          'href' => "/products/#{id}"
-        },
-        'curies' => [
-          {
-            'name' => 'ht',
-            'href' => "http://#{request.host}:#{request.port}/rels/{rel}",
-            'templated' => true
-          }
-        ]
-      },
-      'name' => product[:name],
-      'category' => product[:category],
-      'price' => product[:price]
-    }
+    puts "Resource::Product[#{request.method}] response_body_resource"
+    result = result_resource('product', Product.exists(id))
     puts "Resource::Product[#{request.method}] response_body_resource => #{result.inspect}"
     result
   end
+
+  def response_body_collection
+    # GET /products
+    puts "Resource::Product[#{request.method}] response_body_collection"
+    result = result_collection('product', Product.collection)
+    puts "Resource::Product[#{request.method}] response_body_collection => #{result.inspect}"
+    result
+  end
+
+end
+
+# --- Resource::User --- #
+
+class UserResource < BaseResource
+
+end
+
+# --- Resource::Session --- #
+
+class SessionResource < BaseResource
+
 end
 
 #### Resources (end) ####
@@ -442,11 +446,18 @@ App = Webmachine::Application.new do |app|
     add [], RootResource
     add ['products'], ProductResource
     add ['products', :id], ProductResource
+    add ['users'], UserResource
+    add ['users', :id], UserResource
+    add ['session', :*], SessionResource
     add ['trace', :*], Webmachine::Trace::TraceResource
   end
 
 end
 
-App.run
+begin
+  App.run
+rescue Exception => e
+  puts e.message
+end
 
 #### Application (end) ####
