@@ -26,15 +26,25 @@ class Product < Sequel::Model
     Product[id: id].delete
   end
 
+  def self.result(id)
+    p = Product[id: id]
+    {
+        # id:      p[:id],
+        name:     p[:name],
+        category: p[:category],
+        price:    p[:price]
+    }
+  end
+
   def self.collection
     list = []
     Product.all.each do |p|
       list.push({
-        href: "/products/#{p[:id]}",
-        id:  p[:id],
-        name: p[:name],
+        href:    "/products/#{p[:id]}",
+        # id:      p[:id],
+        name:     p[:name],
         category: p[:category],
-        price: p[:price]
+        price:    p[:price]
       })
     end
     list

@@ -69,16 +69,35 @@ class User < Sequel::Model
     User[id: id].delete
   end
 
+  def self.result(id)
+    u = User[id: id]
+    {
+        # id:          u[:id],
+        name:         u[:name],
+        username:     u[:username],
+        email:        u[:email],
+        #password:     u[:password],
+        #access_token: u[:access_token],
+        is_admin:     u[:is_admin],
+        login_date:   u[:login_date]
+    }
+  end
+
+
   def self.collection
     list = []
     User.all.each do |u|
       list.push({
-                    href: "/users/#{u[:id]}",
-                    id:  u[:id],
-                    name: u[:name],
-                    category: u[:category],
-                    price: u[:price]
-                })
+        href:       "/users/#{u[:id]}",
+        # id:          u[:id],
+        name:         u[:name],
+        username:     u[:username],
+        email:        u[:email],
+        #password:     u[:password],
+        #access_token: u[:access_token],
+        is_admin:     u[:is_admin],
+        login_date:   u[:login_date]
+      })
     end
     list
   end
