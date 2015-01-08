@@ -92,16 +92,18 @@ class BaseResource < Webmachine::Resource
     result
   end
 
-  def params(resource_name)
-    puts "Resource::Base[#{request.method}] params(#{resource_name})"
-    result = JSON.parse(request.body.to_s)[resource_name]
-    puts "Resource::Base[#{request.method}] params(#{resource_name}) => #{result.inspect}"
+  def request_payload(resource_name=nil)
+    puts "Resource::Base[#{request.method}] request_payload(resource_name=#{resource_name.inspect})"
+    result = resource_name.nil? ? JSON.parse(request.body.to_s) : JSON.parse(request.body.to_s)[resource_name]
+    puts "Resource::Base[#{request.method}] request_payload(resource>_name=#{resource_name.inspect}) => #{result.inspect}"
     result
   end
 
   def id
-    @id ||= request.path_info[:id]
-    puts "Resource::Base[#{request.method}] id => #{@id || 'none'}"
+    unless @id
+      @id = request.path_info[:id]
+      puts "Resource::Base[#{request.method}] id => #{@id || 'none'}"
+    end
     @id
   end
 

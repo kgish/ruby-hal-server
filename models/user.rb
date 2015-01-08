@@ -32,8 +32,19 @@ $users.insert(
 $users.insert(
     :name         => 'Henri Bergson',
     :username     => 'henri',
-    :email        => 'henri.bergson@planet.nl',
+    :email        => 'henri.bergson@gmail.com',
     :password     => 'escargot',
+    :access_token => 'none',
+    :is_admin     => false,
+    :login_date   => Time.at(rand * Time.now.to_i)
+)
+
+# bhogan => NOT admin
+$users.insert(
+    :name         => 'Ben Hogan',
+    :username     => 'bhogan',
+    :email        => 'ben.hogan@golf.nl',
+    :password     => 'holeinone',
     :access_token => 'none',
     :is_admin     => false,
     :login_date   => Time.at(rand * Time.now.to_i)
@@ -43,12 +54,12 @@ if $users.count
   cnt = 0
   puts
   puts 'USERS'
-  puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'username  '.ljust(11)+'email                   '.ljust(26)+'password '.ljust(16)+'admin'
-  puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'----------'.ljust(11)+'------------------------'.ljust(26)+'---------'.ljust(16)+'-----'
+  puts '#  '.ljust(4)+'id '.ljust(4)+'name           '.ljust(16)+'username'.ljust(9)+'email                   '.ljust(25)+'password  '.ljust(11)+'admin'
+  puts '---'.ljust(4)+'---'.ljust(4)+'---------------'.ljust(16)+'--------'.ljust(9)+'------------------------'.ljust(25)+'----------'.ljust(11)+'-----'
   $users.each do |u|
     cnt += 1
     admin = u[:is_admin] ? 'yes' : 'no'
-    puts cnt.to_s.ljust(5)+u[:id].to_s.ljust(5)+u[:name].ljust(16)+u[:username].ljust(11)+u[:email].ljust(26)+u[:password].ljust(16)+admin
+    puts cnt.to_s.ljust(4)+u[:id].to_s.ljust(4)+u[:name].ljust(16)+u[:username].ljust(9)+u[:email].ljust(25)+u[:password].ljust(11)+admin
   end
   puts
 end
@@ -83,7 +94,6 @@ class User < Sequel::Model
     }
   end
 
-
   def self.collection
     list = []
     User.all.each do |u|
@@ -100,6 +110,10 @@ class User < Sequel::Model
       })
     end
     list
+  end
+
+  def self.verify_username(username)
+    User.where(:username => username).first || User.where(:email => username).first
   end
 
   def replace(attributes)

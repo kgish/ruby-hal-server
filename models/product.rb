@@ -60,10 +60,10 @@ class Product < Sequel::Model
 end
 
 # Populate the products table with random names and categories
-names = %w{kiffin shovel hammer rabbit shoes george apple suitcase soup audi horse maserati pizza beer soap bathtub jupiter dragon dime}
-categories = %w{person mineral sport beauty health home garden animal clothing fruit object car food drink unknown book gem thingie}
+names = %w{kiffin shovel hammer rabbit shoes george apple suitcase soup audi horse maserati magazine pencil pizza beer soap bathtub jupiter dragon dime}
+categories = %w{person mineral sport beauty health home garden animal mineral clothing money fruit object car food drink unknown book gem thingie}
 
-9.times do
+10.times do
   cnt = 0
   name = nil
   loop do
@@ -83,11 +83,11 @@ if Product.count
   cnt = 0
   puts
   puts 'PRODUCTS'
-  puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price '
-  puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----- '
+  puts '#  '.ljust(4)+'id '.ljust(4)+'name      '.ljust(11)+'category  '.ljust(11)+'price '
+  puts '---'.ljust(4)+'---'.ljust(4)+'----------'.ljust(11)+'----------'.ljust(11)+'----- '
   products.each do |p|
     cnt += 1
-    puts cnt.to_s.ljust(5)+p[:id].to_s.ljust(5)+p[:name].ljust(16)+p[:category].ljust(16)+p[:price].to_s
+    puts cnt.to_s.ljust(4)+p[:id].to_s.ljust(4)+p[:name].ljust(11)+p[:category].ljust(11)+p[:price].to_s
   end
 end
 

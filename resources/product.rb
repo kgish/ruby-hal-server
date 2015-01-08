@@ -34,12 +34,12 @@ class ProductResource < BaseResource
       response_code = 200
       if product
         puts "Resource::Product[#{request.method}] from_json, product exists"
-        product.replace(params('product'))
+        product.replace(request_payload('product'))
       else
         puts "Resource::Product[#{request.method}] from_json, product does not exist"
-        new_params = params('product')
-        new_params[:id] = id
-        product = Product.create(new_params)
+        rp = request_payload('product')
+        rp[:id] = id
+        product = Product.create(rp)
         response_code = 201 # Created
       end
       response.body = product.to_json
@@ -55,7 +55,7 @@ class ProductResource < BaseResource
 
   def create_resource
     puts "Resource::Product[#{request.method}] create_resource"
-    result = Product.create(params('product'))
+    result = Product.create(request_payload('product'))
     puts "Resource::Product[#{request.method}] create_resource, @resource=#{result.inspect}"
     result
   end

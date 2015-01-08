@@ -1,96 +1,81 @@
 require 'resources/base'
 require 'models/user'
+require 'json'
 
 # For the secure authentication token
 require 'securerandom'
 
 class SessionResource < BaseResource
 
-#   def resource_exists?
-#     puts "Resource::Session[#{request.method}]: resource_exists?"
-#     if request.path_info.has_key?(:id)
-#       user = User.find(:id => id)
-#       puts "Resource::Session[#{request.method}]: resource_exists? user='#{user.inspect}'"
-#     else
-#       username = parsed_body['username_or_email']
-#       puts "Resource::Session[#{request.method}]: resource_exists? username='#{username}'"
-#       user = User.find(:username => username) || User.find(:email => username)
-#     end
-#     result = !!user
-#     puts "Resource::Session[#{request.method}]: resource_exists? => #{result}"
-#     result
-#   end
-#
-#   def create_path
-#     puts "Resource::Session[#{request.method}]: create_path => #{request.disp_path}"
-#     request.disp_path
-#   end
-#
-#   # def from_json
-#   #   puts "Resource::Session[#{request.method}]: from_json"
-#   #   return 400 if parsed_body.empty?
-#   #   user = User.new parsed_body['user']
-#   #   success = user.save
-#   #   response.body = JSON.generate :username => 'blah'
-#   #   success ? 201 : 400
-#   # end
-#
-   def service_available?
-     puts "Resource::Session[#{request.method}]: service_available?"
-     true
+  let(:allowed_methods) { %w{POST OPTIONS} }
+  let(:content_types_accepted) { [['application/json', :create_session]] }
+
+   def resource_exists?
+     puts "Resource::Session[#{request.method}] resource_exists?"
+     # result = !request.path_info.has_key?(:id) || !!User.exists(id)
+     result = true
+     puts "Resource::Session[#{request.method}] resource_exists? => #{result}"
+     result
    end
 
-#   def parsed_body
-#     if request.body.nil? || request.body.to_s.nil? || request.body.to_s.empty?
-#       body = {}
-#       puts "Resource::Session[#{request.method}]: parsed_body => empty"
-#     else
-#       body = JSON.parse(request.body.to_s)
-#       puts "Resource::Session[#{request.method}]: parsed_body => #{body.inspect}"
-#     end
-#     body
-#   end
-#
-#   def create_session
-#     puts "Resource::Session[#{request.method}]: create_session"
-#     pb = parsed_body
-#     if pb.nil?
-#       puts "Resource::Session[#{request.method}]: parsed_body = nil"
-#       result = 401
-#     elsif pb['username_or_email'].nil?
-#       puts "Resource::Session[#{request.method}]: username_or_email = nil"
-#       result = 401
-#     elsif pb['password'].nil?
-#       puts "Resource::Session[#{request.method}]: password = nil"
-#       result = 401
-#     else
-#       username = pb['username_or_email']
-#       password = pb['password']
-#       puts "Resource::Session[#{request.method}]: username=#{username}, password=#{password}"
-#       #user = User.find(:username => username) || User.find(:email => username)
-#       user = $users.where(:username => username).first || $users.where(:email => username).first
-#       if user
-#         puts "Resource::Session[#{request.method}]: user=#{user.inspect}"
-#         if password == user[:password]
+  def create_path
+    puts "Resource::Session[#{request.method}] create_path"
+    result = '/sessions'
+    puts "Resource::Session[#{request.method}] create_path => #{result}"
+    result
+  end
+
+  def from_json
+    puts "Resource::Session[#{request.method}]: from_json"
+    result = response.body.nil? ? 400 : 201
+    puts "Resource::Session[#{request.method}]: from_json => #{result}"
+    result
+  end
+
+   def service_available?
+     result = true
+     puts "Resource::Session[#{request.method}]: service_available? => #{result}"
+     result
+   end
+
+   def create_session
+     puts "Resource::Session[#{request.method}]: create_session"
+     rp = request_payload
+     if rp.nil?
+       puts "Resource::Session[#{request.method}]: request_payload = nil"
+       result = 401
+     elsif rp['username_or_email'].nil?
+       puts "Resource::Session[#{request.method}]: username_or_email = nil"
+       result = 401
+     elsif rp['password'].nil?
+       puts "Resource::Session[#{request.method}]: password = nil"
+       result = 401
+     else
+       username = rp['username_or_email']
+       password = rp['password']
+       puts "Resource::Session[#{request.method}]: username=#{username}, password=#{password}"
+       user = User.verify_username(username)
+       if user
+         puts "Resource::Session[#{request.method}]: user=#{user.inspect}"
+         if user[:password] == password
+           puts "Resource::Session[#{request.method}]: => password OK"
 #           # TODO: set login_date, later ensure now - login_date < 30 mins
-#           user.update(:login_date => Time.now)
-#           user.update(:access_token => SecureRandom.hex(64))
-#           puts "Resource::Session[#{request.method}]: => password OK"
-#           response.body =  JSON.generate({:api_key => {:user_id => user[:id], :access_token => user[:access_token]}})
-#           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password OK"
-#           result = 201
-#         else
-#           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password NOK"
-#           result = 401
-#         end
-#       else
-#         puts "Resource::Session[#{request.method}]: user not found"
-#         result = 401
-#       end
-#     end
-#     puts "Resource::Session[#{request.method}]: create_session => #{result}"
-#     result
-#   end
-#
+           user.replace({login_date: Time.now, access_token: SecureRandom.hex(64)})
+           response.body =  JSON.generate({:api_key => {:user_id => user[:id], :access_token => user[:access_token]}})
+           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password OK"
+           result = 201
+         else
+           puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password NOK"
+           result = 401
+         end
+       else
+         puts "Resource::Session[#{request.method}]: user not found"
+         result = 401
+       end
+     end
+     puts "Resource::Session[#{request.method}]: create_session => #{result}"
+     result
+   end
+
 end
 

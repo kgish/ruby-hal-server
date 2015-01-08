@@ -34,12 +34,12 @@ class UserResource < BaseResource
       response_code = 200
       if user
         puts "Resource::User[#{request.method}] from_json, user exists"
-        user.replace(params('user'))
+        user.replace(request_payload('user'))
       else
         puts "Resource::User[#{request.method}] from_json, user does not exist"
-        new_params = params('user')
-        new_params[:id] = id
-        user = User.create(new_params)
+        rp = request_payload('user')
+        rp[:id] = id
+        user = User.create(rp)
         response_code = 201 # Created
       end
       response.body = user.to_json
@@ -55,7 +55,7 @@ class UserResource < BaseResource
 
   def create_resource
     puts "Resource::User[#{request.method}] create_resource"
-    result = User.create(params('user'))
+    result = User.create(request_payload('user'))
     puts "Resource::User[#{request.method}] create_resource, @resource=#{result.inspect}"
     result
   end

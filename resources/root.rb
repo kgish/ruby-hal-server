@@ -4,7 +4,7 @@ class RootResource < BaseResource
 
   let(:allowed_methods) { %w{GET} }
 
-#  resources = %w{ product user session }
+# resources = %w{ product user session }
 
   def response_body
     result = {
@@ -24,9 +24,6 @@ class RootResource < BaseResource
         },
         "#{curie_name}:users" =>  {
           href: '/users'
-        },
-        "#{curie_name}:sessions" =>  {
-          href: '/sessions'
         }
       },
       welcome: 'Welcome to Kiffin\'s Demo HAL Server.',
