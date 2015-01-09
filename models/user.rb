@@ -9,7 +9,7 @@ DB.create_table :users do
   String      :password
   String      :access_token
   Boolean     :is_admin
-  Date        :login_date
+  DateTime    :login_date
 end
 
 # Create a dataset from the users table
