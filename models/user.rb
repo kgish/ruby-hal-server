@@ -87,8 +87,8 @@ class User < Sequel::Model
         name:         u[:name],
         username:     u[:username],
         email:        u[:email],
-        #password:     u[:password],
-        #access_token: u[:access_token],
+        password:     u[:password],
+        access_token: u[:access_token],
         is_admin:     u[:is_admin],
         login_date:   u[:login_date]
     }
@@ -103,8 +103,8 @@ class User < Sequel::Model
         name:         u[:name],
         username:     u[:username],
         email:        u[:email],
-        #password:     u[:password],
-        #access_token: u[:access_token],
+        password:     u[:password],
+        access_token: u[:access_token],
         is_admin:     u[:is_admin],
         login_date:   u[:login_date]
       })
