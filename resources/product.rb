@@ -1,96 +1,79 @@
 require 'resources/base'
 require 'models/product'
-require 'json'
 
 class ProductResource < BaseResource
 
-  def allowed_methods
-    puts "Resource::Product[#{request.method}] allowed_methods"
-    if request.path_info.has_key?(:id)
-      %w{GET PUT DELETE OPTIONS}
-    else
-      %w{GET POST OPTIONS}
-    end
-  end
-
-  def is_authorized?(header=nil)
-    puts "Resource::Product[#{request.method}] is_authorized?(header=#{header.inspect})"
-    result = true
-    puts "Resource::User[#{request.method}] is_authorized? => #{result}"
+  def create_path
+    puts "Resource::Product[#{request.method}] create_path"
+    next_id = create_resource[:id]
+    puts "Resource::Product[#{request.method}] next_id=#{next_id}"
+    result = "/products/#{next_id}"
+    puts "Resource::Product[#{request.method}] create_path => #{result}"
     result
   end
 
-
   def resource_exists?
-    if request.path_info.has_key?(:id)
-      @resource = Product.find(id)
-      result = !@resource.nil?
-    else
-      result = true
-    end
-    puts "Resource::Product[#{request.method}] resource_exists => #{result}"
+    puts "Resource::Product[#{request.method}] resource_exists?"
+    result = !request.path_info.has_key?(:id) || !!Product.exists(id)
+    puts "Resource::Product[#{request.method}] resource_exists? => #{result}"
     result
   end
 
   def delete_resource
     puts "Resource::Product[#{request.method}] delete_resource"
-    Product.delete(id)
-  end
-
-  def create_path
-    @resource = Product.create
-    @resource.to_json
-    path = @resource.links[:self]
-    puts "Resource::Product[#{request.method}] create_path => ${path}"
-    path
-  end
-
-  def resource
-    puts "Resource::Product[#{request.method}] resource"
-    @resource ||= Product.find(id)
-  end
-
-  def collection
-    puts "Resource::Product[#{request.method}] collection"
-    @collection ||= Product.all
-  end
-
-  def resource_or_collection
-    puts "Resource::Product[#{request.method}] resource_or_collection"
-    @resource || {:products => collection.map(&:to_hash)}
-  end
-
-  def to_json
-    puts "Resource::Product[#{request.method}] to_json"
-    resource_or_collection.to_json
+    Product.remove(id)
   end
 
   def from_json
     puts "Resource::Product[#{request.method}] from_json"
-    if request.method === 'PUT'
-      if @resource
-        delete_resource
-        # TODO response.code = 201
+    if request.method == 'PUT'
+      # Remember PUT should replace the entire resource, not merge the attributes,
+      # that's what PATCH is for. It's also why you should not expose your database
+      # IDs as your API IDs.
+      product = Product.exists(id)
+      response_code = 200
+      if product
+        puts "Resource::Product[#{request.method}] from_json, product exists"
+        product.replace(request_payload('product'))
+      else
+        puts "Resource::Product[#{request.method}] from_json, product does not exist"
+        rp = request_payload('product')
+        rp[:id] = id
+        product = Product.create(rp)
+        response_code = 201 # Created
       end
-      attributes = params
-      attributes['id'] = id
-      new_product = Product.from_attributes(attributes)
-      $products << new_product
-      response.body = new_product.to_json
+      response.body = product.to_json
+      response_code
     else
-      $products << @resource.from_json(request.body.to_s, :except => [:id])
+      result = JSON.parse(request.body.to_s)
+      puts "Resource::Product[#{request.method}] from_json => #{result.inspect}"
+      result
     end
   end
 
-  def params
-    params = JSON.parse(request.body.to_s).to_hash['product']
-    puts "Resource::Product[#{request.method}] params => #{params}"
-    params
+  private
+
+  def create_resource
+    puts "Resource::Product[#{request.method}] create_resource"
+    result = Product.create(request_payload('product'))
+    puts "Resource::Product[#{request.method}] create_resource, @resource=#{result.inspect}"
+    result
   end
 
-  def id
-    puts "Resource::Product[#{request.method}] id"
-    request.path_info[:id]
+  def response_body_resource
+    # GET /products/[:id]
+    puts "Resource::Product[#{request.method}] response_body_resource"
+    result = result_resource('product', Product.result(id))
+    puts "Resource::Product[#{request.method}] response_body_resource => #{result.inspect}"
+    result
+  end
+
+  def response_body_collection
+    # GET /products
+    puts "Resource::Product[#{request.method}] response_body_collection"
+    result = result_collection('product', Product.collection)
+    puts "Resource::Product[#{request.method}] response_body_collection => #{result.inspect}"
+    result
   end
 
 end

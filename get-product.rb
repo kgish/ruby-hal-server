@@ -1,14 +1,15 @@
+require 'bundler/setup'
 require 'httparty'
 require 'json'
 
 # Initialize all of the parameters passed on the command line.
 params = get_params(false)
 puts params
-puts ' '
+puts
 
 url = "http://#{params[:url]}/products/#{params[:id]}"
 puts "GET #{url}"
-puts ' '
+puts
 
 # Attempt to get the product => GET /product/id
 begin
@@ -48,18 +49,18 @@ BEGIN {
   REQUIRED PARAMETERS:
 
     --id n
-       id of product (number)
+      product id (number)
 
   OPTIONAL PARAMETERS:
 
     --help, -h
-       show this help screen
+      show this help screen
 
     --auth, -a username:password
-       basic authorization string (both username and password required)
+      basic authorization string (both username and password required)
 
     --url, -u hostname[:port]
-       destination of request (default #{defaults[:host]}:#{defaults[:port]})
+      destination of request (default #{defaults[:host]}:#{defaults[:port]})
 
   EXAMPLES:
 
@@ -167,7 +168,7 @@ BEGIN {
 
   def display_results(response, b)
     puts "#{response.code}/#{response.message} #{response.headers['server']}"
-    puts ' '
+    puts
     puts response.body if b
   end
 }

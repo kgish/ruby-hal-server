@@ -1,14 +1,15 @@
+require 'bundler/setup'
 require 'httparty'
 require 'json'
 
 # Initialize all of the parameters passed on the command line.
 params = get_params(false)
 puts params
-puts ' '
+puts
 
 url = "http://#{params[:url]}/products/#{params[:id]}"
 puts "DELETE #{url}"
-puts ' '
+puts
 
 # Attempt to delete the product => DELETE /product/id
 begin
@@ -26,7 +27,7 @@ check_code(response)
 
 # Verify that the product was indeed deleted.
 puts "GET #{url}"
-puts ' '
+puts
 
 begin
   response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
@@ -61,18 +62,18 @@ BEGIN {
   REQUIRED PARAMETERS:
 
     --id n
-       id of product (number)
+      product id (number)
 
   OPTIONAL PARAMETERS:
 
     --help, -h
-       show this help screen
+      show this help screen
 
     --auth, -a username:password
-       basic authorization string (both username and password required)
+      basic authorization string (both username and password required)
 
     --url, -u hostname[:port]
-       destination of request (default #{defaults[:host]}:#{defaults[:port]})
+      destination of request (default #{defaults[:host]}:#{defaults[:port]})
 
   EXAMPLES:
 
@@ -180,7 +181,7 @@ BEGIN {
 
   def display_results(response, b)
     puts "#{response.code}/#{response.message} #{response.headers['server']}"
-    puts ' '
+    puts
     puts response.body if b
   end
 }

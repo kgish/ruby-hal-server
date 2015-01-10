@@ -21,36 +21,40 @@ catch :ctrl_c do
     system('clear')
     countdown = countdown - 1 if countdown > 0
     if countdown == 0
-    begin
-      response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
-    rescue Exception =>e
-      error_message = e.message
-      countdown = RETRY_COUNT
-    end
+      begin
+        response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
+      rescue Exception =>e
+        error_message = e.message
+        countdown = RETRY_COUNT
+      end
     end
     if countdown == 0
       total += 1
       server = response.headers['server']
       server = server.sub(/ \(.*\)$/, '')
       puts "#{total} | #{host} | #{port} | #{resource} | #{server} | #{response.code} | #{response.message}"
-      puts ' '
+      puts
 
       # If forbidden then makes no sense to continue any longer.
       exit if response.code.to_i == 401
 
-      h = JSON.parse response.body
+      body = JSON.parse response.body
+      products = body['_links']['ht:product']
 
       cnt = 0
       # Sort products by id
-      products = h['products'].sort_by { |item| item['product']['id'].to_i}
-      products.each do |key|
+      products.each do |p|
         if cnt == 0
           puts '#   '.ljust(5)+'id  '.ljust(5)+'name           '.ljust(16)+'category       '.ljust(16)+'price'
-          puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'----------'
+          puts '----'.ljust(5)+'----'.ljust(5)+'---------------'.ljust(16)+'---------------'.ljust(16)+'-----'
         end
-        p = key['product']
         cnt += 1
-        puts cnt.to_s.ljust(5)+p['id'].to_s.ljust(5)+p['name'].ljust(16)+p['category'].ljust(16)+p['price'].to_s
+        # Replace { href => '/products/id', ...} with { id => 'id', ... }
+        id = p['href'].sub(/^\/[^\/]*\//,'')
+        name = p['name'] || ''
+        category = p['category'] || ''
+        price = p['price'] || ''
+        puts cnt.to_s.ljust(5)+id.to_s.ljust(5)+name.ljust(16)+category.ljust(16)+price.to_s
       end
 
       puts 'No products' if cnt == 0
@@ -58,7 +62,7 @@ catch :ctrl_c do
       puts error_message #  Connection refused - connect(2)
       puts countdown == RETRY_COUNT ? 'Oops!' : "Retry (#{countdown})"
     end
-    puts ' '
+    puts
     puts 'CTRL-C to exit'
     sleep(1)
   end
@@ -73,7 +77,7 @@ BEGIN {
 
   USAGE:
 
-    monitor-products [OPTIONS]
+    api-monitor [OPTIONS]
 
   DESCRIPTION:
 
@@ -97,9 +101,9 @@ BEGIN {
 
   EXAMPLES:
 
-    monitor-products
-    monitor-products --url=localhost:8080
-    monitor-products --auth=kiffin:pindakaas
+    api-monitor
+    api-monitor --url=localhost:8080
+    api-monitor --auth=kiffin:pindakaas
 
     EOF
     exit 0

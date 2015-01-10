@@ -1,14 +1,15 @@
+require 'bundler/setup'
 require 'httparty'
 require 'json'
 
 # Initialize all of the parameters passed on the command line.
 params = get_params(false)
 puts params
-puts ' '
+puts
 
 url = "http://#{params[:url]}/products/#{params[:id]}"
 puts "PUT #{url}"
-puts ' '
+puts
 
 # Attempt to create new product => POST /products Beer'
 begin
@@ -24,9 +25,9 @@ display_results(response, true)
 # Check the return code, if error abort and optionally dump stack trace
 check_code(response)
 
-puts ' '
+puts
 puts "GET #{url}"
-puts ' '
+puts
 begin
   response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
 rescue Exception => e
@@ -41,8 +42,8 @@ display_results(response, true)
 check_code(response)
 
 # Finally ensure that the properties are identical to what was sent.
-h = JSON.parse response.body
-p = h['product']
+body = JSON.parse response.body
+p = body
 
 cnt = 0
 unless p['name'] === params[:name]
@@ -50,7 +51,7 @@ unless p['name'] === params[:name]
   puts "Name mismatch -- #{p['name']} != #{params[:name]}"
 end
 
-unless p['price'] === params[:price]
+unless p['price'].to_i === params[:price].to_i
   cnt += 1
   puts "Price mismatch -- #{p['price']} != #{params[:price]}"
 end
@@ -83,28 +84,27 @@ BEGIN {
   REQUIRED PARAMETERS:
 
     --id, -i n
-       id of product (number)
+      product id (number)
 
   OPTIONAL PARAMETERS:
 
     --help, -h
-       show this help screen
+      show this help screen
 
     --name, -n s
-       name of product (string)
+      name of product (string)
 
     --price, -p n
-       price of product (number)
+      price of product (number)
 
     --category, -c s
-       category of product (string)
-
+      category of product (string)
 
     --auth, -a username:password
-       basic authorization string (both username and password required)
+      basic authorization string (both username and password required)
 
     --url, -u hostname[:port]
-       destination of request (default #{defaults[:host]}:#{defaults[:port]})
+      destination of request (default #{defaults[:host]}:#{defaults[:port]})
 
   EXAMPLES:
 
@@ -233,7 +233,7 @@ BEGIN {
 
   def display_results(response, b)
     puts "#{response.code}/#{response.message} #{response.headers['server']}"
-    puts ' '
+    puts
     puts response.body if b
   end
 }

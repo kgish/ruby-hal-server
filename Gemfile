@@ -18,5 +18,5 @@ end
 
 group :test do
   gem 'rspec'
-  gem 'webmachine-test', :git => 'https://github.com/bernd/webmachine-test.git'
+  gem 'webmachine-test'
 end
