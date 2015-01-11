@@ -14,7 +14,7 @@ class BaseResource < Webmachine::Resource
   let(:post_is_create?) { true }
   let(:allow_missing_post?) { true }
 
-  let(:ifrom_json) { JSON.parse(request.body.to_s) }
+  let(:from_json) { JSON.parse(request.body.to_s) }
   let(:as_html) { as_json_or_html 'html' }
   let(:as_json) { as_json_or_html 'json' }
 

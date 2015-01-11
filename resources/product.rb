@@ -31,9 +31,9 @@ class ProductResource < BaseResource
 
   def create_path
     puts "Resource::Product[#{request.method}] create_path"
-    next_id = create_resource[:id]
-    puts "Resource::Product[#{request.method}] next_id=#{next_id}"
-    result = "/products/#{next_id}"
+    @id = create_resource[:id]
+    puts "Resource::Product[#{request.method}] next_id=#{@id}"
+    result = "/products/#{@id}"
     puts "Resource::Product[#{request.method}] create_path => #{result}"
     result
   end
@@ -52,12 +52,18 @@ class ProductResource < BaseResource
 
   def from_json
     puts "Resource::Product[#{request.method}] from_json"
+    result = 200
     if request.method == 'PUT'
-      # Remember PUT should replace the entire resource, not merge the attributes,
-      # that's what PATCH is for. It's also why you should not expose your database
-      # IDs as your API IDs.
+      # The PUT method requests that the enclosed entity be stored under the supplied
+      # Request-URI. If the Request-URI refers to an already existing resource, the
+      # enclosed entity SHOULD be considered as a modified version of the one residing on
+      # the origin server. If the Request-URI does not point to an existing resource, and
+      # that URI is capable of being defined as a new resource by the requesting user
+      # agent, the origin server can create the resource with that URI. If a new resource
+      # is created, the origin server MUST inform the user agent via the 201 (Created) response.
+      # If an existing resource is modified, either the 200 (OK) or 204 (No Content) response
+      # codes SHOULD be sent to indicate successful completion of the request.
       product = Product.exists(id)
-      response_code = 200
       if product
         puts "Resource::Product[#{request.method}] from_json, product exists"
         product.replace(request_payload('product'))
@@ -66,30 +72,31 @@ class ProductResource < BaseResource
         rp = request_payload('product')
         rp[:id] = id
         product = Product.create(rp)
-        response_code = 201 # Created
+        puts "Resource::Product[#{request.method}] from_json, created new product=#{product.inspect}"
+        result = 201 # Created
       end
-      response.body = product.to_json
-      response_code
+      response.body = JSON.generate(result_resource('product', Product.resource(id)))
     else
-      result = JSON.parse(request.body.to_s)
-      puts "Resource::Product[#{request.method}] from_json => #{result.inspect}"
-      result
+      response.body = JSON.generate(result_resource('product', Product.resource(@id)))
+      result = 201 # Created
     end
+    puts "Resource::Product[#{request.method}] from_json => #{result}"
+    result
   end
 
   private
 
   def create_resource
     puts "Resource::Product[#{request.method}] create_resource"
-    result = Product.create(request_payload('product'))
-    puts "Resource::Product[#{request.method}] create_resource, @resource=#{result.inspect}"
-    result
+    @resource = Product.create(request_payload('product'))
+    puts "Resource::Product[#{request.method}] create_resource, @resource=#{@resource.inspect}"
+    @resource
   end
 
   def response_body_resource
     # GET /products/[:id]
     puts "Resource::Product[#{request.method}] response_body_resource"
-    result = result_resource('product', Product.result(id))
+    result = result_resource('product', Product.resource(id))
     puts "Resource::Product[#{request.method}] response_body_resource => #{result.inspect}"
     result
   end

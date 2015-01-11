@@ -19,14 +19,14 @@ class Product < Sequel::Model
   end
 
   def self.exists(id)
-    Product[id: id]
+    where(id: id).first
   end
 
   def self.remove(id)
     Product[id: id].delete
   end
 
-  def self.result(id)
+  def self.resource(id)
     p = Product[id: id]
     {
         # id:      p[:id],
@@ -72,7 +72,7 @@ categories = %w{person mineral sport beauty health home garden animal mineral cl
     name = names.sample
     break unless Product.first(:name => name) || cnt > 10
   end
-  products.insert(
+  Product.create(
       :name     => name,
       :category => categories.sample,
       :price    => rand * 10000

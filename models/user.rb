@@ -67,11 +67,6 @@ end
 class User < Sequel::Model
   HASH_ATTRS = [:id, :name, :username, :email, :password, :access_token, :is_admin, :login_date]
 
-  def self.create(attributes)
-    id = User.insert(attributes)
-    User[id: id]
-  end
-
   def self.exists(id)
     User[id: id]
   end
@@ -86,7 +81,7 @@ class User < Sequel::Model
     User[id: id].delete
   end
 
-  def self.result(id)
+  def self.resource(id)
     u = User[id: id]
     {
         # id:          u[:id],

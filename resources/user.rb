@@ -61,9 +61,7 @@ class UserResource < BaseResource
   def from_json
     puts "Resource::User[#{request.method}] from_json"
     if request.method == 'PUT'
-      # Remember PUT should replace the entire resource, not merge the attributes,
-      # that's what PATCH is for. It's also why you should not expose your database
-      # IDs as your API IDs.
+      # See comments for Resource::Product.from_json for 'PUT' method
       user = User.exists(id)
       response_code = 200
       if user
@@ -97,7 +95,7 @@ class UserResource < BaseResource
   def response_body_resource
     # GET /users/[:id]
     puts "Resource::User[#{request.method}] response_body_resource"
-    result = result_resource('user', User.result(id))
+    result = result_resource('user', User.resource(id))
     puts "Resource::User[#{request.method}] response_body_resource => #{result.inspect}"
     result
   end
