@@ -76,6 +76,12 @@ class User < Sequel::Model
     User[id: id]
   end
 
+  def self.auth(token)
+    where(access_token: token).first
+    # TODO: check that now - login_date > 30 mins
+    # also need to update login_date every request.
+  end
+
   def self.remove(id)
     User[id: id].delete
   end

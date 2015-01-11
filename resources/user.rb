@@ -3,6 +3,40 @@ require 'models/user'
 
 class UserResource < BaseResource
 
+  def is_authorized?(auth_header = nil)
+    puts "Resource::User[#{request.method}] is_authorized?(#{auth_header.inspect})"
+    result = false # Until proven otherwise
+    if request.method == 'OPTIONS'
+      result = true
+    else
+      if auth_header.nil?
+        puts "Resource::User[#{request.method}] is_authorized? auth_header=nil!"
+      else
+        user = user_auth(auth_header)
+        puts "Resource::User[#{request.method}] is_authorized? user=#{user.inspect}"
+        if user.nil?
+          puts "Resource::User[#{request.method}] is_authorized? user=nil!"
+        else
+          if user[:is_admin]
+            # Admin can do anything!
+            puts "Resource::User[#{request.method}] is_authorized? admin"
+            result = true
+          else
+            # User can only view and edit his own information
+            if user[:id] == id
+              puts "Resource::User[#{request.method}] is_authorized? user id=#{user[:id]}"
+              result = true
+            else
+              puts "Resource::User[#{request.method}] is_authorized? user id=#{user[:id]} not equal to #{id}!"
+            end
+          end
+        end
+      end
+    end
+    puts "Resource::User[#{request.method}] is_authorized? => #{result}"
+    result
+  end
+
   def create_path
     puts "Resource::User[#{request.method}] create_path"
     next_id = create_resource[:id]

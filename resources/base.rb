@@ -1,6 +1,8 @@
 require 'webmachine'
 require 'json'
 
+require 'models/user'
+
 class BaseResource < Webmachine::Resource
   class << self
     alias_method :let, :define_method
@@ -46,6 +48,28 @@ class BaseResource < Webmachine::Resource
     else
       %w{GET POST HEAD OPTIONS}
     end
+  end
+
+  def user_auth(auth_header=nil)
+    user = nil?
+    ok = 'NOK'
+    puts "Resource::Base[#{request.method}] user_auth(auth_header=#{auth_header.inspect})"
+    if auth_header.nil?
+      puts "Resource::Base[#{request.method}] user_auth, oops auth_header=nil!"
+    else
+      if auth_header.start_with?('Bearer ')
+        token = auth_header.sub(/^Bearer /, '')
+        puts "Resource::Base[#{request.method}] user_auth, token=#{token}"
+        user = User.auth(token)
+        if user.nil?
+          puts "Resource::Base[#{request.method}] user_auth, cannot authenticate user"
+        else
+          ok = 'OK'
+        end
+      end
+    end
+    puts "Resource::Base[#{request.method}] user_auth => #{user.inspect} (#{ok})"
+    user
   end
 
   def response_body
@@ -95,7 +119,7 @@ class BaseResource < Webmachine::Resource
   def request_payload(resource_name=nil)
     puts "Resource::Base[#{request.method}] request_payload(resource_name=#{resource_name.inspect})"
     result = resource_name.nil? ? JSON.parse(request.body.to_s) : JSON.parse(request.body.to_s)[resource_name]
-    puts "Resource::Base[#{request.method}] request_payload(resource>_name=#{resource_name.inspect}) => #{result.inspect}"
+    puts "Resource::Base[#{request.method}] request_payload(resource_name=#{resource_name.inspect}) => #{result.inspect}"
     result
   end
 
