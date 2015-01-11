@@ -105,6 +105,35 @@ You can now start the webmachine-roar api server using defaults WEBrick and port
     INFO  ruby 2.1.5 (2014-11-13) [x86_64-linux]
     INFO  Webmachine::Adapters::WEBrick::Server#start: pid=13513 port=8080
 
+#### Usage
+
+    USAGE:
+
+      api-server [OPTIONS]
+
+    DESCRIPTION:
+
+      RESTful web server built with Webmachine which exposes an HAL/JSON
+      interface API.
+
+    OPTIONAL PARAMETERS:
+
+      --help, -h
+         show this help screen
+
+      --auth, -a
+         enable authentication (default false)
+
+      --port, -p n
+         listen on this port number (default 8080)
+
+    EXAMPLES:
+
+      api-server
+      api-server --ip=4200
+      api-server --auth
+      api-server --ip=8000 --auth
+
 ### Monitor
 
 You can now fire up the monitor by running the following command:

@@ -77,7 +77,7 @@ BEGIN {
   require 'getoptlong'
 
   def show_usage(message, defaults)
-    puts "create-product.rb: #{message}" if message
+    puts "create-product: #{message}" if message
     puts <<-EOF
 
   USAGE:

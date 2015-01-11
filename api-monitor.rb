@@ -72,7 +72,7 @@ BEGIN {
   require 'getoptlong'
 
   def show_usage(message, defaults)
-    puts "monitor-product.rb: #{message}" if message
+    puts "api-monitor: #{message}" if message
     puts <<-EOF
 
   USAGE:

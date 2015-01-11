@@ -45,7 +45,7 @@ BEGIN {
   require 'getoptlong'
 
   def show_usage(message, defaults)
-    puts "delete-product.rb: #{message}" if message
+    puts "delete-product: #{message}" if message
     puts <<-EOF
 
   USAGE:
