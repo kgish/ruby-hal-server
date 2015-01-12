@@ -478,11 +478,11 @@ work seamlessly with the [HyperResource gem](https://github.com/gamache/hyperres
 
 Here are the screenshots as proof.
 
-* [Root](images/hal-browser-root.png)
-* [Products](images/hal-browser-products.png)
-* [Product](images/hal-browser-product.png)
-* [Users](images/hal-browser-users.png)
-* [User](images/hal-browser-user.png)
+* [Root](images/hal-browser-root.png?raw=true)
+* [Products](images/hal-browser-products.png?raw=true)
+* [Product](images/hal-browser-product.png?raw=true)
+* [Users](images/hal-browser-users.png?raw=true)
+* [User](images/hal-browser-user.png?raw=true)
 
 ## Thanks
 
