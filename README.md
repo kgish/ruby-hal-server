@@ -476,6 +476,14 @@ You should see something like the following:
 This has been tested and verified with the [HAL-browser](https://github.com/mikekelly/hal-browser). It should also
 work seamlessly with the [HyperResource gem](https://github.com/gamache/hyperresource).
 
+Here are the screenshots as proof.
+
+* [Root](images/hal-browser-root.png)
+* [Products](images/hal-browser-products.png)
+* [Product](images/hal-browser-product.png)
+* [Users](images/hal-browser-users.png)
+* [User](images/hal-browser-user.png)
+
 ## Thanks
 
 A special thanks goes to [Sean Cribs](https://github.com/seancribbs), [Asmod4n](https://github.com/Asmod4n),

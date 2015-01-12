@@ -3,11 +3,18 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'bundler/setup'
 require 'webmachine'
 
+# Debug logging
+require 'logger'
+$LOG = Logger.new(STDOUT)
+$LOG.level = Logger::DEBUG
+
+ENVIRONMENT ||= 'development'
+
 # Get parameters
 params = get_params(false)
 auth = params[:auth]
 port = params[:port]
-puts params
+$LOG.info params
 
 # Resources
 require 'resources/base'
@@ -19,10 +26,8 @@ require 'resources/session'
 # Authorization enabled?
 BaseResource.authorization(auth)
 
-# Logging
+# Log listener
 require 'helpers/logger'
-
-ENVIRONMENT ||= 'development'
 
 App = Webmachine::Application.new do |app|
   app.configure do |config|
@@ -48,7 +53,7 @@ end
 begin
   App.run
 rescue Exception => e
-  puts e.message
+  $LOG.fatal e.message
 end
 
 BEGIN {
