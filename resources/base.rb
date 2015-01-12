@@ -11,7 +11,7 @@ class BaseResource < Webmachine::Resource
 
     def authorization(auth_yesno)
       @@authorization_enabled = auth_yesno
-      puts "Resource::Base @@authorization_enabled=#{auth_yesno}"
+#      puts "Resource::Base @@authorization_enabled=#{auth_yesno}"
     end
 
   end
