@@ -171,7 +171,7 @@ If everything is working according to plan you should see something like this:
           show this help screen
 
         --auth, -a username:password
-          basic authorization string (both username and password required)
+          authorization string (both username and password required)
 
         --url, -u hostname[:port]
           destination of request (default 0.0.0.0:8080)
@@ -237,7 +237,7 @@ that indeed the product has been created and the parameters match.
           show this help screen
 
         --auth, -a username:password
-          basic authorization string (both username and password required)
+          authorization string (both username and password required)
 
         --url, -u hostname[:port]
           destination of request (default 0.0.0.0:8080)
@@ -292,7 +292,7 @@ You should get results similar to the following:
           show this help screen
 
         --auth, -a username:password
-          basic authorization string (both username and password required)
+          authorization string (both username and password required)
 
         --url, -u hostname[:port]
           destination of request (default 0.0.0.0:8080)
@@ -343,7 +343,7 @@ You should then see something like this:
           show this help screen
 
         --auth, -a username:password
-          basic authorization string (both username and password required)
+          authorization string (both username and password required)
 
         --url, -u hostname[:port]
           destination of request (default 0.0.0.0:8080)
@@ -410,7 +410,7 @@ that indeed the product has been updated/created and the parameters match.
           category of product (string)
 
         --auth, -a username:password
-          basic authorization string (both username and password required)
+          authorization string (both username and password required)
 
         --url, -u hostname[:port]
           destination of request (default 0.0.0.0:8080)
