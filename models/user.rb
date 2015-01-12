@@ -61,7 +61,6 @@ if $users.count
     admin = u[:is_admin] ? 'yes' : 'no'
     puts cnt.to_s.ljust(4)+u[:id].to_s.ljust(4)+u[:name].ljust(16)+u[:username].ljust(9)+u[:email].ljust(25)+u[:password].ljust(11)+admin
   end
-  puts
 end
 
 class User < Sequel::Model
