@@ -89,5 +89,6 @@ if Product.count
     cnt += 1
     puts cnt.to_s.ljust(4)+p[:id].to_s.ljust(4)+p[:name].ljust(11)+p[:category].ljust(11)+p[:price].to_s
   end
+  puts
 end
 
