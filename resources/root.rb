@@ -7,6 +7,7 @@ class RootResource < BaseResource
 # resources = %w{ product user session }
 
   def response_body
+    enabled_or_disabled = @@authorization_enabled ? 'enabled' : 'disabled'
     result = {
       _links: {
         self: {
@@ -27,7 +28,7 @@ class RootResource < BaseResource
         }
       },
       welcome: 'Welcome to Kiffin\'s Demo HAL Server.',
-      hint_1:  'This is the first hint.',
+      authorization: "Authorization has been #{enabled_or_disabled}.",
       hint_2:  'This is the second hint.',
       hint_3:  'This is the third hint.',
       hint_4:  'This is the fourth hint.',
