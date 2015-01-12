@@ -4,26 +4,30 @@ require 'models/product'
 class ProductResource < BaseResource
 
   def is_authorized?(auth_header = nil)
-    puts "Resource::Product[#{request.method}] is_authorized?(#{auth_header.inspect})"
+    puts "Resource::Product[#{request.method}] is_authorized?(#{auth_header.inspect}) @@authorization_enabled=#{@@authorization_enabled}"
     result = false # Until proven otherwise
-    if request.method == 'OPTIONS' or request.method == 'GET'
-      result = true
-    else
-      if auth_header.nil?
-        puts "Resource::Product[#{request.method}] is_authorized? auth_header=nil!"
+    if @@authorization_enabled
+      if request.method == 'OPTIONS' or request.method == 'GET'
+        result = true
       else
-        user = user_auth(auth_header)
-        puts "Resource::Product[#{request.method}] is_authorized? user=#{user.inspect}"
-        if user.nil?
-          puts "Resource::Product[#{request.method}] is_authorized? user=nil!"
+        if auth_header.nil?
+          puts "Resource::Product[#{request.method}] is_authorized? auth_header=nil!"
         else
-          if user[:is_admin]
-            # Admin can do anything!
-            puts "Resource::Product[#{request.method}] is_authorized? admin"
-            result = true
+          user = user_auth(auth_header)
+          puts "Resource::Product[#{request.method}] is_authorized? user=#{user.inspect}"
+          if user.nil?
+            puts "Resource::Product[#{request.method}] is_authorized? user=nil!"
+          else
+            if user[:is_admin]
+              # Admin can do anything!
+              puts "Resource::Product[#{request.method}] is_authorized? admin"
+              result = true
+            end
           end
         end
       end
+    else
+      result = true
     end
     puts "Resource::Product[#{request.method}] is_authorized? => #{result}"
     result

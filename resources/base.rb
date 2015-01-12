@@ -4,8 +4,16 @@ require 'json'
 require 'models/user'
 
 class BaseResource < Webmachine::Resource
+  @@authorization_enabled = false
+
   class << self
     alias_method :let, :define_method
+
+    def authorization(auth_yesno)
+      @@authorization_enabled = auth_yesno
+      puts "Resource::Base @@authorization_enabled=#{auth_yesno}"
+    end
+
   end
 
   let(:trace?) { true }
@@ -133,6 +141,10 @@ class BaseResource < Webmachine::Resource
 
   def curie_name
     'ht'
+  end
+
+  def auth_enabled?
+    @auth
   end
 
 end

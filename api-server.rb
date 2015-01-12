@@ -3,17 +3,21 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'bundler/setup'
 require 'webmachine'
 
+# Get parameters
 params = get_params(false)
+auth = params[:auth]
+port = params[:port]
 puts params
 
-auth = params[:host]
-port = params[:port]
-
 # Resources
+require 'resources/base'
 require 'resources/root'
 require 'resources/product'
 require 'resources/user'
 require 'resources/session'
+
+# Authorization enabled?
+BaseResource.authorization(auth)
 
 # Logging
 require 'helpers/logger'
