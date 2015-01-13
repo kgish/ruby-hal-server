@@ -500,12 +500,15 @@ acquiring authorization is `/session` and the client requests login:
 { "username_or_email" : USER, "password": PASSWD }
 ```
 
-where on success the server replies:
+where on success the server will generate the token by `SecureRandom.hex(64)`
+and replies with:
 
 ```
 <= 201 Created
 { "api_key" : { "user_id" : ID, "access_token" : ACCESS_TOKEN }}
 ```
+
+or on failure the greatly feared `401 Unauthorized` error.
 
 From then on the client passes back the token in the authentication
 header with all following requests:
