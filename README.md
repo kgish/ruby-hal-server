@@ -1,29 +1,24 @@
 # Webmachine/ROAR Server Template
 
-[***Note***: A newer version (which works with the [HAL Browser](http://haltalk.herokuapp.com/explorer/browser.html#/)) can be found [here](https://github.com/kgish/ruby-webmachine-roar-template/tree/webmachine-and-roar-update-attempt),
-however for the time being the [demo client](https://github.com/kgish/ember-hal-template) will only work with this version]
-
-This is a basic server template for setting up a simple application to show how 
+A basic server template for setting up a simple application to demonstrate how
 [webmachine](https://github.com/seancribbs/webmachine-ruby) and [roar](https://github.com/apotonick/roar)
 can work together to build real RESTful systems in Ruby.
 
-Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support. This can be demoed as-is with 
+Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support. This can best be demoed as-is with
 the [Ember HAL Template](https://github.com/kgish/ember-hal-template) client.
 
-This has been tested and verified with the [HAL-browser](https://github.com/mikekelly/hal-browser).
-
-This can be demoed as-is with the [Ember HAL Template](https://github.com/kgish/ember-hal-template) client.
+I've tested and verified the server with the [HAL-browser](https://github.com/mikekelly/hal-browser).
 
 ![](images/screenshot-monitor.png?raw=true)
 
 ## HAL/JSON Web API
 
-Here is an explanation about the Web API that the api server exposes.
+Here is an overview of the Web API functionalities that the api server exposes.
 
-    [:host] = hostname of api server, default `127.0.0.1`
-    [:port] = port used by api server, default `8080`
-    [:resource] = one of `%w{products users sessions}`
-    [:id] = resource id
+    [:host]      = hostname of api server, default `127.0.0.1`
+    [:port]      = port used by api server, default `8080`
+    [:resource]  = one of `%w{products users sessions}`
+    [:id]        = resource id
     [:templated] = true or false, default true
 
 ### GET /[:resource]
