@@ -3,18 +3,13 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'bundler/setup'
 require 'webmachine'
 
-# Debug logging
-require 'logger'
-$LOG = Logger.new(STDOUT)
-$LOG.level = Logger::DEBUG
-
 ENVIRONMENT ||= 'development'
 
 # Get parameters
 params = get_params(false)
 auth = params[:auth]
 port = params[:port]
-$LOG.info params
+puts params
 
 # Resources
 require 'resources/base'
@@ -53,7 +48,7 @@ end
 begin
   App.run
 rescue Exception => e
-  $LOG.fatal e.message
+  puts e.message
 end
 
 BEGIN {

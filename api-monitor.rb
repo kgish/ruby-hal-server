@@ -9,9 +9,42 @@ port = params[:port]
 resource = 'products'
 url = "http://#{host}:#{port}/#{resource}"
 
+username = params[:username]
+password = params[:password]
+auth = (username.nil? or password.nil?) ? false : true
+access_token = nil
+
+if auth
+  # Using authorization, login and get access token.
+  session = "http://#{host}:#{port}/session"
+  options = {
+    :headers => {
+      'Content-type' => 'application/json'
+    },
+    :body => {
+      :username_or_email => username,
+      :password => password
+    }.to_json
+  }
+  response = HTTParty.post(session, options)
+  if response.code == 201
+    access_token = JSON.parse(response.body)['api_key']['access_token']
+    puts "Login okay: access_token=#{access_token}"
+  else
+    puts "Login failed: username=#{username}, password=#{password}, code=#{response.code}, message=#{response.message}"
+    exit
+  end
+end
+
 RETRY_COUNT = 6
 
 trap('SIGINT') { throw :ctrl_c }
+
+if auth
+  options = { :headers => { 'Content-type' => 'application/json', 'Authorization' => "Bearer #{access_token}" } }
+else
+  options = { :headers => { 'Content-type' => 'application/json' } }
+end
 
 catch :ctrl_c do
   total = 0
@@ -22,7 +55,7 @@ catch :ctrl_c do
     countdown = countdown - 1 if countdown > 0
     if countdown == 0
       begin
-        response = HTTParty.get(url, :headers => {'Content-type' => 'application/json'})
+        response = HTTParty.get(url, options)
       rescue Exception =>e
         error_message = e.message
         countdown = RETRY_COUNT
@@ -94,7 +127,7 @@ BEGIN {
        show this help screen
 
     --auth, -a username:password
-       basic authorization string (both username and password required)
+       authorization string (both username and password required)
 
     --url, -u hostname[:port]
        destination of request (default #{defaults[:host]}:#{defaults[:port]})

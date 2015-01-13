@@ -471,6 +471,38 @@ You should see something like the following:
     Links::products
     #<HyperResource::Link:0x000000018e4990 @resource=#<HyperResource:0...
 
+## Authorization
+
+So how does this thing called authorization work? Here's a small code snippet which
+I hope gives you a better idea how to implement things.
+
+```ruby
+# Using authorization, login and get access token.
+options = {
+  :headers => {
+    'Content-type' => 'application/json'
+  },
+  :body => {
+    :username_or_email => username,
+    :password => password
+  }.to_json
+}
+
+# Create session and get token back
+response = HTTParty.post('http://127.0.0.1:8080/session', options)
+
+if response.code == 201 # Created
+  access_token = JSON.parse(response.body)['api_key']['access_token']
+else
+  puts 'Login failed'
+  exit
+end
+
+# Now uou can use the token in all following requests
+options = { :headers => { 'Content-type' => 'application/json', 'Authorization' => "Bearer #{access_token}" } }
+response = HTTParty.get(, options)
+```
+
 ## HAL Compatibility
 
 This has been tested and verified with the [HAL-browser](https://github.com/mikekelly/hal-browser). It should also

@@ -7,7 +7,7 @@ class ProductResource < BaseResource
     puts "Resource::Product[#{request.method}] is_authorized?(#{auth_header.inspect}) @@authorization_enabled=#{@@authorization_enabled}"
     result = false # Until proven otherwise
     if @@authorization_enabled
-      if request.method == 'OPTIONS' or request.method == 'GET'
+      if request.method == 'OPTIONS'
         result = true
       else
         if auth_header.nil?

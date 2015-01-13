@@ -57,7 +57,7 @@ BEGIN {
       show this help screen
 
     --auth, -a username:password
-      basic authorization string (both username and password required)
+      authorization string (both username and password required)
 
     --url, -u hostname[:port]
       destination of request (default #{defaults[:host]}:#{defaults[:port]})
