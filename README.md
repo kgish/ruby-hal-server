@@ -7,7 +7,7 @@ can work together to build real RESTful systems in Ruby.
 Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support. This can best be demoed as-is with
 the [Ember HAL Template](https://github.com/kgish/ember-hal-template) client.
 
-I've tested and verified the server with the [HAL-browser](https://github.com/mikekelly/hal-browser).
+I've tested and verified the server with the [HAL-browser](https://github.com/mikekelly/hal-browser), see below.
 
 ![](images/screenshot-monitor.png?raw=true)
 
