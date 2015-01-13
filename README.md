@@ -492,8 +492,29 @@ You should see something like the following:
 
 ## Authorization
 
-So how does this thing called authorization work? Here's a small code snippet which
-I hope gives you a better idea how to implement things.
+So how does this thing called authorization work? The server endpoint for
+acquiring authorization is `/session` and the client requests login:
+
+```json
+=> POST /session
+{ :username_or_email => USER, :password => PASSWD }
+```
+
+where on success the server replies:
+
+```json
+<= 201 Created
+{ :api_key => { :user_id => ID, :access_token => ACCESS_TOKEN }}
+```
+
+From then on the client passes the token with following requests:
+
+```json
+{ :headers => { 'Authentication' => 'Bearer ACCESS_TOKEN' } }
+```
+
+Here's a small code snippet which I hope gives you a better idea how to
+implement things.
 
 ```ruby
 # Using authorization, login and get access token.
