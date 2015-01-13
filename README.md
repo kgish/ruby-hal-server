@@ -507,7 +507,8 @@ where on success the server replies:
 { "api_key" : { "user_id" : ID, "access_token" : ACCESS_TOKEN }}
 ```
 
-From then on the client passes the token with following requests:
+From then on the client passes back the token in the authentication
+header with all following requests:
 
 ```
 { "headers" : { "Authentication" : "Bearer ACCESS_TOKEN" } }
