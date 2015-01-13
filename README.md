@@ -518,7 +518,13 @@ else
 end
 
 # Now uou can use the token in all following requests
-options = { :headers => { 'Content-type' => 'application/json', 'Authorization' => "Bearer #{access_token}" } }
+options = { 
+  :headers => { 
+    'Content-type' => 'application/json', 
+    'Authorization' => "Bearer #{access_token}" 
+  } 
+}
+
 response = HTTParty.get(, options)
 ```
 
@@ -558,4 +564,4 @@ Here is a list of various references that helped me very much:
 ## Author
 
 Kiffin Gish <kiffin.gish@planet.nl>
-
+Gouda, The Netherlands
