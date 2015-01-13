@@ -187,18 +187,19 @@ If everything is working according to plan you should see something like this:
 Depending on whether you are an admin or regular user you will be given access accordingly, which is
 given in the following table.
 
-Username | Password | Role
--------- | --------   ----
-kiffin | pindakaas | admin
-henri | escargot | user
-bhogan | holeinone | user
+| Username | Password  | Role  |
+| -------- | --------- | ----- |
+| kiffin   | pindakaas | admin |
+| henri    | escargot  | user  |
+| bhogan   | holeinone | user  |
 
 The role provides the person with certain access privileges illustrated in the following table.
 
-Products				Users				Profile
-Role | view | new | edit | delete | view | new | edit | delete | view | edit
-admin | x | x | x | x | x | x | x | x | x | x
-user | x | | | | | | | | x | x
+| Role  | Products |  |  |  | Users |  |  |  | Profile |  |
+| ---- | ---- | --- | ---- | ------ | ---- | --- | ---- | ------ | ---- | ---- |
+|      | view | new | edit | delete | view | new | edit | delete | view | edit |
+| admin | x | x | x | x | x | x | x | x | x | x |
+| user  | x |   |   |   |   |   |   |   | x | x |
 
 ## Tooling
 
