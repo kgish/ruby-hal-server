@@ -18,7 +18,7 @@ This can be demoed as-is with the [Ember HAL Template](https://github.com/kgish/
 
 ## HAL/JSON Web API
 
-Here is an explanation about the Web API.
+Here is an explanation about the Web API that the api server exposes.
 
     [:host] = hostname of api server, default `127.0.0.1`
     [:port] = port used by api server, default `8080`
@@ -181,6 +181,24 @@ If everything is working according to plan you should see something like this:
         api-monitor
         api-monitor --url=localhost:8080
         api-monitor --auth=kiffin:pindakaas
+
+## Users and roles
+
+Depending on whether you are an admin or regular user you will be given access accordingly, which is
+given in the following table.
+
+Username | Password | Role
+-------- | --------   ----
+kiffin | pindakaas | admin
+henri | escargot | user
+bhogan | holeinone | user
+
+The role provides the person with certain access privileges illustrated in the following table.
+
+Products				Users				Profile
+Role | view | new | edit | delete | view | new | edit | delete | view | edit
+admin | x | x | x | x | x | x | x | x | x | x
+user | x | | | | | | | | x | x
 
 ## Tooling
 
