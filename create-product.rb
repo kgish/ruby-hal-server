@@ -11,6 +11,7 @@ url = "http://#{params[:url]}/products"
 puts "POST #{url}"
 puts
 
+
 # Attempt to create new product => POST /products
 begin
   response = HTTParty.post(url, :body => {:product => {:name => params[:name], :category => params[:category], :price => params[:price]}}.to_json, :headers => {'Content-type' => 'application/json'})

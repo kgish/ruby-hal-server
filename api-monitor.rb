@@ -9,6 +9,8 @@ port = params[:port]
 resource = 'products'
 url = "http://#{host}:#{port}/#{resource}"
 
+# --- Authorization (begin) --- #
+
 username = params[:username]
 password = params[:password]
 auth = (username.nil? or password.nil?) ? false : true
@@ -35,16 +37,17 @@ if auth
     exit
   end
 end
-
-RETRY_COUNT = 6
-
-trap('SIGINT') { throw :ctrl_c }
-
 if auth
   options = { :headers => { 'Content-type' => 'application/json', 'Authorization' => "Bearer #{access_token}" } }
 else
   options = { :headers => { 'Content-type' => 'application/json' } }
 end
+
+# --- Authorization (end) --- #
+
+RETRY_COUNT = 6
+
+trap('SIGINT') { throw :ctrl_c }
 
 catch :ctrl_c do
   total = 0

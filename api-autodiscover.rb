@@ -58,17 +58,15 @@ begin
       curies.each do |c|
         cnt += 1
         puts "#{cnt} href='#{c.href}' base_href='#{c.base_href}' name='#{c.name}' templated='#{c.templated}' params='#{c.params.inspect}' default_method='#{c.default_method}"
-        #puts "#{cnt} root='#{c.root}' href='#{c.href}' loaded='#{c.loaded}' base_href='#{c.base_href}' name='#{c.name}' templated='#{c.templated}'' params='#{c.params.inspect}' default_method='#{c.default_method}"
-        # root='#{c.root}' => exception (URI::InvalidURIError: the scheme http does not accept registry part: :80 (or bad hostname?)
       end
     end
   end
 
-  products = api.products
+  products = api.products.get
   puts
   puts 'Links::products'
   puts products.inspect
-  products.get.each do |product|
+  products.each do |product|
     puts product.inspect
   end
 
