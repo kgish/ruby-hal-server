@@ -30,7 +30,6 @@ App = Webmachine::Application.new do |app|
     config.ip = '127.0.0.1'
     config.port = port
     config.adapter = :WEBrick
-    config.adapter_options = {}
   end
 
   app.routes do
@@ -72,8 +71,9 @@ BEGIN {
     --help, -h
        show this help screen
 
-    --auth, -a
+    --auth, -a [=n]
        enable authentication (default #{defaults[:auth]})
+       optional timeout in seconds (default #{defaults[:timeout]}
 
     --port, -p n
        listen on this port number (default #{defaults[:port]})
@@ -84,6 +84,7 @@ BEGIN {
     api-server --ip=4200
     api-server --auth
     api-server --ip=8000 --auth
+    api-server --auth=600 (timeout 10 minutes)
 
     EOF
     exit 0
@@ -91,27 +92,29 @@ BEGIN {
 
   def show_params(params)
     if params[:auth]
-      authorization = 'enabled'
+      authorization = "enabled', timeout=#{params[:timeout]}"
     else
       authorization = 'disabled'
     end
-    puts "ip:'#{params[:url]}'authorization:'#{authorization}"
+    puts "ip='#{params[:url]}', authorization='#{authorization}'"
   end
 
   def get_params(show)
     defaults = {
         auth: false,
+        timeout: 3600,
         port: 8080
     }
 
     params = {
         auth: defaults[:auth],
-        port: defaults[:port]
+        port: defaults[:port],
+        timeout: defaults[:timeout]
     }
 
     opts = GetoptLong.new(
         [ '--help',     '-h', GetoptLong::NO_ARGUMENT       ],
-        [ '--auth',     '-a', GetoptLong::NO_ARGUMENT ],
+        [ '--auth',     '-a', GetoptLong::OPTIONAL_ARGUMENT ],
         [ '--port',     '-u', GetoptLong::REQUIRED_ARGUMENT ]
     )
 
@@ -136,6 +139,7 @@ BEGIN {
     # Check url = "hostname:port"
     params[:auth] ||= defaults[:auth]
     params[:port] ||= defaults[:port]
+    params[:timeout] ||= defaults[:timeout]
 
     # Check no extra arguments
     show_usage("no extra arguments allowed -- '#{ARGV}'", defaults) unless ARGV.length == 0
