@@ -521,7 +521,7 @@ Here's a small code snippet which I hope gives you a better idea how to
 implement things.
 
 ```ruby
-# Using authorization, login and get access token.
+### Using authorization, login and get access token.
 options = {
   :headers => {
     'Content-type' => 'application/json'
@@ -532,7 +532,7 @@ options = {
   }.to_json
 }
 
-# Create session and get token back
+### Create session and get token back
 response = HTTParty.post('http://127.0.0.1:8080/session', options)
 
 if response.code == 201 # Created
@@ -542,7 +542,7 @@ else
   exit
 end
 
-# Now uou can use the token in all following requests
+### Now uou can use the token in all following requests
 options = { 
   :headers => { 
     'Content-type' => 'application/json', 
@@ -552,6 +552,9 @@ options = {
 
 response = HTTParty.get(, options)
 ```
+### Timeout
+
+Note that a timeout defines the maximum idle time between requests. The default value is 30 minutes.
 
 ## HAL Compatibility
 
