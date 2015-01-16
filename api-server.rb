@@ -130,6 +130,12 @@ BEGIN {
             params[:port] = arg
           when '--auth'
             params[:auth] = true
+            if arg
+              unless /^\d+$/ === arg
+                show_usage("invalid timeout -- '#{arg}' (only digits)", defaults)
+              end
+              params[:timeout] = arg
+            end
         end
       end
     rescue GetoptLong::Error => e
