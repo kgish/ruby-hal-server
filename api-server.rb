@@ -71,9 +71,9 @@ BEGIN {
     --help, -h
        show this help screen
 
-    --auth, -a [=n]
+    --auth, -a [secs]
        enable authentication (default #{defaults[:auth]})
-       optional timeout in seconds (default #{defaults[:timeout]}
+       optional timeout in seconds (default #{defaults[:timeout]})
 
     --port, -p n
        listen on this port number (default #{defaults[:port]})
@@ -102,7 +102,7 @@ BEGIN {
   def get_params(show)
     defaults = {
         auth: false,
-        timeout: 3600,
+        timeout: 1800,
         port: 8080
     }
 

@@ -116,6 +116,10 @@ You can now start the webmachine-roar api server using defaults WEBrick and port
       --help, -h
          show this help screen
 
+    --auth, -a [secs]
+       enable authentication (default false)
+       optional timeout in seconds (default 1800)
+
       --auth, -a
          enable authentication (default false)
 
@@ -128,6 +132,7 @@ You can now start the webmachine-roar api server using defaults WEBrick and port
       api-server --ip=4200
       api-server --auth
       api-server --ip=8000 --auth
+      api-server --auth=600 (timeout 10 minutes)
 
 ### Monitor
 
