@@ -4,14 +4,17 @@ require 'json'
 require 'models/user'
 
 class BaseResource < Webmachine::Resource
+
   @@authorization_enabled = false
+  @@timeout = 1800
 
   class << self
     alias_method :let, :define_method
 
-    def authorization(auth_yesno)
+    def configure(auth_yesno=false, timeout=1800)
       @@authorization_enabled = auth_yesno
-#      puts "Resource::Base @@authorization_enabled=#{auth_yesno}"
+      @@timeout = timeout
+#      puts "Resource::Base @@authorization_enabled=#{@@authorization_enabled}, @@timeout=#{@@timeout}"
     end
 
   end
@@ -141,10 +144,6 @@ class BaseResource < Webmachine::Resource
 
   def curie_name
     'ht'
-  end
-
-  def auth_enabled?
-    @auth
   end
 
 end

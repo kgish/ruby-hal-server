@@ -9,6 +9,7 @@ ENVIRONMENT ||= 'development'
 params = get_params(false)
 auth = params[:auth]
 port = params[:port]
+timeout = params[:timeout]
 puts params
 
 # Resources
@@ -19,7 +20,7 @@ require 'resources/user'
 require 'resources/session'
 
 # Authorization enabled?
-BaseResource.authorization(auth)
+BaseResource.configure(auth, timeout)
 
 # Log listener
 require 'helpers/logger'
