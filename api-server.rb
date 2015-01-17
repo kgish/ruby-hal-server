@@ -131,11 +131,13 @@ BEGIN {
             params[:port] = arg
           when '--auth'
             params[:auth] = true
-            if arg
+            if arg.length > 0
               unless /^\d+$/ === arg
                 show_usage("invalid timeout -- '#{arg}' (only digits)", defaults)
               end
               params[:timeout] = arg
+            else
+              params[:timeout] = nil
             end
         end
       end
