@@ -5,6 +5,7 @@ require 'models/user'
 
 class BaseResource < Webmachine::Resource
 
+  # TODO: Use of class variables is bad style.
   @@authorization_enabled = false
   @@timeout = 1800
 
@@ -14,7 +15,6 @@ class BaseResource < Webmachine::Resource
     def configure(auth_yesno=false, timeout=1800)
       @@authorization_enabled = auth_yesno
       @@timeout = timeout
-#      puts "Resource::Base @@authorization_enabled=#{@@authorization_enabled}, @@timeout=#{@@timeout}"
     end
 
   end

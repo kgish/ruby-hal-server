@@ -22,6 +22,10 @@ class ProductResource < BaseResource
               # Admin can do anything!
               puts "Resource::Product[#{request.method}] is_authorized? admin"
               result = true
+            else
+              # Other non-admin users can only view products (GET)
+              puts "Resource::Product[#{request.method}] is_authorized? GET always allowed"
+              result = request.method == 'GET'
             end
           end
         end
