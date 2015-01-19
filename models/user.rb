@@ -16,6 +16,7 @@ end
 $users = DB[:users]
 
 # Populate the users table.
+# Random login date between now and one day ago.
 
 # kiffin => admin
 $users.insert(
@@ -25,7 +26,7 @@ $users.insert(
     :password     => 'pindakaas',
     :access_token => 'none',
     :is_admin     => true,
-    :login_date   => Time.at(rand * Time.now.to_i)
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
 )
 
 # henri => NOT admin
@@ -36,7 +37,7 @@ $users.insert(
     :password     => 'escargot',
     :access_token => 'none',
     :is_admin     => false,
-    :login_date   => Time.at(rand * Time.now.to_i)
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
 )
 
 # bhogan => NOT admin
@@ -47,7 +48,18 @@ $users.insert(
     :password     => 'holeinone',
     :access_token => 'none',
     :is_admin     => false,
-    :login_date   => Time.at(rand * Time.now.to_i)
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
+)
+
+# admin => admin
+$users.insert(
+    :name         => 'Admin',
+    :username     => 'admin',
+    :email        => 'webmaster@halclient.com',
+    :password     => 'admin',
+    :access_token => 'none',
+    :is_admin     => true,
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
 )
 
 if $users.count
@@ -71,9 +83,11 @@ class User < Sequel::Model
   end
 
   def self.auth(token)
-    where(access_token: token).first
-    # TODO: check that now - login_date > 30 mins
-    # also need to update login_date every request.
+    # TODO: Check that now - login_date > 30 minutes.
+    #       Also need to update login_date for every request.
+    user = User.first(:access_token => token)
+    puts "User.auth(token='#{token}') => #{user.inspect}"
+    user
   end
 
   def self.remove(id)

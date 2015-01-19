@@ -24,7 +24,7 @@ class UserResource < BaseResource
               result = true
             else
               # User can only view and edit his own information
-              if user[:id] == id
+              if user[:id].to_i === id.to_i
                 puts "Resource::User[#{request.method}] is_authorized? user id=#{user[:id]}"
                 result = true
               else
