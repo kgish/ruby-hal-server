@@ -86,7 +86,7 @@ class User < Sequel::Model
     # TODO: Check that now - login_date > 30 minutes.
     #       Also need to update login_date for every request.
     user = User.first(:access_token => token)
-    puts "User.auth(token='#{token}') => #{user.inspect}"
+#    puts "User.auth(token='#{token}') => #{user.inspect}"
     user
   end
 
