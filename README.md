@@ -192,6 +192,7 @@ given in the following table.
 | kiffin   | pindakaas | admin |
 | henri    | escargot  | user  |
 | bhogan   | holeinone | user  |
+| admin    | admin     | admin |
 
 The role provides the person with certain access privileges illustrated in the following table.
 
