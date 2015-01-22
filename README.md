@@ -1,11 +1,11 @@
-# Webmachine/ROAR Server Template
+# Ruby-HAL-Server
 
-A basic server template for setting up a simple application to demonstrate how
-[webmachine](https://github.com/seancribbs/webmachine-ruby) and [roar](https://github.com/apotonick/roar)
-can work together to build real RESTful systems in Ruby.
+Example HAL Server based on Webmachine and ROAR.
 
-Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support. This can best be demoed as-is with
-the [Ember HAL Template](https://github.com/kgish/ember-hal-template) client.
+Provides a basic template for setting up a simple application combining  [webmachine](https://github.com/seancribbs/webmachine-ruby) and the Hypertext Application Language (HAL)
+for building real RESTful systems in Ruby.
+
+Roar is a framework for parsing and rendering REST documents. Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
 
 I've tested and verified the server with the [HAL-browser](https://github.com/mikekelly/hal-browser), see below.
 
@@ -86,14 +86,14 @@ about the api service can be obtained.
 
 In order to install and run the webmachine, run the following commands.
 
-    $ git clone https://github.com/kgish/ruby-webmachine-roar-template.git \
-        webmachine-roar
-    $ cd webmachine-roar
+    $ git clone https://github.com/kgish/ruby-hal-server.git \
+        hal-server
+    $ cd hal-server
     $ bundle install
 
 ### API Server
 
-You can now start the webmachine-roar api server using defaults WEBrick and port 8080:
+You can now start the webmachine api server using defaults WEBrick and port 8080:
 
     $ bundle exec ruby api-server.rb
     INFO  WEBrick 1.3.1
