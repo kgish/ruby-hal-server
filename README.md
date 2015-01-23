@@ -2,10 +2,14 @@
 
 Example HAL Server based on Webmachine and ROAR.
 
-Provides a basic template for setting up a simple application combining  [webmachine](https://github.com/seancribbs/webmachine-ruby) and the Hypertext Application Language (HAL)
-for building real RESTful systems in Ruby.
+Provides a basic template for setting up a simple application combining  [webmachine](https://github.com/seancribbs/webmachine-ruby)
+and the Hypertext Application Language (HAL) for building real RESTful systems in Ruby.
 
-ROAR (Resource-Oriented Architectures in Ruby) is a framework for parsing and rendering REST documents. Roar comes with built-in JSON, JSON-HAL, JSON-API and XML support.
+ROAR (Resource-Oriented Architectures in Ruby) is a framework for parsing and rendering REST documents. Roar comes with
+built-in JSON, JSON-HAL, JSON-API and XML support.
+
+Have a look at my [Ember HAL Client](https://github.com/kgish/ember-hal-client) to see a working example of a web
+application specifically built to communicate with this server.
 
 I've tested and verified the server with the [HAL-browser](https://github.com/mikekelly/hal-browser), see below.
 
