@@ -575,6 +575,17 @@ Here are the screenshots as proof.
 * [Users](images/hal-browser-users.png?raw=true)
 * [User](images/hal-browser-user.png?raw=true)
 
+## Todo list
+
+There are still a number of minor issues which should be looked into, namely
+the following:
+
+* Authentication flag `--auth` for the other tools, currently only implemented for `api-monitor`.
+* Idle timeout for authentication token, meaning additional attribute `user.access_date < 1800`.
+* Complete `api-autodiscover` to scan all features, e.g. products, users, etc.
+* Refactor to use ROAR gem.
+* Use of class variables `@@authentication_enabled` and `@@timeout` is considered bad style.
+
 ## Thanks
 
 A special thanks goes to [Sean Cribs](https://github.com/seancribbs), [Asmod4n](https://github.com/Asmod4n),
