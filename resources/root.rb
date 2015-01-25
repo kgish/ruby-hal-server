@@ -2,7 +2,7 @@ require 'resources/base'
 
 class RootResource < BaseResource
 
-  let(:allowed_methods) { %w{GET} }
+  let(:allowed_methods) { %w{GET OPTIONS HEAD} }
 
 # resources = %w{ product user session }
 
