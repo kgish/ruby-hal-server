@@ -17,10 +17,10 @@ I've tested and verified the server with the [HAL-browser](https://github.com/mi
 
 ## HAL/JSON Web API
 
-Here is an overview of the Web API functionalities that the api server exposes.
+Here is an overview of the Web API functionalities that the hal server exposes.
 
-    [:host]      = hostname of api server, default `127.0.0.1`
-    [:port]      = port used by api server, default `8080`
+    [:host]      = hostname of hal server, default `127.0.0.1`
+    [:port]      = port used by hal server, default `8080`
     [:resource]  = one of `%w{products users sessions}`
     [:id]        = resource id
     [:templated] = true or false, default true
@@ -82,7 +82,7 @@ e.g. /products/12
 ### GET / (Root)
 
 The zero-configuration starts with the root resource where all relevant information
-about the api service can be obtained.
+about the hal api service can be obtained.
 
 ![](images/screenshot-postman-root.png?raw=true)
 
@@ -95,11 +95,11 @@ In order to install and run the webmachine, run the following commands.
     $ cd hal-server
     $ bundle install
 
-### API Server
+### HAL Server
 
-You can now start the webmachine api server using defaults WEBrick and port 8080:
+You can now start the webmachine hal server using defaults WEBrick and port 8080:
 
-    $ bundle exec ruby api-server.rb
+    $ bundle exec ruby hal-server.rb
     INFO  WEBrick 1.3.1
     INFO  ruby 2.1.5 (2014-11-13) [x86_64-linux]
     INFO  Webmachine::Adapters::WEBrick::Server#start: pid=13513 port=8080
@@ -108,7 +108,7 @@ You can now start the webmachine api server using defaults WEBrick and port 8080
 
     USAGE:
 
-      api-server [OPTIONS]
+      hal-server [OPTIONS]
 
     DESCRIPTION:
 
@@ -132,17 +132,17 @@ You can now start the webmachine api server using defaults WEBrick and port 8080
 
     EXAMPLES:
 
-      api-server
-      api-server --ip=4200
-      api-server --auth
-      api-server --ip=8000 --auth
-      api-server --auth=600 (timeout 10 minutes)
+      hal-server
+      hal-server --ip=4200
+      hal-server --auth
+      hal-server --ip=8000 --auth
+      hal-server --auth=600 (timeout 10 minutes)
 
 ### Monitor
 
 You can now fire up the monitor by running the following command:
 
-    $ bundle exec ruby api-monitor-products.rb
+    $ bundle exec ruby hal-monitor-products.rb
 
 If everything is working according to plan you should see something like this:
 
@@ -158,11 +158,11 @@ If everything is working according to plan you should see something like this:
 
     USAGE:
 
-        api-monitor [OPTIONS]
+        hal-monitor [OPTIONS]
 
     DESCRIPTION:
 
-        Monitors the list or products for the given api server by looping through
+        Monitors the list or products for the given hal server by looping through
         the following HTTP request:
 
         GET /products
@@ -182,9 +182,9 @@ If everything is working according to plan you should see something like this:
 
     EXAMPLES:
 
-        api-monitor
-        api-monitor --url=localhost:8080
-        api-monitor --auth=kiffin:pindakaas
+        hal-monitor
+        hal-monitor --url=localhost:8080
+        hal-monitor --auth=kiffin:pindakaas
 
 ## Users and roles
 
@@ -240,7 +240,7 @@ that indeed the product has been created and the parameters match.
       DESCRIPTION:
 
         Creates a product with given attributes by sending the
-        following HTTP request to the given api server:
+        following HTTP request to the given hal server:
 
           POST /products
 
@@ -301,7 +301,7 @@ You should get results similar to the following:
       DESCRIPTION:
 
         Find a product with the given id by sending the
-        following HTTP request to the given api server:
+        following HTTP request to the given hal server:
 
           GET /products/id
 
@@ -352,7 +352,7 @@ You should then see something like this:
       DESCRIPTION:
 
         Deletes a product with the given id by sending the
-        following HTTP request to the given api server:
+        following HTTP request to the given hal server:
 
           DELETE /products/id
 
@@ -410,7 +410,7 @@ that indeed the product has been updated/created and the parameters match.
       DESCRIPTION:
 
         Updates a product with given attribute(s) by sending the
-        following HTTP request to the given api server:
+        following HTTP request to the given hal server:
 
           PUT /products
 
@@ -455,7 +455,7 @@ gather the necessary information to use the service.
 
 To see how this works you can run the following command:
 
-    $ bundle exec ruby api-autodiscover.rb
+    $ bundle exec ruby hal-autodiscover.rb
 
 You should see something like the following:
 
@@ -580,9 +580,9 @@ Here are the screenshots as proof.
 There are still a number of minor issues which should be looked into, namely
 the following:
 
-* Authentication flag `--auth` for the other tools, currently only implemented for `api-monitor`.
+* Authentication flag `--auth` for the other tools, currently only implemented for `hal-monitor`.
 * Idle timeout for authentication token, meaning additional attribute `user.access_date < 1800`.
-* Complete `api-autodiscover` to scan all features, e.g. products, users, etc.
+* Complete `hal-autodiscover` to scan all features, e.g. products, users, etc.
 * Refactor to use ROAR gem.
 * Use of class variables `@@authentication_enabled` and `@@timeout` is considered bad style.
 

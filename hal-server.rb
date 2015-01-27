@@ -55,12 +55,12 @@ BEGIN {
   require 'getoptlong'
 
   def show_usage(message, defaults)
-    puts "api-server: #{message}" if message
+    puts "hal-server: #{message}" if message
     puts <<-EOF
 
   USAGE:
 
-    api-server [OPTIONS]
+    hal-server [OPTIONS]
 
   DESCRIPTION:
 
@@ -81,11 +81,11 @@ BEGIN {
 
   EXAMPLES:
 
-    api-server
-    api-server --ip=4200
-    api-server --auth
-    api-server --ip=8000 --auth
-    api-server --auth=600 (timeout 10 minutes)
+    hal-server
+    hal-server --ip=4200
+    hal-server --auth
+    hal-server --ip=8000 --auth
+    hal-server --auth=600 (timeout 10 minutes)
 
     EOF
     exit 0

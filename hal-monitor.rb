@@ -113,7 +113,7 @@ BEGIN {
 
   USAGE:
 
-    api-monitor [OPTIONS]
+    hal-monitor [OPTIONS]
 
   DESCRIPTION:
 
@@ -137,9 +137,9 @@ BEGIN {
 
   EXAMPLES:
 
-    api-monitor
-    api-monitor --url=localhost:8080
-    api-monitor --auth=kiffin:pindakaas
+    hal-monitor
+    hal-monitor --url=localhost:8080
+    hal-monitor --auth=kiffin:pindakaas
 
     EOF
     exit 0
