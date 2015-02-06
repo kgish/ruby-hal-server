@@ -62,7 +62,7 @@ class BaseResource < Webmachine::Resource
   end
 
   def user_auth(auth_header=nil)
-    user = nil?
+    user = nil
     ok = 'NOK'
     puts "Resource::Base[#{request.method}] user_auth(auth_header=#{auth_header.inspect})"
     if auth_header.nil?

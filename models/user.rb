@@ -131,7 +131,9 @@ class User < Sequel::Model
   end
 
   def replace(attributes)
-    update(attributes)
+    # Strip out unwanted and/or malicious attributes just in case.
+    safe_attributes = attributes.select{|x| %w{name username email password is_admin}.include?(x)}
+    update(safe_attributes)
   end
 
   def to_hash

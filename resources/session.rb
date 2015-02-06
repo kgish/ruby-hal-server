@@ -10,26 +10,6 @@ class SessionResource < BaseResource
   let(:allowed_methods) { %w{POST OPTIONS} }
   let(:content_types_accepted) { [['application/json', :create_session]] }
 
-  def user_auth(auth_header=nil)
-    puts "Resource::Session[#{request.method}] user_auth(auth_header=#{auth_header.inspect})"
-    if auth_header.nil?
-      puts "Resource::Base[#{request.method}] user_auth, oops auth_header=nil!"
-    else
-      if auth_header.start_with?('Bearer ')
-        token = auth_header.sub(/^Bearer /, '')
-        puts "Resource::Base[#{request.method}] user_auth, token=#{token}"
-        user = User.auth(token)
-        if user.nil?
-          puts "Resource::Base[#{request.method}] user_auth, cannot authenticate user"
-        else
-          ok = 'OK'
-        end
-      end
-    end
-    puts "Resource::Base[#{request.method}] user_auth => #{user.inspect} (#{ok})"
-    user
-  end
-
    def resource_exists?
      puts "Resource::Session[#{request.method}] resource_exists?"
      # result = !request.path_info.has_key?(:id) || !!User.exists(id)

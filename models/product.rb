@@ -51,7 +51,9 @@ class Product < Sequel::Model
   end
 
   def replace(attributes)
-    update(attributes)
+    # Strip out unwanted and/or malicious attributes just in case.
+    safe_attributes = attributes.select{|x| %w{name category price}.include?(x)}
+    update(safe_attributes)
   end
 
   def to_hash
