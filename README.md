@@ -581,6 +581,7 @@ There are still a number of minor issues which should be looked into, namely
 the following:
 
 * Authentication flag `--auth` for the other tools, currently only implemented for `hal-monitor`.
+* Should return a 408 Request Time-out HTTP response instead of 401 when idle time > timeout.
 * Complete `hal-autodiscover` to scan all features, e.g. products, users, etc.
 * Refactor to use the ROAR gem.
 * Use of class variables `@@authentication_enabled` and `@@timeout` is considered bad style.
