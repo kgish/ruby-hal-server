@@ -52,7 +52,7 @@ class Product < Sequel::Model
 
   def replace(attributes)
     # Strip out unwanted and/or malicious attributes just in case.
-    safe_attributes = attributes.select{|x| %w{name category price}.include?(x)}
+    safe_attributes = attributes.select{|k| %w{name category price}.include?(k.to_s)}
     update(safe_attributes)
   end
 

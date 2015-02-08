@@ -581,9 +581,8 @@ There are still a number of minor issues which should be looked into, namely
 the following:
 
 * Authentication flag `--auth` for the other tools, currently only implemented for `hal-monitor`.
-* Idle timeout for authentication token, meaning additional attribute `user.access_date < 1800`.
 * Complete `hal-autodiscover` to scan all features, e.g. products, users, etc.
-* Refactor to use ROAR gem.
+* Refactor to use the ROAR gem.
 * Use of class variables `@@authentication_enabled` and `@@timeout` is considered bad style.
 
 ## Thanks

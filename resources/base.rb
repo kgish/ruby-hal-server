@@ -71,7 +71,7 @@ class BaseResource < Webmachine::Resource
       if auth_header.start_with?('Bearer ')
         token = auth_header.sub(/^Bearer /, '')
         puts "Resource::Base[#{request.method}] user_auth, token=#{token}"
-        user = User.auth(token)
+        user = User.auth(token, @@timeout)
         if user.nil?
           puts "Resource::Base[#{request.method}] user_auth, cannot authenticate user"
         else

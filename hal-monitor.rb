@@ -100,7 +100,7 @@ catch :ctrl_c do
     end
     puts
     puts 'CTRL-C to exit'
-    sleep(1)
+    sleep(5)
   end
 end
 

@@ -59,10 +59,10 @@ class SessionResource < BaseResource
          puts "Resource::Session[#{request.method}]: user=#{user.inspect}"
          if user[:password] == password
            puts "Resource::Session[#{request.method}]: => password OK"
-#           # TODO: set login_date, later ensure now - login_date < 30 mins
-           user.replace({login_date: Time.now, access_token: SecureRandom.hex(64)})
-           response.body =  JSON.generate({:api_key => {:user_id => user[:id], :access_token => user[:access_token]}})
+           tm = Time.now
+           user.replace({login_date: tm, last_seen: tm, access_token: SecureRandom.hex(64)})
            puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password OK"
+           response.body =  JSON.generate({:api_key => {:user_id => user[:id], :access_token => user[:access_token]}})
            result = 201
          else
            puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password NOK"

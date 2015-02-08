@@ -135,7 +135,7 @@ BEGIN {
               unless /^\d+$/ === arg
                 show_usage("invalid timeout -- '#{arg}' (only digits)", defaults)
               end
-              params[:timeout] = arg
+              params[:timeout] = arg.to_i
             else
               params[:timeout] = nil
             end

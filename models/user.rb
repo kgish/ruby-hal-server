@@ -10,6 +10,7 @@ DB.create_table :users do
   String      :access_token
   Boolean     :is_admin
   DateTime    :login_date
+  DateTime    :last_seen
 end
 
 # Create a dataset from the users table
@@ -26,7 +27,8 @@ $users.insert(
     :password     => 'pindakaas',
     :access_token => 'none',
     :is_admin     => true,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400)
+    :login_date   => Time.at(Time.now.to_i - rand * 86400),
+    :last_seen    => 0
 )
 
 # henri => NOT admin
@@ -37,7 +39,8 @@ $users.insert(
     :password     => 'escargot',
     :access_token => 'none',
     :is_admin     => false,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400)
+    :login_date   => Time.at(Time.now.to_i - rand * 86400),
+    :last_seen    => 0
 )
 
 # bhogan => NOT admin
@@ -48,7 +51,8 @@ $users.insert(
     :password     => 'holeinone',
     :access_token => 'none',
     :is_admin     => false,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400)
+    :login_date   => Time.at(Time.now.to_i - rand * 86400),
+    :last_seen    => 0
 )
 
 # admin => admin
@@ -59,7 +63,8 @@ $users.insert(
     :password     => 'admin',
     :access_token => 'none',
     :is_admin     => true,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400)
+    :login_date   => Time.at(Time.now.to_i - rand * 86400),
+    :last_seen    => 0
 )
 
 if $users.count
@@ -76,17 +81,25 @@ if $users.count
 end
 
 class User < Sequel::Model
-  HASH_ATTRS = [:id, :name, :username, :email, :password, :access_token, :is_admin, :login_date]
+  HASH_ATTRS = [:id, :name, :username, :email, :password, :access_token, :is_admin, :login_date, :last_seen]
 
   def self.exists(id)
     User[id: id]
   end
 
-  def self.auth(token)
-    # TODO: Check that now - login_date > 30 minutes.
-    #       Also need to update login_date for every request.
+  def self.auth(token, timeout)
+    tm = Time.now
     user = User.first(:access_token => token)
-#    puts "User.auth(token='#{token}') => #{user.inspect}"
+    if (user)
+      # Check that user has been seen within timeout period
+      diff = tm.to_i - user[:last_seen].to_i
+      if diff > timeout
+        puts "Model::User timeout: tm=#{tm.to_i} - last_seen=#{user[:last_seen].to_i} > timeout=#{timeout}"
+        user = nil
+      else
+        user.update(:last_seen => tm)
+      end
+    end
     user
   end
 
@@ -132,7 +145,7 @@ class User < Sequel::Model
 
   def replace(attributes)
     # Strip out unwanted and/or malicious attributes just in case.
-    safe_attributes = attributes.select{|x| %w{name username email password is_admin}.include?(x)}
+    safe_attributes = attributes.select{|k| %w{name username email password access_token is_admin login_date last_seen}.include?(k.to_s)}
     update(safe_attributes)
   end
 
