@@ -133,6 +133,7 @@ catch :ctrl_c do
           password= u['password'] || ''
           admin = u['is_admin'] ? 'yes' : 'no'
           login_date = u['login_date'].sub(/ \+\d+/, '')
+          login_date = 'never' if login_date == '1970-01-01 01:00:00'
           last_seen = u['last_seen'].sub(/ \+\d+/, '')
           last_seen = 'never' if last_seen == '1970-01-01 01:00:00'
           puts cnt.to_s.ljust(4)+id.to_s.ljust(4)+username.ljust(16)+name.ljust(16)+admin.ljust(6)+email.ljust(25)+password.ljust(12)+login_date.ljust(21)+last_seen

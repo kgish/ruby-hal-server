@@ -1,5 +1,8 @@
 require 'models/base'
 
+# For the secure authentication token
+require 'securerandom'
+
 # Create a users table
 DB.create_table :users do
   primary_key :id
@@ -7,10 +10,10 @@ DB.create_table :users do
   String      :username
   String      :email
   String      :password
-  String      :access_token
+  String      :access_token, :default => 'none'
   Boolean     :is_admin
-  DateTime    :login_date
-  DateTime    :last_seen
+  DateTime    :login_date, :default => 0
+  DateTime    :last_seen, :default => 0
 end
 
 # Create a dataset from the users table
@@ -35,7 +38,7 @@ class User < Sequel::Model
   def self.auth(token, timeout)
     tm = Time.now
     user = User.first(:access_token => token)
-    if (user)
+    if user
       # Check that user has been seen within timeout period
       diff = tm.to_i - user[:last_seen].to_i
       if diff > timeout
@@ -54,7 +57,7 @@ class User < Sequel::Model
 
   def self.safe_attributes(attributes)
     # Strip out unwanted and/or malicious attributes just in case.
-    attributes.select{|k| %w{id name username email password access_token is_admin login_date last_seen}.include?(k.to_s)}
+    attributes.select{|k| %w{id name username email password access_token is_admin}.include?(k.to_s)}
   end
 
   def self.resource(id)
@@ -91,6 +94,11 @@ class User < Sequel::Model
     list
   end
 
+  def login
+    tm = Time.now
+    update({login_date: tm, last_seen: tm, access_token:  SecureRandom.hex(64)})
+  end
+
   def replace(attributes)
     update(User.safe_attributes(attributes))
   end
@@ -110,10 +118,8 @@ User.create(
     :username     => 'kiffin',
     :email        => 'kiffin.gish@planet.nl',
     :password     => 'pindakaas',
-    :access_token => 'none',
     :is_admin     => true,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400),
-    :last_seen    => 0
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
 )
 
 # henri => NOT admin
@@ -122,10 +128,8 @@ User.create(
     :username     => 'henri',
     :email        => 'henri.bergson@gmail.com',
     :password     => 'escargot',
-    :access_token => 'none',
     :is_admin     => false,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400),
-    :last_seen    => 0
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
 )
 
 # bhogan => NOT admin
@@ -134,23 +138,18 @@ User.create(
     :username     => 'bhogan',
     :email        => 'ben.hogan@golf.nl',
     :password     => 'holeinone',
-    :access_token => 'none',
     :is_admin     => false,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400),
-    :last_seen    => 0
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
 )
 
 # admin => admin
-tm = Time.at(Time.now.to_i - rand * 86400)
 User.create(
     :name         => 'Admin',
     :username     => 'admin',
     :email        => 'webmaster@halclient.com',
     :password     => 'admin',
-    :access_token => 'none',
     :is_admin     => true,
-    :login_date   => Time.at(Time.now.to_i - rand * 86400),
-    :last_seen    => 0
+    :login_date   => Time.at(Time.now.to_i - rand * 86400)
 )
 
 if User.count

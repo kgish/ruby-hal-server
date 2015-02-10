@@ -79,11 +79,10 @@ class UserResource < BaseResource
         puts "Resource::User[#{request.method}] from_json, created new user=#{user.inspect}"
         result = 201 # Created
       end
-      response.body = JSON.generate(result_resource('user', User.resource(id)))
     else
-      response.body = JSON.generate(result_resource('product', Product.resource(@id)))
       result = 201 # Created
     end
+    response.body = JSON.generate(result_resource('user', User.resource(id)))
     puts "Resource::User[#{request.method}] from_json => #{result}"
     result
   end

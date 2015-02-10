@@ -2,9 +2,6 @@ require 'resources/base'
 require 'models/user'
 require 'json'
 
-# For the secure authentication token
-require 'securerandom'
-
 class SessionResource < BaseResource
 
   let(:allowed_methods) { %w{POST OPTIONS} }
@@ -59,8 +56,7 @@ class SessionResource < BaseResource
          puts "Resource::Session[#{request.method}]: user=#{user.inspect}"
          if user[:password] == password
            puts "Resource::Session[#{request.method}]: => password OK"
-           tm = Time.now
-           user.replace({login_date: tm, last_seen: tm, access_token: SecureRandom.hex(64)})
+           user.login()
            puts "Resource::Session[#{request.method}]: user=#{user.inspect} => password OK"
            response.body =  JSON.generate({:api_key => {:user_id => user[:id], :access_token => user[:access_token]}})
            result = 201

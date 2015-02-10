@@ -83,11 +83,10 @@ class ProductResource < BaseResource
         puts "Resource::Product[#{request.method}] from_json, created new product=#{product.inspect}"
         result = 201 # Created
       end
-      response.body = JSON.generate(result_resource('product', Product.resource(id)))
     else
-      response.body = JSON.generate(result_resource('product', Product.resource(@id)))
       result = 201 # Created
     end
+    response.body = JSON.generate(result_resource('product', Product.resource(id)))
     puts "Resource::Product[#{request.method}] from_json => #{result}"
     result
   end
