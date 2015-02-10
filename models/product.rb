@@ -14,7 +14,7 @@ class Product < Sequel::Model
   HASH_ATTRS = [:id, :name, :category, :price]
 
   def self.create(attributes)
-    id = Product.insert(attributes)
+    id = Product.insert(Product.safe_attributes(attributes))
     Product[id: id]
   end
 
@@ -36,6 +36,11 @@ class Product < Sequel::Model
     }
   end
 
+  def self.safe_attributes(attributes)
+    # Strip out unwanted and/or malicious attributes just in case.
+    attributes.select{|k| %w{id name category price}.include?(k.to_s)}
+  end
+
   def self.collection
     list = []
     Product.all.each do |p|
@@ -51,9 +56,7 @@ class Product < Sequel::Model
   end
 
   def replace(attributes)
-    # Strip out unwanted and/or malicious attributes just in case.
-    safe_attributes = attributes.select{|k| %w{name category price}.include?(k.to_s)}
-    update(safe_attributes)
+    update(Product.safe_attributes(attributes))
   end
 
   def to_hash

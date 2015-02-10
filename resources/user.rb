@@ -43,9 +43,9 @@ class UserResource < BaseResource
 
   def create_path
     puts "Resource::User[#{request.method}] create_path"
-    next_id = create_resource[:id]
-    puts "Resource::User[#{request.method}] next_id=#{next_id}"
-    result = "/users/#{next_id}"
+    @id = create_resource[:id]
+    puts "Resource::User[#{request.method}] next_id=#{@id}"
+    result = "/users/#{@id}"
     puts "Resource::User[#{request.method}] create_path => #{result}"
     result
   end
@@ -64,10 +64,10 @@ class UserResource < BaseResource
 
   def from_json
     puts "Resource::User[#{request.method}] from_json"
+    result = 200
     if request.method == 'PUT'
       # See comments for Resource::Product.from_json for 'PUT' method
       user = User.exists(id)
-      response_code = 200
       if user
         puts "Resource::User[#{request.method}] from_json, user exists"
         user.replace(request_payload('user'))
@@ -76,24 +76,25 @@ class UserResource < BaseResource
         rp = request_payload('user')
         rp[:id] = id
         user = User.create(rp)
-        response_code = 201 # Created
+        puts "Resource::User[#{request.method}] from_json, created new user=#{user.inspect}"
+        result = 201 # Created
       end
-      response.body = user.to_json
-      response_code
+      response.body = JSON.generate(result_resource('user', User.resource(id)))
     else
-      result = JSON.parse(request.body.to_s)
-      puts "Resource::User[#{request.method}] from_json => #{result.inspect}"
-      result
+      response.body = JSON.generate(result_resource('product', Product.resource(@id)))
+      result = 201 # Created
     end
+    puts "Resource::User[#{request.method}] from_json => #{result}"
+    result
   end
 
   private
 
   def create_resource
     puts "Resource::User[#{request.method}] create_resource"
-    result = User.create(request_payload('user'))
-    puts "Resource::User[#{request.method}] create_resource, @resource=#{result.inspect}"
-    result
+    @resource = User.create(request_payload('user'))
+    puts "Resource::User[#{request.method}] create_resource, @resource=#{@resource.inspect}"
+    @resource
   end
 
   def response_body_resource

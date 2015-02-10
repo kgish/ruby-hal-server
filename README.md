@@ -162,10 +162,11 @@ If everything is working according to plan you should see something like this:
 
     DESCRIPTION:
 
-        Monitors the list or products for the given hal server by looping through
-        the following HTTP request:
+        Monitors the list of users and products for the given server by
+        looping through the following HTTP request:
 
         GET /products
+        GET /users
 
         Once started hit CTRL-C to exit from the loop.
 
@@ -173,6 +174,9 @@ If everything is working according to plan you should see something like this:
 
         --help, -h
           show this help screen
+
+        --mon, -m products|users
+          only monitor given resource, default show both
 
         --auth, -a username:password
           authorization string (both username and password required)
@@ -183,6 +187,7 @@ If everything is working according to plan you should see something like this:
     EXAMPLES:
 
         hal-monitor
+        hal-monitor --mon=users
         hal-monitor --url=localhost:8080
         hal-monitor --auth=kiffin:pindakaas
 
