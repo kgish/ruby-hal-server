@@ -581,7 +581,7 @@ Of course, the client also needs to be configured to use the same secret key in 
 
 For the time being, this secret key is defined by a constant in the `resources/user.rb` file:
 
-```
+```ruby
 SECRET_KEY_SIGNUP = '2d5b0672-b207-11e4-94cd-3c970ead4d26'
 
 class UserResource < BaseResource
@@ -595,7 +595,8 @@ class UserResource < BaseResource
         if auth_header.nil?
           puts "Resource::User[#{request.method}] is_authorized? auth_header=nil!"
           puts "referer=#{request.referer}, headers=#{request.headers.inspect}"
-          if request.referer.end_with?('signup') and request.headers['x-secret-key-signup'] == SECRET_KEY_SIGNUP
+          if request.referer.end_with?('signup') and
+                request.headers['x-secret-key-signup'] == SECRET_KEY_SIGNUP
             result = true
           end
         else
