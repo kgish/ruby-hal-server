@@ -552,7 +552,7 @@ else
   exit
 end
 
-# Now uou can use the token in all following requests
+# Now you can use the token in all following requests
 options = { 
   :headers => { 
     'Content-type' => 'application/json', 
@@ -563,9 +563,63 @@ options = {
 response = HTTParty.get(, options)
 ```
 
+### User registration
+
+It is also possible for a given person to signup by going to the registration page, filling in the requested
+data, and sending the request to the server.
+
+The request is the usual `POST /users` for creating a new user, but in order to succeed the normal
+authorization flow has to be bypassed.
+
+This is accomplished by including the header `X-Secret-Key-Signup: SECRET_KEY_SIGNUP` as part of the
+request.
+
+The server validates this and ensures that the referer ends with `signup` and if both are true the request will
+succeed. The user can then login with the username and password.
+
+Of course, the client also needs to be configured to use the same secret key in order for this to work.
+
+For the time being, this secret key is defined by a constant in the `resources/user.rb` file:
+
+```
+SECRET_KEY_SIGNUP = '2d5b0672-b207-11e4-94cd-3c970ead4d26'
+
+class UserResource < BaseResource
+
+  def is_authorized?(auth_header = nil)
+    ...
+    if @@authorization_enabled
+      if request.method == 'OPTIONS'
+        result = true
+      else
+        if auth_header.nil?
+          puts "Resource::User[#{request.method}] is_authorized? auth_header=nil!"
+          puts "referer=#{request.referer}, headers=#{request.headers.inspect}"
+          if request.referer.end_with?('signup') and request.headers['x-secret-key-signup'] == SECRET_KEY_SIGNUP
+            result = true
+          end
+        else
+          ...
+        end
+      end
+    else
+      result = true
+    end
+    puts "Resource::User[#{request.method}] is_authorized? => #{result}"
+    result
+  end
+
+  ...
+end
+```
+
+I realize that this is a bit of a cludge and perhaps not the most secure way to handle signups, but if
+anyone else has a better idea please tell me.
+
 ### Timeout
 
-Note that a timeout defines the maximum idle time between requests. The default value is 30 minutes.
+Note that a timeout defines the maximum idle time between requests. The default value is 30 minutes. See the
+usage above to see how to change this value.
 
 ## HAL Compatibility
 

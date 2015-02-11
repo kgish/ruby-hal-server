@@ -1,6 +1,9 @@
 require 'resources/base'
 require 'models/user'
 
+# When registering a new user the request must contain this X-Secret-Key-Signup header.
+SECRET_KEY_SIGNUP = '2d5b0672-b207-11e4-94cd-3c970ead4d26'
+
 class UserResource < BaseResource
 
   def is_authorized?(auth_header = nil)
@@ -12,6 +15,10 @@ class UserResource < BaseResource
       else
         if auth_header.nil?
           puts "Resource::User[#{request.method}] is_authorized? auth_header=nil!"
+          puts "referer=#{request.referer}, headers=#{request.headers.inspect}"
+          if request.referer.end_with?('signup') and request.headers['x-secret-key-signup'] == SECRET_KEY_SIGNUP
+            result = true
+          end
         else
           user = user_auth(auth_header)
           puts "Resource::User[#{request.method}] is_authorized? user=#{user.inspect}"
