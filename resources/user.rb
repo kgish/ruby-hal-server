@@ -13,10 +13,10 @@ class UserResource < BaseResource
       if request.method == 'OPTIONS'
         result = true
       else
-        if auth_header.nil?
+        if auth_header.nil? or auth_header == 'Bearer none'
           puts "Resource::User[#{request.method}] is_authorized? auth_header=nil!"
-          puts "referer=#{request.referer}, headers=#{request.headers.inspect}"
-          if request.referer.end_with?('signup') and request.headers['x-secret-key-signup'] == SECRET_KEY_SIGNUP
+          puts "headers=#{request.headers.inspect}"
+          if request.headers['x-secret-key-signup'] == SECRET_KEY_SIGNUP
             result = true
           end
         else
