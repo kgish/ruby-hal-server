@@ -1,6 +1,6 @@
 # Ruby-HAL-Server
 
-Example HAL Server based on Webmachine and ROAR.
+Example HAL Server based on Webmachine and ROAR, inspired by my visit to [Blendle](http://www.blendle.nl) one day.
 
 Provides a basic template for setting up a simple application combining  [webmachine](https://github.com/seancribbs/webmachine-ruby)
 and the Hypertext Application Language (HAL) for building real RESTful systems in Ruby.
