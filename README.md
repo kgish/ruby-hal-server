@@ -619,8 +619,7 @@ anyone else has a better idea please tell me.
 
 ### Timeout
 
-Note that a timeout defines the maximum idle time between requests. The default value is 30 minutes. See the
-usage above to see how to change this value.
+Note that a timeout defines the maximum idle time between requests. The default value is 30 minutes. If the idle time between requests is greater than the timeout, then the session will become invalid meaning that the user will have to login again. See the usage above to see how to change this value. 
 
 ## HAL Compatibility
 
