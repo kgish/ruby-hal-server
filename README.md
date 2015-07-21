@@ -560,7 +560,7 @@ options = {
   } 
 }
 
-response = HTTParty.get(, options)
+response = HTTParty.get('http://127.0.0.1:8080/products', options)
 ```
 
 ### User registration
